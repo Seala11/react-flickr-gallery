@@ -1,12 +1,17 @@
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 120rem;
-    margin: 0 auto;
+  background-color: var(--dark-m);
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 120rem;
+  margin: 0 auto;
 }
 
 .logo {
-    font-size: 1.8rem;
-    color: var(--dark-xxl);
+  font-size: 1.8rem;
+  color: var(--dark-xxl);
+  padding-left: 2rem;
 }

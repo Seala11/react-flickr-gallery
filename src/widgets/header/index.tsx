@@ -6,8 +6,10 @@ class Header extends React.Component {
   render() {
     return (
       <header className={styles.header}>
-        <h1 className={styles.logo}>Logo</h1>
-        <LinkList />
+        <div className={styles.wrapper}>
+          <h1 className={styles.logo}>Logo</h1>
+          <LinkList />
+        </div>
       </header>
     );
   }
