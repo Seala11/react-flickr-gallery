@@ -1,0 +1,13 @@
+@use './mixins.scss' as *;
+
+html {
+  scroll-behavior: smooth;
+  font-size: 10px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  @include poppins;
+
+  background: var(--main-bg);
+}
