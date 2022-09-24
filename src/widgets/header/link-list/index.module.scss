@@ -1,0 +1,29 @@
+.list {
+  list-style: none;
+  display: flex;
+}
+
+.item {
+  margin: 0.3rem;
+}
+
+.link {
+  color: var(--dark-xl);
+  text-decoration: none;
+  background-color: transparent;
+  padding: 0.3rem 1rem;
+  font-size: 1.8rem;
+  transition: all 0.2s;
+
+  &_active {
+    color: var(--dark-xxl);
+    text-underline-offset: 0.8rem;
+    text-decoration: underline 0.2rem;
+  }
+
+  &:hover {
+    text-underline-offset: 0.8rem;
+    text-decoration: underline 0.2rem;
+    color: var(--dark-l);
+  }
+}

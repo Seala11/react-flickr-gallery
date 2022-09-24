@@ -1,14 +1,18 @@
 import React from 'react';
-import './index.scss';
+import styles from './index.module.scss';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>Hello world</p>
-      </header>
-    </div>
-  );
+import Header from 'widgets/header';
+import Routing from 'pages';
+
+class App extends React.Component {
+  render() {
+    return (
+      <div className={styles.app}>
+        <Header />
+        <Routing />
+      </div>
+    );
+  }
 }
 
 export default App;
