@@ -1,0 +1,24 @@
+@use 'app/styles/mixins.scss' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  @include poppins($color: var(--light));
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--primary);
+  border: 0.2rem solid var(--primary);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: var(--primary-l);
+    border: 0.2rem solid var(--primary-l);
+  }
+}

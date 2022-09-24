@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 
 import About from 'pages/about';
 import Home from 'pages/home';
-import NotFound from 'pages/not-found';
+import NotFound from 'pages/404';
 
 class Routing extends React.Component {
   render() {
