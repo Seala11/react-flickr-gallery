@@ -1,11 +1,14 @@
 import React from 'react';
+import styles from './index.module.scss';
+import CardsList from 'features/card-list';
 
 class Home extends React.Component {
   render() {
     return (
-      <div>
-        <h1>Home</h1>
-      </div>
+      <main className={styles.wrapper}>
+        <h1 className={styles.heading}>Home</h1>
+        <CardsList />
+      </main>
     );
   }
 }
