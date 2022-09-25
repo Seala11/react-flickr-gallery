@@ -1,0 +1,59 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10rem 0;
+}
+
+.image {
+  width: 20rem;
+  height: 20rem;
+  border-radius: 20rem;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  gap: 4rem;
+}
+
+.item {
+  list-style: none;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--light);
+  padding: 2rem 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem 0.2rem var(--dark-m);
+}
+
+.role {
+  color: var(--pink-xl);
+  padding: 2rem 0 0;
+  margin: 0;
+}
+
+.name {
+  color: var(--dark-xxl);
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.link {
+  color: var(--dark-xl);
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: 700;
+  transition: all 0.2s;
+
+  &:hover {
+    color: var(--dark-l);
+  }
+}

@@ -5,6 +5,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 20rem 0;
+}
+
+.title {
+  font-size: 10rem;
+  margin: 0;
+  color: var(--light);
+  text-shadow:  -0.2rem 0 var(--pink), 0 0.3rem var(--pink-xl), 0.3rem 0 var(--pink-xl), 0 -0.2rem var(--pink);
 }
 
 .button {
@@ -12,13 +20,14 @@
   margin-top: 2rem;
   padding: 1.5rem;
   border-radius: 0.5rem;
-  background-color: var(--primary);
-  border: 0.2rem solid var(--primary);
+  background-color: var(--pink-xl);
+  border: 0.2rem solid var(--pink-xl);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    background-color: var(--primary-l);
-    border: 0.2rem solid var(--primary-l);
+    color: var(--light);
+    background-color: var(--pink);
+    border: 0.2rem solid var(--pink);
   }
 }
