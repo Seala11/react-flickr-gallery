@@ -1,18 +1,24 @@
 import React from 'react';
 import styles from './index.module.scss';
-import CARDS from 'shared/data/cards';
 import Card from './card';
+import { CardType } from './models';
 
-class CardsList extends React.Component {
+interface ICardListProps {
+  cards: CardType[];
+}
+
+class CardList extends React.Component<ICardListProps> {
+  constructor(props: ICardListProps) {
+    super(props);
+  }
+
   render() {
     return (
       <ul className={styles.list}>
-        {CARDS.map((card) => (
-          <Card key={card.id} card={card} />
-        ))}
+        {this.props.cards && this.props.cards.map((card) => <Card key={card.id} card={card} />)}
       </ul>
     );
   }
 }
 
-export default CardsList;
+export default CardList;

@@ -1,19 +1,10 @@
 import React from 'react';
+import { CardType } from '../models';
 import styles from './index.module.scss';
 
 interface ICardProps {
   card: CardType;
 }
-
-type CardType = {
-  id: number;
-  img: string;
-  name: string;
-  species: string;
-  status: string;
-  gender: string;
-  location: string;
-};
 
 class Card extends React.Component<ICardProps> {
   constructor(props: ICardProps) {

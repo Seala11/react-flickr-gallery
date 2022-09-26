@@ -1,31 +1,24 @@
 import React from 'react';
 import styles from './index.module.scss';
-
-enum StorageItem {
-  SEARCH = 'searchValue',
-}
+import { setSearchValueToStorage } from 'shared/helpers/storage';
 
 interface ISearchBarProps {
-  value: string;
+  updateInputHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  clearInputHandler: () => void;
+  searchValue: string;
 }
 
-class SearchBar extends React.Component {
-  state = { value: '' };
-
+class SearchBar extends React.Component<ISearchBarProps> {
   constructor(props: ISearchBarProps) {
     super(props);
-    this.updateInputHandler = this.updateInputHandler.bind(this);
     this.updateLocalStorage = this.updateLocalStorage.bind(this);
-    this.clearInputHandler = this.clearInputHandler.bind(this);
+
+    this.state = {
+      searchValue: this.props.searchValue,
+    };
   }
 
   componentDidMount() {
-    const value = localStorage.getItem(StorageItem.SEARCH);
-    if (value) {
-      this.setState({
-        value: value,
-      });
-    }
     window.addEventListener('beforeunload', this.updateLocalStorage);
   }
 
@@ -35,23 +28,10 @@ class SearchBar extends React.Component {
   }
 
   updateLocalStorage() {
-    localStorage.setItem(StorageItem.SEARCH, this.state.value);
-  }
-
-  updateInputHandler(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({
-      value: event.target.value,
-    });
-  }
-
-  clearInputHandler() {
-    this.setState({
-      value: '',
-    });
+    setSearchValueToStorage(this.props.searchValue);
   }
 
   render() {
-    console.log('props', this.state.value, localStorage.getItem(StorageItem.SEARCH));
     return (
       <div className={styles.wrapper}>
         <label htmlFor="search-bar" className={styles.label}>
@@ -59,8 +39,8 @@ class SearchBar extends React.Component {
         </label>
         <div className={styles.search}>
           <input
-            value={this.state.value}
-            onChange={this.updateInputHandler}
+            value={this.props.searchValue}
+            onChange={this.props.updateInputHandler}
             autoFocus
             type="search"
             id="search-bar"
@@ -69,10 +49,10 @@ class SearchBar extends React.Component {
             autoComplete="off"
             className={styles.input}
           />
-          {this.state.value ? (
+          {this.props.searchValue ? (
             <button
               className={`${styles.icon} ${styles.icon_clear}`}
-              onClick={this.clearInputHandler}
+              onClick={this.props.clearInputHandler}
             ></button>
           ) : (
             <button className={`${styles.icon} ${styles.icon_search}`}></button>
