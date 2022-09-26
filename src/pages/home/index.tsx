@@ -7,16 +7,16 @@ import CARDS from 'shared/data/cards';
 import { filterByName } from 'shared/helpers/filters';
 
 interface IHomeProps {
-  searchValue: string;
+  searchValue: string | null;
 }
 
 class Home extends React.Component {
-  state = { searchValue: '', cards: [] };
+  state = { searchValue: null, cards: [] };
 
   constructor(props: IHomeProps) {
     super(props);
-    this.updateInputHandler = this.updateInputHandler.bind(this);
-    this.clearInputHandler = this.clearInputHandler.bind(this);
+    this.updateSearchValue = this.updateSearchValue.bind(this);
+    this.clearSearchValue = this.clearSearchValue.bind(this);
   }
 
   componentDidMount() {
@@ -34,12 +34,12 @@ class Home extends React.Component {
     this.setState({ cards: data });
   }
 
-  updateInputHandler(event: React.ChangeEvent<HTMLInputElement>) {
+  updateSearchValue(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ searchValue: event.target.value });
     this.filterCards(event.target.value);
   }
 
-  clearInputHandler() {
+  clearSearchValue() {
     this.setState({ searchValue: '', cards: CARDS });
   }
 
@@ -47,11 +47,11 @@ class Home extends React.Component {
     return (
       <main className={styles.wrapper}>
         <SearchBar
-          updateInputHandler={this.updateInputHandler}
-          clearInputHandler={this.clearInputHandler}
+          updateInputHandler={this.updateSearchValue}
+          clearInputHandler={this.clearSearchValue}
           searchValue={this.state.searchValue}
         />
-        {this.state.cards && <CardList cards={this.state.cards} />}
+        <CardList cards={this.state.cards} />
       </main>
     );
   }

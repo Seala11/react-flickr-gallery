@@ -5,7 +5,7 @@ import { setSearchValueToStorage } from 'shared/helpers/storage';
 interface ISearchBarProps {
   updateInputHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
   clearInputHandler: () => void;
-  searchValue: string;
+  searchValue: string | null;
 }
 
 class SearchBar extends React.Component<ISearchBarProps> {
@@ -28,7 +28,7 @@ class SearchBar extends React.Component<ISearchBarProps> {
   }
 
   updateLocalStorage() {
-    setSearchValueToStorage(this.props.searchValue);
+    if (typeof this.props.searchValue === 'string') setSearchValueToStorage(this.props.searchValue);
   }
 
   render() {
@@ -39,7 +39,7 @@ class SearchBar extends React.Component<ISearchBarProps> {
         </label>
         <div className={styles.search}>
           <input
-            value={this.props.searchValue}
+            value={this.props.searchValue || ''}
             onChange={this.props.updateInputHandler}
             autoFocus
             type="search"

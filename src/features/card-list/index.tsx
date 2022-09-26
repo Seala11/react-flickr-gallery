@@ -15,7 +15,11 @@ class CardList extends React.Component<ICardListProps> {
   render() {
     return (
       <ul className={styles.list}>
-        {this.props.cards && this.props.cards.map((card) => <Card key={card.id} card={card} />)}
+        {this.props.cards.length > 0 ? (
+          this.props.cards.map((card) => <Card key={card.id} card={card} />)
+        ) : (
+          <p>Sorry, no characters matched your search.</p>
+        )}
       </ul>
     );
   }
