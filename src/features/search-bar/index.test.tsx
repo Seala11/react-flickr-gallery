@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import SearchBar from '.';
+import userEvent from '@testing-library/user-event';
 
 describe('Search bar', () => {
   it('renders component', () => {
@@ -15,13 +16,18 @@ describe('Search bar', () => {
   });
 
   it('set search value from props on rerender', async () => {
+    const onChange = jest.fn();
     const { rerender } = render(
-      <SearchBar updateInputHandler={() => {}} clearInputHandler={() => {}} searchValue={null} />
+      <SearchBar updateInputHandler={onChange} clearInputHandler={() => {}} searchValue={''} />
     );
     expect(screen.getByTestId('search-input')).toBeEmptyDOMElement();
 
+    const input = screen.getByRole('searchbox');
+    userEvent.type(input, 'rick');
+    expect(onChange).toHaveBeenCalledTimes(4);
+
     rerender(
-      <SearchBar updateInputHandler={() => {}} clearInputHandler={() => {}} searchValue={'rick'} />
+      <SearchBar updateInputHandler={onChange} clearInputHandler={() => {}} searchValue={'rick'} />
     );
     expect(screen.getByTestId('search-input')).toHaveDisplayValue('rick');
   });
@@ -31,9 +37,7 @@ describe('Search bar', () => {
       <SearchBar updateInputHandler={() => {}} clearInputHandler={() => {}} searchValue={null} />
     );
 
-    screen.debug();
     const input = getByTestId('search-input');
     expect(input).toHaveFocus();
-    screen.debug();
   });
 });
