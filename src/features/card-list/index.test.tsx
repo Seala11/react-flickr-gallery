@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CardList from '.';
 
-const testCardList = [
+const TEST_CARD_LIST = [
   {
     id: 1,
     img: '/assets/images/rick.jpeg',
@@ -25,7 +25,7 @@ const testCardList = [
 
 describe('Card List', () => {
   it('renders cards', () => {
-    render(<CardList cards={testCardList} />);
+    render(<CardList cards={TEST_CARD_LIST} />);
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 
