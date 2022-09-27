@@ -48,6 +48,7 @@ class SearchBar extends React.Component<ISearchBarProps> {
             placeholder="Rick"
             autoComplete="off"
             className={styles.input}
+            data-testid="search-input"
           />
           {this.props.searchValue ? (
             <button
