@@ -10,7 +10,7 @@
   width: 20rem;
   height: 20rem;
   border-radius: 20rem;
-  filter: grayscale(25%);
+  filter: hue-rotate(26deg) grayscale(15%);;
 }
 
 .list {
@@ -30,12 +30,12 @@
   align-items: center;
   background-color: var(--light);
   padding: 2rem 1rem;
-  border-radius: 1rem;
-  box-shadow: 0 0 0.5rem 0.2rem var(--dark-m);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.9rem 0.2rem var(--dark-s);
 }
 
 .role {
-  color: var(--pink-xl);
+  color: var(--dark-xl);
   padding: 2rem 0 0;
   margin: 0;
 }
@@ -55,6 +55,7 @@
   transition: all 0.2s;
 
   &:hover {
-    color: var(--dark-l);
+    color: var(--dark-xxl);
+    text-shadow: 2px 0 var(--primary), 0 2px var(--primary);
   }
 }

@@ -45,7 +45,6 @@
   height: 1.5rem;
   background-repeat: no-repeat;
   background-position: center;
-  cursor: pointer;
 
   &_search {
     background-image: url('../../../public/assets/icons/search.svg');
@@ -53,5 +52,11 @@
 
   &_clear {
     background-image: url('../../../public/assets/icons/close.svg');
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--primary);
+      border-radius: 0.3rem;
+    }
   }
 }

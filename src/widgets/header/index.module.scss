@@ -1,5 +1,6 @@
 .header {
-  background-color: var(--dark-m);
+  background-color: var(--main-bg);
+  border-bottom: 0.2rem solid var(--dark-xl);
 }
 
 .wrapper {
@@ -15,4 +16,5 @@
   font-size: 1.8rem;
   color: var(--dark-xxl);
   padding-left: 2rem;
+  text-shadow: 0.3rem 0 var(--primary), 0 0.3rem var(--primary);
 }

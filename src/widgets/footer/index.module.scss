@@ -1,11 +1,11 @@
 .footer {
-  background-color: var(--dark-m);
+  background-color: var(--dark-l);
   margin-top: auto;
 }
 
 .wrapper {
   max-width: 120rem;
-  padding: 2rem 0 1rem;
+  padding: 2rem 0 2rem;
   margin: 0 auto;
 }
 
@@ -20,17 +20,17 @@
 .item {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--dark-xxl);
+  color: var(--main-bg);
 }
 
 .link {
-  color: var(--dark-xxl);
+  color: var(--main-bg);
   text-decoration: none;
   font-size: 1.8rem;
   font-weight: 700;
   transition: all 0.2s;
 
   &:hover {
-    color: var(--dark-xl);
+    color: var(--primary);
   }
 }

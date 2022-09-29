@@ -9,26 +9,25 @@
 }
 
 .title {
-  font-size: 10rem;
+  font-size: 12rem;
   margin: 0;
-  color: var(--light);
-  text-shadow: -0.2rem 0 var(--pink), 0 0.3rem var(--pink-xl), 0.3rem 0 var(--pink-xl),
-    0 -0.2rem var(--pink);
+  color: var(--primary);
+  text-shadow: -0.2rem 0 var(--dark-l), 0 0.3rem var(--dark-xl), 0.3rem 0 var(--dark-xl),
+    0 -0.2rem var(--dark-l);
 }
 
 .button {
-  @include poppins($color: var(--light));
+  @include poppins($color: var(--dark-xl));
   margin-top: 2rem;
   padding: 1.5rem;
   border-radius: 0.5rem;
-  background-color: var(--pink-xl);
-  border: 0.2rem solid var(--pink-xl);
+  background-color: var(--light);
+  border: 0.2rem solid var(--dark-xl);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    color: var(--light);
-    background-color: var(--pink);
-    border: 0.2rem solid var(--pink);
+    color: var(--dark-xxl);
+    background-color: var(--primary);
   }
 }

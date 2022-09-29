@@ -10,7 +10,7 @@
 }
 
 .link {
-  color: var(--dark-xl);
+  color: var(--dark-l);
   text-decoration: none;
   background-color: transparent;
   padding: 0;
@@ -19,12 +19,9 @@
 
   &_active {
     color: var(--dark-xxl);
-    text-underline-offset: 0.8rem;
-    text-decoration: underline 0.2rem;
   }
 
   &:hover {
-    text-underline-offset: 0.8rem;
     color: var(--dark-xxl);
   }
 }
