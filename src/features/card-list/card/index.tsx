@@ -12,19 +12,20 @@ class Card extends React.Component<ICardProps> {
   }
 
   render() {
-    const card = this.props.card;
+    const { img, name, species, gender, location, status } = this.props.card;
+
     return (
       <li className={styles.card}>
-        <img src={card.img} alt={card.name} className={styles.img} />
-        <h2 className={styles.title}>{card.name}</h2>
+        <img src={img} alt={name} className={styles.img} />
+        <h2 className={styles.title}>{name}</h2>
         <p className={styles.subtitle}>
-          {card.species} / {card.gender}
+          {species} / {gender}
         </p>
         <p className={styles.info}>
-          Location: <span className={styles.info__span}>{card.location}</span>
+          Location: <span className={styles.info__span}>{location}</span>
         </p>
         <p className={styles.info}>
-          Status: <span className={styles.info__span}>{card.status}</span>
+          Status: <span className={styles.info__span}>{status}</span>
         </p>
       </li>
     );

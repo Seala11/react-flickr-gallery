@@ -1,26 +1,32 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Card from '.';
+import CARDS from 'shared/data/cards';
 
-const TEST_CARD = {
-  id: 1,
-  img: '/assets/images/rick.jpeg',
-  name: 'Rick Sanchez',
-  species: 'Human',
-  status: 'Alive',
-  gender: 'Male',
-  location: 'Citadel of Ricks',
-};
+describe('when the card is rendered', () => {
+  const testCard = CARDS[0];
 
-describe('Card', () => {
-  it('renders component', () => {
-    render(<Card card={TEST_CARD} />);
-    expect(screen.getByRole('listitem')).toBeInTheDocument();
+  it('should contain an expected image', () => {
+    render(<Card card={testCard} />);
     expect(screen.getByAltText(/Rick Sanchez/i)).toBeInTheDocument();
+  });
+
+  it('should contain an expected title', () => {
+    render(<Card card={testCard} />);
     expect(screen.getByText(/Rick Sanchez/i)).toBeInTheDocument();
+  });
+
+  it('should contain an expected subtitle', () => {
+    render(<Card card={testCard} />);
     expect(screen.getByText(/Human/i)).toBeInTheDocument();
-    expect(screen.getByText(/Alive/i)).toBeInTheDocument();
     expect(screen.getByText(/Male/i)).toBeInTheDocument();
+  });
+
+  it('should contain an expected info', () => {
+    render(<Card card={testCard} />);
+    expect(screen.getByText(/location/i)).toBeInTheDocument();
     expect(screen.getByText(/Citadel of Ricks/i)).toBeInTheDocument();
+    expect(screen.getByText(/status/i)).toBeInTheDocument();
+    expect(screen.getByText(/Alive/i)).toBeInTheDocument();
   });
 });
