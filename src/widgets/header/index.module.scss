@@ -1,3 +1,5 @@
+@use 'app/styles/mixins.scss' as *;
+
 .header {
   background-color: var(--main-bg);
   border-bottom: 0.2rem solid var(--dark-xl);
@@ -5,16 +7,21 @@
 
 .wrapper {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   max-width: 120rem;
   margin: 0 auto;
   padding: 0.5rem 0;
+
+  @include media-tablet {
+    justify-content: center;
+  }
 }
 
 .logo {
   font-size: 1.8rem;
   color: var(--dark-xxl);
-  padding-left: 2rem;
+  padding: 0 2rem;
   text-shadow: 0.3rem 0 var(--primary), 0 0.3rem var(--primary);
 }

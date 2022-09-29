@@ -7,3 +7,9 @@
   line-height: $lh;
   color: $color;
 }
+
+@mixin media-tablet {
+  @media (max-width: 768px) {
+    @content;
+  }
+}

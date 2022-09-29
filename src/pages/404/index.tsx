@@ -23,7 +23,7 @@ class NotFound extends React.Component {
       <main className={styles.wrapper}>
         {this.state.navigate && <Navigate to="/" replace={true} />}
         <h1 className={styles.title}>404</h1>
-        <p>Oops! The page you are looking for cannot be found.</p>
+        <p className={styles.message}>Oops! The page you are looking for cannot be found.</p>
         <button className={styles.button} onClick={this.navigateHome}>
           Back Home
         </button>

@@ -16,6 +16,10 @@
     0 -0.2rem var(--dark-l);
 }
 
+.message {
+  text-align: center;
+}
+
 .button {
   @include poppins($color: var(--dark-xl));
   margin-top: 2rem;
