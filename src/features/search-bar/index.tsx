@@ -54,9 +54,13 @@ class SearchBar extends React.Component<ISearchBarProps> {
             <button
               className={`${styles.icon} ${styles.icon_clear}`}
               onClick={this.props.clearInputHandler}
+              data-testid="clear-btn"
             ></button>
           ) : (
-            <button className={`${styles.icon} ${styles.icon_search}`}></button>
+            <button
+              className={`${styles.icon} ${styles.icon_search}`}
+              data-testid="search-btn"
+            ></button>
           )}
         </div>
       </div>
