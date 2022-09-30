@@ -1,35 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CardList from '.';
+import CARDS from 'shared/data/cards';
 
-const TEST_CARD_LIST = [
-  {
-    id: 1,
-    img: '/assets/images/rick.jpeg',
-    name: 'Rick Sanchez',
-    species: 'Human',
-    status: 'Alive',
-    gender: 'Male',
-    location: 'Citadel of Ricks',
-  },
-  {
-    id: 2,
-    img: '/assets/images/morty.jpeg',
-    name: 'Morty Smith',
-    species: 'Human',
-    status: 'Alive',
-    gender: 'Male',
-    location: 'Citadel of Ricks',
-  },
-];
-
-describe('Card List', () => {
-  it('renders cards', () => {
-    render(<CardList cards={TEST_CARD_LIST} />);
-    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+describe('when the card list is rendered', () => {
+  it('initially should contain all cards', () => {
+    render(<CardList cards={CARDS} />);
+    expect(screen.getAllByRole('listitem')).toHaveLength(8);
   });
 
-  it('if no cards found display message', () => {
+  it('if no cards were passed show error message', () => {
     render(<CardList cards={[]} />);
     expect(screen.getByTestId('error-message')).toBeInTheDocument();
   });
