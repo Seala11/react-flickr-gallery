@@ -7,12 +7,13 @@ import Routing from 'pages';
 import Header from 'widgets/header';
 import Footer from 'widgets/footer';
 
-describe('App', () => {
-  it('renders component', () => {
+describe('when App component renders', () => {
+  it('should initially display home page', () => {
     render(<App />);
+    expect(screen.getByText(/Search/i)).toBeInTheDocument();
   });
 
-  it('header navigation test', async () => {
+  it('should display about page by clicking on "about us" link', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <Header />
@@ -20,14 +21,23 @@ describe('App', () => {
         <Footer />
       </MemoryRouter>
     );
-
-    expect(screen.getByText(/Search/i)).toBeInTheDocument();
-    await userEvent.click(screen.getByText(/about/i));
-
+    userEvent.click(screen.getByText(/about/i));
     expect(screen.getByText(/Our team/i)).toBeInTheDocument();
   });
 
-  it('Unknown route should redirect to 404', () => {
+  it('should display home page by clicking on "home" link', () => {
+    render(
+      <MemoryRouter initialEntries={['/about']}>
+        <Header />
+        <Routing />
+        <Footer />
+      </MemoryRouter>
+    );
+    userEvent.click(screen.getByText(/home/i));
+    expect(screen.getByText(/search/i)).toBeInTheDocument();
+  });
+
+  it('should redirect unknown route to 404 page', () => {
     render(
       <MemoryRouter initialEntries={['/such/route/doesnt-exist']}>
         <Header />
@@ -40,7 +50,7 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: 'Back Home' })).toBeInTheDocument();
   });
 
-  it('Button "back home" from 404 should redirect to home page', async () => {
+  it('should redirect to home page from 404 page by clicking button "back home"', () => {
     render(
       <MemoryRouter initialEntries={['/404']}>
         <Header />
@@ -52,7 +62,7 @@ describe('App', () => {
     const backHomeButton = screen.getByRole('button', { name: 'Back Home' });
 
     expect(backHomeButton).toBeInTheDocument();
-    await userEvent.click(backHomeButton);
+    userEvent.click(backHomeButton);
     expect(screen.getByText(/search/i)).toBeInTheDocument();
   });
 });
