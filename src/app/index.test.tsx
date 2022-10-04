@@ -46,7 +46,7 @@ describe('when App component renders', () => {
       </MemoryRouter>
     );
     userEvent.click(screen.getByText(/form/i));
-    expect(screen.getByRole('textbox', { name: 'Name:' })).toBeInTheDocument();
+    expect(screen.getByTestId('react-form')).toBeInTheDocument();
   });
 
   it('should redirect unknown route to 404 page', () => {
