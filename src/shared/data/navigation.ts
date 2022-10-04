@@ -6,13 +6,13 @@ const NAV_LIST = [
   },
   {
     id: 2,
-    name: 'About Us',
-    path: '/about',
+    name: 'Form',
+    path: '/form',
   },
   {
     id: 3,
-    name: '404',
-    path: '/404',
+    name: 'About Us',
+    path: '/about',
   },
 ];
 

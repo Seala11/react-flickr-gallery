@@ -37,6 +37,18 @@ describe('when App component renders', () => {
     expect(screen.getByText(/search/i)).toBeInTheDocument();
   });
 
+  it('should display form page by clicking on "form" link', () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Header />
+        <Routing />
+        <Footer />
+      </MemoryRouter>
+    );
+    userEvent.click(screen.getByText(/form/i));
+    expect(screen.getByRole('textbox', { name: 'Name:' })).toBeInTheDocument();
+  });
+
   it('should redirect unknown route to 404 page', () => {
     render(
       <MemoryRouter initialEntries={['/such/route/doesnt-exist']}>
