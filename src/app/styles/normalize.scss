@@ -10,4 +10,6 @@ body {
   @include poppins;
   background: var(--main-bg);
   margin: 0;
+  width: 100vw;
+  overflow-x: hidden;
 }
