@@ -5,49 +5,145 @@ import styles from './index.module.scss';
 type FormPropsType = {
   handleSubmit: () => void;
   enableSubmitButton: () => void;
+  validateData: () => void;
+  disableSubmitButton: () => void;
+};
+
+interface IErrors {
+  lastName?: string;
+  firstName?: string;
+  zipcode?: string;
+  birthday?: string;
+  country?: string;
+  avatar?: string;
+  agreement?: string;
+}
+
+enum UserInput {
+  LAST_NAME = 'lastName',
+  FIRST_NAME = 'firstName',
+  ZIP = 'zipcode',
+  BIRTHDAY = 'birthday',
+  COUNTRY = 'country',
+  AVATAR = 'avatar',
+  AGREEMENT = 'agreement',
+}
+
+type StateType = {
+  disabled: boolean;
+  errors: IErrors;
 };
 
 class Form extends React.Component {
-  firstNameInput: React.RefObject<HTMLInputElement>;
-  lastNameInput: React.RefObject<HTMLInputElement>;
-  zipcodeInput: React.RefObject<HTMLInputElement>;
-  birthdayInput: React.RefObject<HTMLInputElement>;
-  countrySelectOption: React.RefObject<HTMLSelectElement>;
-  avatarInput: React.RefObject<HTMLInputElement>;
-  genderInput: React.RefObject<HTMLInputElement>;
-  agreementInput: React.RefObject<HTMLInputElement>;
-
-  state = { disabled: true };
+  state: StateType = { disabled: true, errors: {} };
+  // firstNameInput: React.RefObject<HTMLInputElement>;
+  // firstNameInput: () => void;
 
   constructor(props: FormPropsType) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.enableSubmitButton = this.enableSubmitButton.bind(this);
-
-    this.firstNameInput = React.createRef();
-    this.lastNameInput = React.createRef();
-    this.zipcodeInput = React.createRef();
-    this.birthdayInput = React.createRef();
-    this.countrySelectOption = React.createRef();
-    this.avatarInput = React.createRef();
-    this.genderInput = React.createRef();
-    this.agreementInput = React.createRef();
+    this.validateData = this.validateData.bind(this);
+    this.disableSubmitButton = this.disableSubmitButton.bind(this);
   }
 
   handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const data = new FormData(event?.target);
-    console.log(Object.fromEntries(data.entries()));
+    const formData = new FormData(event?.target);
+    const userInputsAreValid = this.validateData(formData);
+
+    console.log(userInputsAreValid);
   }
 
-  enableSubmitButton() {
-    this.setState({
-      disabled: false,
-    });
+  enableSubmitButton(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    const reset = () => {
+      this.setState({
+        disabled: false,
+        errors: {},
+      });
+    };
+    if (Object.keys(this.state.errors).length > 0) {
+      const newErrorsState = { ...this.state.errors };
+      delete newErrorsState[event.target.name as keyof IErrors];
+
+      if (Object.keys(newErrorsState).length > 0) {
+        this.setState({
+          disabled: true,
+          errors: newErrorsState,
+        });
+      } else {
+        reset();
+      }
+    } else {
+      reset();
+    }
+  }
+
+  disableSubmitButton() {
+    if (this.state.disabled) {
+      this.setState({
+        disabled: true,
+      });
+    }
+  }
+
+  validateData(data: FormData) {
+    const errors: IErrors = {};
+    const map = new Map(data.entries());
+    let agreement = false;
+    console.log('validate', map);
+
+    for (const [key, val] of map) {
+      switch (key) {
+        case UserInput.FIRST_NAME: {
+          if (`${val}`.length < 1) errors[UserInput.FIRST_NAME] = 'Should contain at least 2 chars';
+          break;
+        }
+        case UserInput.LAST_NAME: {
+          if (`${val}`.length < 1) errors[UserInput.LAST_NAME] = 'Should contain at least 2 chars';
+          break;
+        }
+        case UserInput.ZIP: {
+          if (`${val}`.length < 1) errors[UserInput.ZIP] = 'Invalid zipcode';
+          break;
+        }
+        case UserInput.BIRTHDAY: {
+          if (!val) errors[UserInput.BIRTHDAY] = 'Pick correct birth date';
+          break;
+        }
+        case UserInput.COUNTRY: {
+          if (`${val}` === '---') errors[UserInput.COUNTRY] = 'Pick your country';
+          break;
+        }
+        case UserInput.AVATAR: {
+          if (val instanceof File && !val.name) {
+            errors[UserInput.AVATAR] = 'You should upload avatar';
+          }
+          break;
+        }
+        case UserInput.AGREEMENT: {
+          agreement = true;
+          break;
+        }
+      }
+    }
+
+    if (!agreement) {
+      errors[UserInput.AGREEMENT] = 'Required field';
+    }
+
+    if (Object.keys(errors).length) {
+      this.setState({
+        disabled: true,
+        errors,
+      });
+    }
   }
 
   render() {
+    console.log(this.state, 'RENDER');
+    const errors = this.state.errors;
     return (
       <div>
         <form
@@ -62,10 +158,10 @@ class Form extends React.Component {
             name="firstName"
             type="text"
             data-testid="firstName"
-            ref={this.firstNameInput}
             onChange={this.enableSubmitButton}
             autoComplete="off"
           />
+          {errors.firstName && <small className={styles.error}>{errors.firstName}</small>}
 
           <label htmlFor="lastName">Last Name</label>
           <input
@@ -73,10 +169,10 @@ class Form extends React.Component {
             name="lastName"
             data-testid="lastName"
             type="text"
-            ref={this.lastNameInput}
             autoComplete="off"
             onChange={this.enableSubmitButton}
           />
+          {errors.lastName && <small className={styles.error}>{errors.lastName}</small>}
 
           <label htmlFor="zipcode">Zipcode</label>
           <input
@@ -84,10 +180,10 @@ class Form extends React.Component {
             type="text"
             name="zipcode"
             data-testid="zipcode"
-            ref={this.zipcodeInput}
             autoComplete="off"
             onChange={this.enableSubmitButton}
           />
+          {errors.zipcode && <small className={styles.error}>{errors.zipcode}</small>}
 
           <label htmlFor="birthday">Birthday</label>
           <input
@@ -95,16 +191,15 @@ class Form extends React.Component {
             type="date"
             name="birthday"
             data-testid="birthday"
-            ref={this.birthdayInput}
             autoComplete="off"
             onChange={this.enableSubmitButton}
           />
+          {errors.birthday && <small className={styles.error}>{errors.birthday}</small>}
 
           <label htmlFor="country">Country</label>
           <select
             id="country"
             data-testid="country"
-            ref={this.countrySelectOption}
             onChange={this.enableSubmitButton}
             name="country"
           >
@@ -115,6 +210,7 @@ class Form extends React.Component {
               </option>
             ))}
           </select>
+          {errors.country && <small className={styles.error}>{errors.country}</small>}
 
           <label htmlFor="avatar">
             Avatar
@@ -122,22 +218,16 @@ class Form extends React.Component {
               type="file"
               id="avatar"
               name="avatar"
-              ref={this.avatarInput}
               data-testid="avatar"
               onChange={this.enableSubmitButton}
               accept="image/png, image/jpeg, image/webp"
             />
           </label>
+          {errors.avatar && <small className={styles.error}>{errors.avatar}</small>}
 
           <label htmlFor="gender">
             Switch
-            <input
-              id="gender"
-              name="gender"
-              type="checkbox"
-              data-testid="gender"
-              ref={this.genderInput}
-            />
+            <input id="gender" name="gender" type="checkbox" data-testid="gender" />
             <span />
           </label>
 
@@ -146,12 +236,12 @@ class Form extends React.Component {
               id="agreement"
               name="agreement"
               type="checkbox"
-              ref={this.agreementInput}
               data-testid="agreement"
               onChange={this.enableSubmitButton}
             />
             I give my consent to processing my personal data
           </label>
+          {errors.agreement && <small className={styles.error}>{errors.agreement}</small>}
 
           <button type="submit" data-testid="submit-button" disabled={this.state.disabled}>
             Submit
