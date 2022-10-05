@@ -127,7 +127,7 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(lastNameInput, TEST_DATA.firstName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.getByText(/Should contain at least 2 chars/i)).toBeInTheDocument();
+    expect(screen.getByText(/Should contain at least 2 characters/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 
@@ -138,7 +138,7 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(firstNameInput, TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.getByText(/Should contain at least 2 chars/i)).toBeInTheDocument();
+    expect(screen.getByText(/Should contain at least 2 characters/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 
@@ -150,7 +150,7 @@ describe('on submitting uncomplete Form', () => {
 
     const birthdayInput = screen.getByTestId('birthday');
     expect(birthdayInput).toBeEmptyDOMElement();
-    expect(screen.getByText(/Pick correct birth date/i)).toBeInTheDocument();
+    expect(screen.getByText(/Birth date is required/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 
@@ -162,7 +162,7 @@ describe('on submitting uncomplete Form', () => {
 
     const countrySelect = screen.getByTestId('country');
     expect(countrySelect).toHaveDisplayValue(/---/);
-    expect(screen.getByText(/Pick your country/i)).toBeInTheDocument();
+    expect(screen.getByText(/Country is required/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 
@@ -173,7 +173,7 @@ describe('on submitting uncomplete Form', () => {
     userEvent.click(screen.getByTestId('submit-button'));
 
     expect(screen.getByTestId('avatar')).toBeEmptyDOMElement();
-    expect(screen.getByText(/You should upload avatar/i)).toBeInTheDocument();
+    expect(screen.getByText(/Avatar is required/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 

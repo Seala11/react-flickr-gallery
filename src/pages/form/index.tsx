@@ -91,24 +91,33 @@ class Form extends React.Component {
     for (const [key, val] of map) {
       switch (key) {
         case UserInput.FIRST_NAME: {
-          if (`${val}`.length < 2) errors[UserInput.FIRST_NAME] = 'Should contain at least 2 chars';
+          if (`${val}`.length < 2)
+            errors[UserInput.FIRST_NAME] = 'Should contain at least 2 characters';
           break;
         }
         case UserInput.LAST_NAME: {
-          if (`${val}`.length < 2) errors[UserInput.LAST_NAME] = 'Should contain at least 2 chars';
+          if (`${val}`.length < 2)
+            errors[UserInput.LAST_NAME] = 'Should contain at least 2 characters';
           break;
         }
         case UserInput.BIRTHDAY: {
-          if (!val) errors[UserInput.BIRTHDAY] = 'Pick correct birth date';
+          const today = new Date();
+          if (!val) errors[UserInput.BIRTHDAY] = 'Birth date is required';
+          if (
+            new Date(`${val}`).getTime() >= today.getTime() ||
+            new Date(`${val}`).getUTCFullYear() < 1900
+          )
+            errors[UserInput.BIRTHDAY] = 'Invalid birth date';
+
           break;
         }
         case UserInput.COUNTRY: {
-          if (`${val}` === '---') errors[UserInput.COUNTRY] = 'Pick your country';
+          if (`${val}` === '---') errors[UserInput.COUNTRY] = 'Country is required';
           break;
         }
         case UserInput.AVATAR: {
           if (val instanceof File && !val.name) {
-            errors[UserInput.AVATAR] = 'You should upload avatar';
+            errors[UserInput.AVATAR] = 'Avatar is required';
           }
           break;
         }
@@ -141,8 +150,11 @@ class Form extends React.Component {
           onSubmit={this.handleSubmit}
           data-testid="react-form"
           autoComplete="off"
+          noValidate
         >
-          <label htmlFor="firstName">First Name</label>
+          <label htmlFor="firstName" className={styles.label}>
+            First Name
+          </label>
           <input
             id="firstName"
             name="firstName"
@@ -150,10 +162,13 @@ class Form extends React.Component {
             data-testid="firstName"
             onChange={this.enableSubmitButton}
             autoComplete="off"
+            className={`${styles.input} ${errors.firstName ? styles.inputError : ''}`}
           />
           {errors.firstName && <small className={styles.error}>{errors.firstName}</small>}
 
-          <label htmlFor="lastName">Last Name</label>
+          <label htmlFor="lastName" className={styles.label}>
+            Last Name
+          </label>
           <input
             id="lastName"
             name="lastName"
@@ -161,10 +176,13 @@ class Form extends React.Component {
             type="text"
             autoComplete="off"
             onChange={this.enableSubmitButton}
+            className={`${styles.input} ${errors.lastName ? styles.inputError : ''}`}
           />
           {errors.lastName && <small className={styles.error}>{errors.lastName}</small>}
 
-          <label htmlFor="birthday">Birthday</label>
+          <label htmlFor="birthday" className={styles.label}>
+            Birthday
+          </label>
           <input
             id="birthday"
             type="date"
@@ -172,15 +190,19 @@ class Form extends React.Component {
             data-testid="birthday"
             autoComplete="off"
             onChange={this.enableSubmitButton}
+            className={`${styles.input} ${errors.birthday ? styles.inputError : ''}`}
           />
           {errors.birthday && <small className={styles.error}>{errors.birthday}</small>}
 
-          <label htmlFor="country">Country</label>
+          <label htmlFor="country" className={styles.label}>
+            Country
+          </label>
           <select
             id="country"
             data-testid="country"
             onChange={this.enableSubmitButton}
             name="country"
+            className={`${styles.input} ${errors.country ? styles.inputError : ''}`}
           >
             <option hidden>---</option>
             {COUNTRIES.map((country) => (
@@ -191,7 +213,7 @@ class Form extends React.Component {
           </select>
           {errors.country && <small className={styles.error}>{errors.country}</small>}
 
-          <label htmlFor="avatar">
+          <label htmlFor="avatar" className={styles.label}>
             Avatar
             <input
               type="file"
@@ -200,29 +222,46 @@ class Form extends React.Component {
               data-testid="avatar"
               onChange={this.enableSubmitButton}
               accept="image/png, image/jpeg, image/webp"
+              className={`${styles.input} ${errors.avatar ? styles.inputError : ''}`}
             />
           </label>
           {errors.avatar && <small className={styles.error}>{errors.avatar}</small>}
 
-          <label htmlFor="gender">
-            Switch
-            <input id="gender" name="gender" type="checkbox" data-testid="gender" />
-            <span />
-          </label>
+          <div className={styles.switcherWrapper}>
+            <input
+              id="gender"
+              name="gender"
+              type="checkbox"
+              data-testid="gender"
+              className={styles.switcher}
+            />
+            <label htmlFor="gender" className={styles.switcherLabel}>
+              <span className={styles.switcherBtn} />
+            </label>
+            <span>I want to receive notifications</span>
+          </div>
 
-          <label htmlFor="agreement">
+          <label htmlFor="agreement" className={`${styles.agreement} ${styles.label}`}>
             <input
               id="agreement"
               name="agreement"
               type="checkbox"
               data-testid="agreement"
               onChange={this.enableSubmitButton}
+              className={`${styles.input} ${styles.checkbox} ${
+                errors.agreement ? styles.inputError : ''
+              }`}
             />
             I give my consent to processing my personal data
           </label>
           {errors.agreement && <small className={styles.error}>{errors.agreement}</small>}
 
-          <button type="submit" data-testid="submit-button" disabled={this.state.disabled}>
+          <button
+            type="submit"
+            data-testid="submit-button"
+            disabled={this.state.disabled}
+            className={styles.button}
+          >
             Submit
           </button>
         </form>
