@@ -5,14 +5,14 @@ import styles from './index.module.scss';
 type FormPropsType = {
   handleSubmit: () => void;
   enableSubmitButton: () => void;
-  validateData: () => void;
   disableSubmitButton: () => void;
+  validateData: () => void;
+  removeInputError: () => void;
 };
 
-interface IErrors {
+interface IInputNames {
   lastName?: string;
   firstName?: string;
-  zipcode?: string;
   birthday?: string;
   country?: string;
   avatar?: string;
@@ -22,7 +22,6 @@ interface IErrors {
 enum UserInput {
   LAST_NAME = 'lastName',
   FIRST_NAME = 'firstName',
-  ZIP = 'zipcode',
   BIRTHDAY = 'birthday',
   COUNTRY = 'country',
   AVATAR = 'avatar',
@@ -31,20 +30,19 @@ enum UserInput {
 
 type StateType = {
   disabled: boolean;
-  errors: IErrors;
+  errors: IInputNames;
 };
 
 class Form extends React.Component {
   state: StateType = { disabled: true, errors: {} };
-  // firstNameInput: React.RefObject<HTMLInputElement>;
-  // firstNameInput: () => void;
 
   constructor(props: FormPropsType) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.enableSubmitButton = this.enableSubmitButton.bind(this);
-    this.validateData = this.validateData.bind(this);
     this.disableSubmitButton = this.disableSubmitButton.bind(this);
+    this.validateData = this.validateData.bind(this);
+    this.removeInputError = this.removeInputError.bind(this);
   }
 
   handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
@@ -57,26 +55,10 @@ class Form extends React.Component {
   }
 
   enableSubmitButton(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    const reset = () => {
-      this.setState({
-        disabled: false,
-        errors: {},
-      });
-    };
     if (Object.keys(this.state.errors).length > 0) {
-      const newErrorsState = { ...this.state.errors };
-      delete newErrorsState[event.target.name as keyof IErrors];
-
-      if (Object.keys(newErrorsState).length > 0) {
-        this.setState({
-          disabled: true,
-          errors: newErrorsState,
-        });
-      } else {
-        reset();
-      }
+      this.removeInputError(event.target.name as keyof IInputNames);
     } else {
-      reset();
+      this.setState({ disabled: false });
     }
   }
 
@@ -88,8 +70,20 @@ class Form extends React.Component {
     }
   }
 
+  removeInputError(key: keyof IInputNames) {
+    const newErrorsState = { ...this.state.errors };
+    delete newErrorsState[key];
+    // const { [key]: _, ...newErrorsState } = this.state.errors;
+
+    if (Object.keys(newErrorsState).length > 0) {
+      this.setState({ disabled: true, errors: newErrorsState });
+    } else {
+      this.setState({ disabled: false, errors: {} });
+    }
+  }
+
   validateData(data: FormData) {
-    const errors: IErrors = {};
+    const errors: IInputNames = {};
     const map = new Map(data.entries());
     let agreement = false;
     console.log('validate', map);
@@ -97,15 +91,11 @@ class Form extends React.Component {
     for (const [key, val] of map) {
       switch (key) {
         case UserInput.FIRST_NAME: {
-          if (`${val}`.length < 1) errors[UserInput.FIRST_NAME] = 'Should contain at least 2 chars';
+          if (`${val}`.length < 2) errors[UserInput.FIRST_NAME] = 'Should contain at least 2 chars';
           break;
         }
         case UserInput.LAST_NAME: {
-          if (`${val}`.length < 1) errors[UserInput.LAST_NAME] = 'Should contain at least 2 chars';
-          break;
-        }
-        case UserInput.ZIP: {
-          if (`${val}`.length < 1) errors[UserInput.ZIP] = 'Invalid zipcode';
+          if (`${val}`.length < 2) errors[UserInput.LAST_NAME] = 'Should contain at least 2 chars';
           break;
         }
         case UserInput.BIRTHDAY: {
@@ -173,17 +163,6 @@ class Form extends React.Component {
             onChange={this.enableSubmitButton}
           />
           {errors.lastName && <small className={styles.error}>{errors.lastName}</small>}
-
-          <label htmlFor="zipcode">Zipcode</label>
-          <input
-            id="zipcode"
-            type="text"
-            name="zipcode"
-            data-testid="zipcode"
-            autoComplete="off"
-            onChange={this.enableSubmitButton}
-          />
-          {errors.zipcode && <small className={styles.error}>{errors.zipcode}</small>}
 
           <label htmlFor="birthday">Birthday</label>
           <input

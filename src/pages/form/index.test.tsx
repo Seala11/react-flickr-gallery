@@ -4,6 +4,14 @@ import Form from '.';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
 
+const TEST_DATA = {
+  firstName: 'Hanna',
+  lastName: 'Papova',
+  birthday: '1980-01-01',
+  country: 'Italy',
+  avatar: new File(['file'], 'file.png', { type: 'image/png' }),
+};
+
 describe('when Form component renders', () => {
   it('should have a form', () => {
     render(<Form />);
@@ -17,15 +25,6 @@ describe('when Form component renders', () => {
 });
 
 describe('when typing in Form inputs', () => {
-  const TEST_DATA = {
-    firstName: 'Hanna',
-    lastName: 'Papova',
-    zipcode: '222222',
-    birthday: '1980-01-01',
-    country: 'Italy',
-    avatar: new File(['file'], 'file.png', { type: 'image/png' }),
-  };
-
   it('submit button should not be disabled', () => {
     render(<Form />);
     const firstNameInput = screen.getByTestId('firstName');
@@ -52,17 +51,6 @@ describe('when typing in Form inputs', () => {
 
     userEvent.type(lastNameInput, TEST_DATA.lastName);
     expect(lastNameInput).toHaveDisplayValue(TEST_DATA.lastName);
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
-  });
-
-  it('should allow user to change a zipcode', () => {
-    render(<Form />);
-    const zipcodeInput = screen.getByTestId('zipcode');
-    expect(zipcodeInput).toBeEmptyDOMElement();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
-
-    userEvent.type(zipcodeInput, TEST_DATA.zipcode);
-    expect(zipcodeInput).toHaveDisplayValue(TEST_DATA.zipcode);
     expect(screen.getByTestId('submit-button')).not.toBeDisabled();
   });
 
@@ -131,51 +119,73 @@ describe('when typing in Form inputs', () => {
   });
 });
 
-// describe('on submitting the Form', () => {
-//   const formData = {
-//     firstName: 'Hanna',
-//     lastName: 'Papova',
-//     zipcode: '222222',
-//     birthday: '',
-//     country: '',
-//   };
+describe('on submitting uncomplete Form', () => {
+  it('should display error if first name is invalid', () => {
+    render(<Form />);
 
-//   it.todo('should display error if first name is invalid', async () => {
-//     render(<Form />);
+    const lastNameInput = screen.getByTestId('firstName');
+    userEvent.type(lastNameInput, TEST_DATA.firstName);
+    userEvent.click(screen.getByTestId('submit-button'));
 
-//     const firstNameInput = screen.getByTestId('firstName');
-//     expect(firstNameInput).toBeInTheDocument();
+    expect(screen.getByText(/Should contain at least 2 chars/i)).toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toBeDisabled();
+  });
 
-//     await userEvent.type(firstNameInput, 'h');
-//     await userEvent.click(screen.getByTestId('submit-button'));
+  it('should display error if last name is invalid', () => {
+    render(<Form />);
 
-//     expect(firstNameInput).toHaveDisplayValue('h');
-//     expect(screen.getByText(/first name error message/i)).toBeInTheDocument();
-//   });
+    const firstNameInput = screen.getByTestId('firstName');
+    userEvent.type(firstNameInput, TEST_DATA.lastName);
+    userEvent.click(screen.getByTestId('submit-button'));
 
-//   it.todo('should display error if last name is invalid', async () => {
-//     render(<Form />);
+    expect(screen.getByText(/Should contain at least 2 chars/i)).toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toBeDisabled();
+  });
 
-//     const lastNameInput = screen.getByTestId('lastName');
-//     expect(lastNameInput).toBeInTheDocument();
+  it('should display error if no date was picked', () => {
+    render(<Form />);
 
-//     await userEvent.type(lastNameInput, 'h');
-//     await userEvent.click(screen.getByTestId('submit-button'));
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.click(screen.getByTestId('submit-button'));
 
-//     expect(lastNameInput).toHaveDisplayValue('h');
-//     expect(screen.getByText(/last name error message/i)).toBeInTheDocument();
-//   });
+    const birthdayInput = screen.getByTestId('birthday');
+    expect(birthdayInput).toBeEmptyDOMElement();
+    expect(screen.getByText(/Pick correct birth date/i)).toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toBeDisabled();
+  });
 
-//   it.todo('should display error if zipcode is invalid', async () => {
-//     render(<Form />);
+  it('should display error if no country was picked', () => {
+    render(<Form />);
 
-//     const zipcodeInput = screen.getByTestId('zipcode');
-//     expect(zipcodeInput).toBeInTheDocument();
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.click(screen.getByTestId('submit-button'));
 
-//     await userEvent.type(zipcodeInput, 'h');
-//     await userEvent.click(screen.getByTestId('submit-button'));
+    const countrySelect = screen.getByTestId('country');
+    expect(countrySelect).toHaveDisplayValue(/---/);
+    expect(screen.getByText(/Pick your country/i)).toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toBeDisabled();
+  });
 
-//     expect(zipcodeInput).toHaveDisplayValue('h');
-//     expect(screen.getByText(/zipcode error message/i)).toBeInTheDocument();
-//   });
-// });
+  it('should display error if no avatar was uploaded', () => {
+    render(<Form />);
+
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.click(screen.getByTestId('submit-button'));
+
+    expect(screen.getByTestId('avatar')).toBeEmptyDOMElement();
+    expect(screen.getByText(/You should upload avatar/i)).toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toBeDisabled();
+  });
+
+  it('should display error if user did not agree on data processing', () => {
+    render(<Form />);
+
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.click(screen.getByTestId('submit-button'));
+
+    const agreementCheckbox: HTMLInputElement = screen.getByTestId('agreement');
+    expect(agreementCheckbox.checked).toEqual(false);
+    expect(screen.getByText(/Required field/i)).toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toBeDisabled();
+  });
+});
