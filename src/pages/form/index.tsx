@@ -1,23 +1,15 @@
-import Form, { CardType } from 'features/form';
+import Form from 'features/form';
 import FormCardList from 'features/form-cards';
+import { FormCardType } from 'features/form/models';
 import React from 'react';
 // import styles from './index.module.scss';
 
-// export interface ICard {
-//   lastName: string;
-//   firstName: string;
-//   birthday: string;
-//   country: string;
-//   avatar: string;
-//   notifications: string;
-// }
-
 type FormPropsType = {
-  createCard: (card: CardType) => void;
+  createCard: (card: FormCardType) => void;
 };
 
 type StateType = {
-  cards: CardType[];
+  cards: FormCardType[];
 };
 
 class FormPage extends React.Component {
@@ -28,7 +20,7 @@ class FormPage extends React.Component {
     this.createCard = this.createCard.bind(this);
   }
 
-  createCard(card: CardType) {
+  createCard(card: FormCardType) {
     this.setState((prevState) => {
       return { ...prevState, cards: [...this.state.cards, card] };
     });

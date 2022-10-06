@@ -1,9 +1,9 @@
-import { CardType } from 'features/form';
+import { FormCardType } from 'features/form/models';
 import React from 'react';
 import FormCard from './card';
 
 type FormCardListProps = {
-  cards: CardType[];
+  cards: FormCardType[];
 };
 
 class FormCardList extends React.Component<FormCardListProps> {

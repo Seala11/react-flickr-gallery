@@ -1,29 +1,24 @@
 import React from 'react';
 import COUNTRIES from 'shared/data/countries';
 import styles from './index.module.scss';
-import { UserInput } from './models';
+import { FormCardType, FormFields, UserInput } from './models';
 
 type FormPropsType = {
-  createCard: (card: CardType) => void;
+  createCard: (card: FormCardType) => void;
 };
 
-type IInputNames = {
+type ErrorsType = {
   lastName?: string;
   firstName?: string;
   birthday?: string;
   country?: string;
-  avatar?: string | File;
+  avatar?: string;
   agreement?: string;
-  notifications?: string;
 };
 
 type StateType = {
   disabled: boolean;
-  errors: IInputNames;
-};
-
-export type CardType = {
-  [k in keyof IInputNames]: FormDataEntryValue | undefined;
+  errors: ErrorsType;
 };
 
 class Form extends React.Component<FormPropsType> {
@@ -38,104 +33,123 @@ class Form extends React.Component<FormPropsType> {
     this.removeInputError = this.removeInputError.bind(this);
   }
 
-  handleSubmit(event: React.ChangeEvent<HTMLFormElement>) {
+  handleSubmit(event: React.ChangeEvent<HTMLFormElement & FormFields>): void {
     event.preventDefault();
+    const form = event.currentTarget;
+    const { firstName, lastName, birthday, country, avatar, agreement, notifications } = form;
 
-    const formData = new FormData(event?.target);
-    const newCard: CardType | undefined = this.validateData(formData);
+    const formData: FormCardType = {
+      firstName: firstName?.value,
+      lastName: lastName?.value,
+      birthday: birthday?.value,
+      country: country?.value,
+      avatar: avatar?.files,
+      agreement: agreement?.checked,
+      notifications: notifications?.checked,
+    };
 
-    console.log(newCard);
-    if (newCard) {
-      this.props.createCard(newCard);
+    const dataIsValid: boolean = this.validateData(formData);
+
+    if (dataIsValid) {
+      this.props.createCard(formData);
     }
   }
 
-  enableSubmitButton(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+  enableSubmitButton(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
     if (Object.keys(this.state.errors).length > 0) {
-      this.removeInputError(event.target.name as keyof IInputNames);
+      this.removeInputError(event.target.name as keyof ErrorsType);
     } else {
-      this.setState({ disabled: false });
-    }
-  }
-
-  disableSubmitButton() {
-    if (this.state.disabled) {
-      this.setState({
-        disabled: true,
+      this.setState((prevState) => {
+        return { ...prevState, disabled: false };
       });
     }
   }
 
-  removeInputError(key: keyof IInputNames) {
+  disableSubmitButton(): void {
+    if (this.state.disabled) {
+      this.setState((prevState) => {
+        return { ...prevState, disabled: true };
+      });
+    }
+  }
+
+  removeInputError(key: keyof ErrorsType): void {
     const newErrorsState = { ...this.state.errors };
     delete newErrorsState[key];
     // const { [key]: _, ...newErrorsState } = this.state.errors;
 
     if (Object.keys(newErrorsState).length > 0) {
-      this.setState({ disabled: true, errors: newErrorsState });
+      this.setState((prevState) => {
+        return { ...prevState, disabled: true, errors: newErrorsState };
+      });
     } else {
-      this.setState({ disabled: false, errors: {} });
+      this.setState((prevState) => {
+        return { ...prevState, disabled: false, errors: {} };
+      });
     }
   }
 
-  validateData(data: FormData) {
-    const errors: IInputNames = {};
-    const map = new Map(data.entries());
-    let agreement = false;
-    console.log('validate', map);
+  validateData(data: FormCardType): boolean {
+    const errors: ErrorsType = {};
 
-    for (const [key, val] of map) {
+    for (const [key, value] of Object.entries(data)) {
       switch (key) {
         case UserInput.FIRST_NAME: {
-          if (`${val}`.length < 2)
+          if (!value) errors[UserInput.FIRST_NAME] = 'First Name is required';
+          if (value && typeof value === 'string' && value.trim().length < 2)
             errors[UserInput.FIRST_NAME] = 'Should contain at least 2 characters';
           break;
         }
+
         case UserInput.LAST_NAME: {
-          if (`${val}`.length < 2)
+          if (!value) errors[UserInput.LAST_NAME] = 'Last Name is required';
+          if (value && typeof value === 'string' && value.trim().length < 2)
             errors[UserInput.LAST_NAME] = 'Should contain at least 2 characters';
           break;
         }
+
         case UserInput.BIRTHDAY: {
           const today = new Date();
-          if (!val) errors[UserInput.BIRTHDAY] = 'Birth date is required';
+          if (!value) errors[UserInput.BIRTHDAY] = 'Birth date is required';
           if (
-            new Date(`${val}`).getTime() >= today.getTime() ||
-            new Date(`${val}`).getUTCFullYear() < 1900
+            new Date(`${value}`).getTime() >= today.getTime() ||
+            new Date(`${value}`).getUTCFullYear() < 1900
           )
             errors[UserInput.BIRTHDAY] = 'Invalid birth date';
+          break;
+        }
 
-          break;
-        }
         case UserInput.COUNTRY: {
-          if (`${val}` === '---') errors[UserInput.COUNTRY] = 'Country is required';
+          if (!value || `${value}` === '---') errors[UserInput.COUNTRY] = 'Country is required';
           break;
         }
+
         case UserInput.AVATAR: {
-          if (val instanceof File && !val.name) {
+          if (!value || (value && value instanceof FileList && !value[0])) {
             errors[UserInput.AVATAR] = 'Avatar is required';
+          }
+          if (value && value instanceof FileList && value[0] && !/^image\//.test(value[0].type)) {
+            errors[UserInput.AVATAR] = 'Avatar file should be an image';
           }
           break;
         }
+
         case UserInput.AGREEMENT: {
-          agreement = true;
+          if (!value) {
+            errors[UserInput.AGREEMENT] = 'Required field';
+          }
           break;
         }
       }
     }
 
-    if (!agreement) {
-      errors[UserInput.AGREEMENT] = 'Required field';
+    if (Object.keys(errors).length) {
+      this.setState((prevState) => {
+        return { ...prevState, disabled: true, errors };
+      });
     }
 
-    if (Object.keys(errors).length) {
-      this.setState({
-        disabled: true,
-        errors,
-      });
-    } else {
-      return Object.fromEntries(map);
-    }
+    return !Object.keys(errors).length;
   }
 
   render() {

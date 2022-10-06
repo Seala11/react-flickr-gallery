@@ -116,36 +116,35 @@ describe('when typing in Form inputs', () => {
     userEvent.click(agreementCheckbox);
     expect(agreementCheckbox.checked).toEqual(true);
     expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+
+    userEvent.click(screen.getByTestId('submit-button'));
   });
 });
 
 describe('on submitting uncomplete Form', () => {
-  it('should display error if first name is invalid', () => {
+  it('should display error if first name is invalid', async () => {
     render(<Form createCard={jest.fn()} />);
 
-    const lastNameInput = screen.getByTestId('firstName');
-    userEvent.type(lastNameInput, TEST_DATA.firstName);
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.getByText(/Should contain at least 2 characters/i)).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
+    expect(screen.getByText(/First name is required/i)).toBeInTheDocument();
   });
 
   it('should display error if last name is invalid', () => {
     render(<Form createCard={jest.fn()} />);
 
-    const firstNameInput = screen.getByTestId('firstName');
-    userEvent.type(firstNameInput, TEST_DATA.lastName);
+    userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.getByText(/Should contain at least 2 characters/i)).toBeInTheDocument();
+    expect(screen.getByText(/Last name is required/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 
   it('should display error if no date was picked', () => {
     render(<Form createCard={jest.fn()} />);
 
-    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
     const birthdayInput = screen.getByTestId('birthday');
@@ -154,10 +153,10 @@ describe('on submitting uncomplete Form', () => {
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 
-  it('should display error if no country was picked', () => {
+  it('should display error if no country was picked', async () => {
     render(<Form createCard={jest.fn()} />);
 
-    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
     const countrySelect = screen.getByTestId('country');
@@ -169,7 +168,7 @@ describe('on submitting uncomplete Form', () => {
   it('should display error if no avatar was uploaded', () => {
     render(<Form createCard={jest.fn()} />);
 
-    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
     expect(screen.getByTestId('avatar')).toBeEmptyDOMElement();
@@ -180,7 +179,7 @@ describe('on submitting uncomplete Form', () => {
   it('should display error if user did not agree on data processing', () => {
     render(<Form createCard={jest.fn()} />);
 
-    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
     const agreementCheckbox: HTMLInputElement = screen.getByTestId('agreement');

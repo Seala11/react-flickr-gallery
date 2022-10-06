@@ -1,8 +1,8 @@
-import { CardType } from 'features/form';
+import { FormCardType } from 'features/form/models';
 import React from 'react';
 
 type FormCardListProps = {
-  card: CardType;
+  card: FormCardType;
 };
 
 type State = {
@@ -18,14 +18,14 @@ class FormCard extends React.Component<FormCardListProps> {
 
   componentDidMount(): void {
     const { avatar } = this.props.card;
-    if (avatar && avatar instanceof Blob && /^image\//.test(avatar.type)) {
+    if (avatar && avatar instanceof FileList && avatar[0]) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        this.setState({
-          imagePreview: reader.result,
+        this.setState((prevState) => {
+          return { ...prevState, imagePreview: reader.result };
         });
       };
-      reader.readAsDataURL(avatar);
+      reader.readAsDataURL(avatar[0]);
     }
   }
 
