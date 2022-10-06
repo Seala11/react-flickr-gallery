@@ -14,26 +14,26 @@ const TEST_DATA = {
 
 describe('when Form component renders', () => {
   it('should have a form', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     expect(screen.getByTestId('react-form')).toBeInTheDocument();
   });
 
   it('submit button should be disabled', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 });
 
 describe('when typing in Form inputs', () => {
   it('submit button should not be disabled', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     const firstNameInput = screen.getByTestId('firstName');
     userEvent.type(firstNameInput, TEST_DATA.firstName);
     expect(screen.getByTestId('submit-button')).not.toBeDisabled();
   });
 
   it('should allow user to change first name', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     const firstNameInput = screen.getByTestId('firstName');
     expect(firstNameInput).toBeEmptyDOMElement();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -44,7 +44,7 @@ describe('when typing in Form inputs', () => {
   });
 
   it('should allow user to change last name', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     const lastNameInput = screen.getByTestId('lastName');
     expect(lastNameInput).toBeEmptyDOMElement();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -55,7 +55,7 @@ describe('when typing in Form inputs', () => {
   });
 
   it('should allow user to change birthday date', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     const birthdayInput = screen.getByTestId('birthday');
     expect(birthdayInput).toBeEmptyDOMElement();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -66,7 +66,7 @@ describe('when typing in Form inputs', () => {
   });
 
   it('should allow user to select a country', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     const countrySelect = screen.getByTestId('country');
     expect(countrySelect).toHaveDisplayValue(/---/);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -77,7 +77,7 @@ describe('when typing in Form inputs', () => {
   });
 
   it('should allow user to upload an avatar', async () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     const avatarInput: HTMLInputElement = screen.getByTestId('avatar');
     expect(avatarInput).toBeEmptyDOMElement();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -96,19 +96,19 @@ describe('when typing in Form inputs', () => {
     expect(screen.getByTestId('submit-button')).not.toBeDisabled();
   });
 
-  it('should allow user to select a gender', () => {
-    render(<Form />);
-    const genderInput: HTMLInputElement = screen.getByTestId('gender');
-    expect(genderInput.checked).toEqual(false);
+  it('should allow user to select receive notifications', () => {
+    render(<Form createCard={jest.fn()} />);
+    const notificationsInput: HTMLInputElement = screen.getByTestId('notifications');
+    expect(notificationsInput.checked).toEqual(false);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
 
-    userEvent.click(genderInput);
-    expect(genderInput.checked).toEqual(true);
+    userEvent.click(notificationsInput);
+    expect(notificationsInput.checked).toEqual(true);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 
   it('should allow user to agree on data processing', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
     const agreementCheckbox: HTMLInputElement = screen.getByTestId('agreement');
     expect(agreementCheckbox.checked).toEqual(false);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -121,7 +121,7 @@ describe('when typing in Form inputs', () => {
 
 describe('on submitting uncomplete Form', () => {
   it('should display error if first name is invalid', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
 
     const lastNameInput = screen.getByTestId('firstName');
     userEvent.type(lastNameInput, TEST_DATA.firstName);
@@ -132,7 +132,7 @@ describe('on submitting uncomplete Form', () => {
   });
 
   it('should display error if last name is invalid', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
 
     const firstNameInput = screen.getByTestId('firstName');
     userEvent.type(firstNameInput, TEST_DATA.lastName);
@@ -143,7 +143,7 @@ describe('on submitting uncomplete Form', () => {
   });
 
   it('should display error if no date was picked', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
     userEvent.click(screen.getByTestId('submit-button'));
@@ -155,7 +155,7 @@ describe('on submitting uncomplete Form', () => {
   });
 
   it('should display error if no country was picked', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
     userEvent.click(screen.getByTestId('submit-button'));
@@ -167,7 +167,7 @@ describe('on submitting uncomplete Form', () => {
   });
 
   it('should display error if no avatar was uploaded', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
     userEvent.click(screen.getByTestId('submit-button'));
@@ -178,7 +178,7 @@ describe('on submitting uncomplete Form', () => {
   });
 
   it('should display error if user did not agree on data processing', () => {
-    render(<Form />);
+    render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.firstName);
     userEvent.click(screen.getByTestId('submit-button'));
@@ -188,4 +188,8 @@ describe('on submitting uncomplete Form', () => {
     expect(screen.getByText(/Required field/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
+});
+
+describe('on submitting complete Form', () => {
+  it.todo('should reset all inputs and disable the submit button');
 });

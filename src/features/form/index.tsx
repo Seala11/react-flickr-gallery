@@ -4,11 +4,7 @@ import styles from './index.module.scss';
 import { UserInput } from './models';
 
 type FormPropsType = {
-  handleSubmit: () => void;
-  enableSubmitButton: () => void;
-  disableSubmitButton: () => void;
-  validateData: () => void;
-  removeInputError: () => void;
+  createCard: (card: CardType) => void;
 };
 
 type IInputNames = {
@@ -16,8 +12,9 @@ type IInputNames = {
   firstName?: string;
   birthday?: string;
   country?: string;
-  avatar?: string;
+  avatar?: string | File;
   agreement?: string;
+  notifications?: string;
 };
 
 type StateType = {
@@ -25,7 +22,11 @@ type StateType = {
   errors: IInputNames;
 };
 
-class Form extends React.Component {
+export type CardType = {
+  [k in keyof IInputNames]: FormDataEntryValue | undefined;
+};
+
+class Form extends React.Component<FormPropsType> {
   state: StateType = { disabled: true, errors: {} };
 
   constructor(props: FormPropsType) {
@@ -41,9 +42,12 @@ class Form extends React.Component {
     event.preventDefault();
 
     const formData = new FormData(event?.target);
-    const userInputsAreValid = this.validateData(formData);
+    const newCard: CardType | undefined = this.validateData(formData);
 
-    console.log(userInputsAreValid);
+    console.log(newCard);
+    if (newCard) {
+      this.props.createCard(newCard);
+    }
   }
 
   enableSubmitButton(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
@@ -129,6 +133,8 @@ class Form extends React.Component {
         disabled: true,
         errors,
       });
+    } else {
+      return Object.fromEntries(map);
     }
   }
 
@@ -213,21 +219,21 @@ class Form extends React.Component {
               name="avatar"
               data-testid="avatar"
               onChange={this.enableSubmitButton}
-              accept="image/png, image/jpeg, image/webp"
+              accept="image/*"
               className={`${styles.input} ${errors.avatar ? styles.inputError : ''}`}
             />
           </label>
-          {errors.avatar && <small className={styles.error}>{errors.avatar}</small>}
+          {errors.avatar && <small className={styles.error}>{`${errors.avatar}`}</small>}
 
           <div className={styles.switcherWrapper}>
             <input
-              id="gender"
-              name="gender"
+              id="notifications"
+              name="notifications"
               type="checkbox"
-              data-testid="gender"
+              data-testid="notifications"
               className={styles.switcher}
             />
-            <label htmlFor="gender" className={styles.switcherLabel}>
+            <label htmlFor="notifications" className={styles.switcherLabel}>
               <span className={styles.switcherBtn} />
             </label>
             <span>I want to receive notifications</span>
