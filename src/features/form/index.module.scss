@@ -1,12 +1,15 @@
 @use './app/styles/mixins.scss' as *;
 
+.section {
+  padding: 1rem 0;
+}
+
 .form {
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 40rem;
   margin: 0 auto;
-  padding: 12rem 0;
 }
 
 .input {

@@ -2,7 +2,7 @@ import Form from 'features/form';
 import FormCardList from 'features/form-cards';
 import { FormCardType } from 'features/form/models';
 import React from 'react';
-// import styles from './index.module.scss';
+import styles from './index.module.scss';
 
 type FormPropsType = {
   createCard: (card: FormCardType) => void;
@@ -29,10 +29,10 @@ class FormPage extends React.Component {
   render() {
     console.log(this.state);
     return (
-      <div>
+      <main className={styles.wrapper}>
         <Form createCard={this.createCard} />
         <FormCardList cards={this.state.cards} />
-      </div>
+      </main>
     );
   }
 }

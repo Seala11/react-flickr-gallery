@@ -156,7 +156,7 @@ class Form extends React.Component<FormPropsType> {
     console.log(this.state, 'RENDER');
     const errors = this.state.errors;
     return (
-      <div>
+      <section className={styles.section}>
         <form
           className={styles.form}
           onSubmit={this.handleSubmit}
@@ -277,7 +277,7 @@ class Form extends React.Component<FormPropsType> {
             Submit
           </button>
         </form>
-      </div>
+      </section>
     );
   }
 }

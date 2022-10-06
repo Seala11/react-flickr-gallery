@@ -1,5 +1,6 @@
 import { FormCardType } from 'features/form/models';
 import React from 'react';
+import styles from './index.module.scss';
 
 type FormCardListProps = {
   card: FormCardType;
@@ -30,25 +31,37 @@ class FormCard extends React.Component<FormCardListProps> {
   }
 
   render() {
-    console.log(this.props.card, this.state);
     const card = this.props.card;
     return (
-      <div>
-        {this.state.imagePreview && <img src={this.state.imagePreview} alt="preview image" />}
-        <p>
-          First Name: <span>{`${card.firstName}`}</span>
+      <div className={styles.card}>
+        {this.state.imagePreview && (
+          <img
+            src={this.state.imagePreview}
+            alt={`${card.firstName} ${card.lastName} avatar`}
+            className={styles.img}
+          />
+        )}
+        <p className={styles.title}>
+          First Name:
+          <span className={styles.titleInfo}>{`${
+            card.firstName.length < 250 ? card.firstName : card.firstName.slice(0, 250) + '...'
+          }`}</span>
         </p>
-        <p>
-          Last Name: <span>{`${card.lastName}`}</span>
+        <p className={styles.title}>
+          Last Name:
+          <span className={styles.titleInfo}>{`${
+            card.lastName.length < 250 ? card.lastName : card.lastName.slice(0, 250) + '...'
+          }`}</span>
         </p>
-        <p>
-          Birthday: <span>{`${card.birthday}`}</span>
+        <p className={styles.title}>
+          Birthday: <span className={styles.titleInfo}>{`${card.birthday}`}</span>
         </p>
-        <p>
-          Country: <span>{`${card.country}`}</span>
+        <p className={styles.title}>
+          Country: <span className={styles.titleInfo}>{`${card.country}`}</span>
         </p>
-        <p>
-          Notifications: <span>{`${card.notifications ? 'On' : 'Off'}`}</span>
+        <p className={styles.title}>
+          Notifications:
+          <span className={styles.titleInfo}>{`${card.notifications ? 'On' : 'Off'}`}</span>
         </p>
       </div>
     );
