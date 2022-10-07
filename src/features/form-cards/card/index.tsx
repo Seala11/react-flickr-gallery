@@ -33,7 +33,7 @@ class FormCard extends React.Component<FormCardListProps> {
   render() {
     const card = this.props.card;
     return (
-      <div className={styles.card}>
+      <>
         {this.state.imagePreview && (
           <img
             src={this.state.imagePreview}
@@ -42,13 +42,13 @@ class FormCard extends React.Component<FormCardListProps> {
           />
         )}
         <p className={styles.title}>
-          First Name:
+          First Name:{' '}
           <span className={styles.titleInfo}>{`${
             card.firstName.length < 250 ? card.firstName : card.firstName.slice(0, 250) + '...'
           }`}</span>
         </p>
         <p className={styles.title}>
-          Last Name:
+          Last Name:{' '}
           <span className={styles.titleInfo}>{`${
             card.lastName.length < 250 ? card.lastName : card.lastName.slice(0, 250) + '...'
           }`}</span>
@@ -60,10 +60,10 @@ class FormCard extends React.Component<FormCardListProps> {
           Country: <span className={styles.titleInfo}>{`${card.country}`}</span>
         </p>
         <p className={styles.title}>
-          Notifications:
+          Notifications:{' '}
           <span className={styles.titleInfo}>{`${card.notifications ? 'On' : 'Off'}`}</span>
         </p>
-      </div>
+      </>
     );
   }
 }

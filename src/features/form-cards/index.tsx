@@ -19,15 +19,15 @@ class FormCardList extends React.Component<FormCardListProps> {
         {!this.props.cards.length && (
           <p className={styles.title}>You have not submitted any form yet</p>
         )}
-        <div className={styles.wrapper}>
+        <ul className={styles.wrapper}>
           {this.props.cards.map((card, index) => {
             return (
-              <div key={index}>
+              <li key={index} className={styles.card}>
                 <FormCard card={card} />
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </section>
     );
   }
