@@ -122,73 +122,109 @@ describe('when typing in Form inputs', () => {
 });
 
 describe('on submitting uncomplete Form', () => {
-  it('should display error if first name is invalid', async () => {
+  it('should display error if there are no first name and remove it if user type again', async () => {
     render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.getByText(/First name is required/i)).toBeInTheDocument();
+    await screen.findByText(/First name is required/i);
+
+    userEvent.type(screen.getByTestId('firstName'), 'h');
+    await expect(screen.findByText(/First name is required/i)).not.toBeInTheDocument;
   });
 
-  it('should display error if last name is invalid', () => {
+  it('should display error if first name is invalid and remove it if user type again', async () => {
+    render(<Form createCard={jest.fn()} />);
+
+    userEvent.type(screen.getByTestId('firstName'), 'k');
+    userEvent.click(screen.getByTestId('submit-button'));
+
+    await screen.findByText(/Should contain at least 2 characters/i);
+
+    userEvent.type(screen.getByTestId('firstName'), 'h');
+    await expect(screen.findByText(/Should contain at least 2 characters/i)).not.toBeInTheDocument;
+  });
+
+  it('should display error if there are no last name and remove it if user type again', async () => {
     render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.getByText(/Last name is required/i)).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
+    await screen.findByText(/Last name is required/i);
+
+    userEvent.type(screen.getByTestId('lastName'), 'h');
+    await expect(screen.findByText(/Last name is required/i)).not.toBeInTheDocument;
   });
 
-  it('should display error if no date was picked', () => {
+  it('should display error if last name is invalid and remove it if user type again', async () => {
+    render(<Form createCard={jest.fn()} />);
+
+    userEvent.type(screen.getByTestId('lastName'), 'k');
+    userEvent.click(screen.getByTestId('submit-button'));
+
+    await screen.findByText(/Should contain at least 2 characters/i);
+
+    userEvent.type(screen.getByTestId('lastName'), 'h');
+    await expect(screen.findByText(/Should contain at least 2 characters/i)).not.toBeInTheDocument;
+  });
+
+  it('should display error if no date was picked and remove it if user pick a date', async () => {
     render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    const birthdayInput = screen.getByTestId('birthday');
-    expect(birthdayInput).toBeEmptyDOMElement();
-    expect(screen.getByText(/Birth date is required/i)).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
+    await screen.findByText(/Birth date is required/i);
+
+    userEvent.type(screen.getByTestId('birthday'), TEST_DATA.birthday);
+    await expect(screen.findByText(/Birth date is required/i)).not.toBeInTheDocument;
   });
 
-  it('should display error if no country was picked', async () => {
+  it('should display error if no country was picked and remove it if user pick a country', async () => {
     render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    const countrySelect = screen.getByTestId('country');
-    expect(countrySelect).toHaveDisplayValue(/---/);
-    expect(screen.getByText(/Country is required/i)).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
+    await screen.findByText(/Country is required/i);
+
+    userEvent.selectOptions(screen.getByTestId('country'), TEST_DATA.country);
+    await expect(screen.findByText(/Country is required/i)).not.toBeInTheDocument;
   });
 
-  it('should display error if no avatar was uploaded', () => {
+  it('should display error if no avatar was uploaded and remove it if user upload a file', async () => {
+    render(<Form createCard={jest.fn()} />);
+
+    const avatarInput: HTMLInputElement = screen.getByTestId('avatar');
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
+    userEvent.click(screen.getByTestId('submit-button'));
+
+    await screen.findByText(/Avatar is required/i);
+
+    await act(async () => {
+      await waitFor(() => {
+        userEvent.upload(avatarInput, TEST_DATA.avatar);
+      });
+    });
+
+    if (!avatarInput.files) {
+      throw new Error('No files have been uploaded');
+    }
+
+    await expect(screen.findByText(/Avatar is required/i)).not.toBeInTheDocument;
+  });
+
+  it('should display error if user did not agree on data processing and remove it after agreement', async () => {
     render(<Form createCard={jest.fn()} />);
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.getByTestId('avatar')).toBeEmptyDOMElement();
-    expect(screen.getByText(/Avatar is required/i)).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
+    await screen.findByText(/Required field/i);
+
+    userEvent.click(screen.getByTestId('agreement'));
+    await expect(screen.findByText(/Required field/i)).not.toBeInTheDocument;
   });
-
-  it('should display error if user did not agree on data processing', () => {
-    render(<Form createCard={jest.fn()} />);
-
-    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
-    userEvent.click(screen.getByTestId('submit-button'));
-
-    const agreementCheckbox: HTMLInputElement = screen.getByTestId('agreement');
-    expect(agreementCheckbox.checked).toEqual(false);
-    expect(screen.getByText(/Required field/i)).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
-  });
-});
-
-describe('on submitting complete Form', () => {
-  it.todo('should reset all inputs and disable the submit button');
 });

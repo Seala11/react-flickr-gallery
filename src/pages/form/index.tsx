@@ -27,7 +27,6 @@ class FormPage extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <main className={styles.wrapper}>
         <Form createCard={this.createCard} />

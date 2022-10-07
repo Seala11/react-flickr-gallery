@@ -33,9 +33,19 @@ class Form extends React.Component<FormPropsType> {
     this.removeInputError = this.removeInputError.bind(this);
   }
 
-  handleSubmit(event: React.ChangeEvent<HTMLFormElement & FormFields>): void {
+  shouldComponentUpdate(
+    nextProps: Readonly<FormPropsType>,
+    nextState: Readonly<StateType>
+  ): boolean {
+    if (this.state.disabled !== nextState.disabled || Object.keys(this.state.errors).length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  handleSubmit(event: React.ChangeEvent<HTMLFormElement>): void {
     event.preventDefault();
-    const form = event.currentTarget;
+    const form = event.currentTarget.elements as typeof event.currentTarget.elements & FormFields;
     const { firstName, lastName, birthday, country, avatar, agreement, notifications } = form;
 
     const formData: FormCardType = {
@@ -51,7 +61,24 @@ class Form extends React.Component<FormPropsType> {
     const dataIsValid: boolean = this.validateData(formData);
 
     if (dataIsValid) {
+      if (avatar.files) {
+        const dt = new DataTransfer();
+        const file = avatar.files[0];
+        dt.items.add(new File([file], file.name));
+        formData.avatar = dt.files;
+      }
+
       this.props.createCard(formData);
+
+      firstName.value = '';
+      lastName.value = '';
+      birthday.value = '';
+      country.value = '';
+      agreement.checked = false;
+      notifications.checked = false;
+      avatar.value = '';
+
+      this.disableSubmitButton();
     }
   }
 
@@ -66,11 +93,9 @@ class Form extends React.Component<FormPropsType> {
   }
 
   disableSubmitButton(): void {
-    if (this.state.disabled) {
-      this.setState((prevState) => {
-        return { ...prevState, disabled: true };
-      });
-    }
+    this.setState((prevState) => {
+      return { ...prevState, disabled: true };
+    });
   }
 
   removeInputError(key: keyof ErrorsType): void {
@@ -153,7 +178,6 @@ class Form extends React.Component<FormPropsType> {
   }
 
   render() {
-    console.log(this.state, 'RENDER');
     const errors = this.state.errors;
     return (
       <section className={styles.section}>
