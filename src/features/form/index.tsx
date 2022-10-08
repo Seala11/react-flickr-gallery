@@ -62,10 +62,8 @@ class Form extends React.Component<FormPropsType> {
 
     if (dataIsValid) {
       if (avatar.files) {
-        const dt = new DataTransfer();
-        const file = avatar.files[0];
-        dt.items.add(new File([file], file.name));
-        formData.avatar = dt.files;
+        const copy = new File([avatar.files[0]], avatar.files[0].name);
+        formData.avatar = copy;
       }
 
       this.props.createCard(formData);

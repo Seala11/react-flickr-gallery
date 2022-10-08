@@ -182,6 +182,15 @@ describe('on submitting uncomplete Form', () => {
     await expect(screen.findByText(/Birth date is required/i)).not.toBeInTheDocument;
   });
 
+  it('should display error if birth date is invalid', async () => {
+    render(<Form createCard={jest.fn()} />);
+
+    userEvent.type(screen.getByTestId('birthday'), '2300-01-01');
+    userEvent.click(screen.getByTestId('submit-button'));
+
+    await expect(screen.findByText(/'Invalid birth date'/i)).toBeInTheDocument;
+  });
+
   it('should display error if no country was picked and remove it if user pick a country', async () => {
     render(<Form createCard={jest.fn()} />);
 
@@ -226,5 +235,21 @@ describe('on submitting uncomplete Form', () => {
 
     userEvent.click(screen.getByTestId('agreement'));
     await expect(screen.findByText(/Required field/i)).not.toBeInTheDocument;
+  });
+
+  it('should set submit button active again after filling all inputs with errors', async () => {
+    render(<Form createCard={jest.fn()} />);
+
+    userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
+    userEvent.click(screen.getByTestId('submit-button'));
+    expect(screen.getByTestId('submit-button')).toBeDisabled();
+
+    userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
+    userEvent.type(screen.getByTestId('birthday'), TEST_DATA.birthday);
+    userEvent.selectOptions(screen.getByTestId('country'), TEST_DATA.country);
+    userEvent.upload(screen.getByTestId('avatar'), TEST_DATA.avatar);
+    userEvent.click(screen.getByTestId('agreement'));
+
+    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
   });
 });

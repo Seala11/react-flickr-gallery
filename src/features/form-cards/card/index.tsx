@@ -19,14 +19,14 @@ class FormCard extends React.Component<FormCardListProps> {
 
   componentDidMount(): void {
     const { avatar } = this.props.card;
-    if (avatar && avatar instanceof FileList && avatar[0]) {
+    if (avatar && avatar instanceof File && avatar) {
       const reader = new FileReader();
       reader.onloadend = () => {
         this.setState((prevState) => {
           return { ...prevState, imagePreview: reader.result };
         });
       };
-      reader.readAsDataURL(avatar[0]);
+      reader.readAsDataURL(avatar);
     }
   }
 

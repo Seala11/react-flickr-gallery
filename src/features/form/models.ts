@@ -13,7 +13,7 @@ export type FormCardType = {
   lastName: string;
   birthday: string;
   country: string;
-  avatar: FileList | null;
+  avatar: FileList | File | null;
   agreement: boolean;
   notifications: boolean;
 };
