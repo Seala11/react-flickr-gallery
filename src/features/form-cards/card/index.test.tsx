@@ -5,7 +5,7 @@ import { FormCardType } from 'features/form/models';
 
 const TEST_CARD: FormCardType = {
   agreement: true,
-  avatar: null,
+  avatar: new File(['file'], 'file.png', { type: 'image/png' }),
   birthday: '2022-09-25',
   country: 'Latvia',
   firstName: 'Hanna',
