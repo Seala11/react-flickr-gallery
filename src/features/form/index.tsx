@@ -236,7 +236,9 @@ class Form extends React.Component<FormPropsType> {
             data-testid="country"
             onChange={this.enableSubmitButton}
             name="country"
-            className={`${styles.input} ${errors.country ? styles.inputError : ''}`}
+            className={`${styles.input} ${styles.select} ${
+              errors.country ? styles.inputError : ''
+            }`}
           >
             <option hidden>---</option>
             {COUNTRIES.map((country) => (
@@ -275,7 +277,12 @@ class Form extends React.Component<FormPropsType> {
             <span>I want to receive notifications</span>
           </div>
 
-          <label htmlFor="agreement" className={`${styles.agreement} ${styles.label}`}>
+          <label
+            htmlFor="agreement"
+            className={`${styles.agreement} ${styles.label} ${
+              errors.agreement ? styles.agreementError : ''
+            }`}
+          >
             <input
               id="agreement"
               name="agreement"
@@ -285,6 +292,9 @@ class Form extends React.Component<FormPropsType> {
               className={`${styles.input} ${styles.checkbox} ${
                 errors.agreement ? styles.inputError : ''
               }`}
+            />
+            <span
+              className={`${styles.checkmark} ${errors.agreement ? styles.checkmarkError : ''}`}
             />
             I give my consent to processing my personal data
           </label>
