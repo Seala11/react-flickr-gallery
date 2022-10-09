@@ -92,7 +92,8 @@
   cursor: pointer;
 }
 
-.input[type='file'] {
+.input[type='file'],
+.birthday {
   width: 100%;
   box-sizing: border-box;
 }

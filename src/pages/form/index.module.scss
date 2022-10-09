@@ -1,5 +1,46 @@
+@use './app/styles/mixins.scss' as *;
+
 .wrapper {
   padding: 10rem 0;
   max-width: 120rem;
   margin: 0 auto;
+}
+
+.sucsess {
+  background-color: var(--primary);
+  font-weight: 600;
+  padding: 3rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.9rem 0.2rem var(--dark-s);
+  text-align: center;
+  margin-bottom: 1rem;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  animation: slide forwards;
+  animation-duration: 8s;
+  z-index: 9999;
+
+  @include media-tablet {
+    font-weight: 400;
+    padding: 2rem 1rem;
+  }
+}
+
+@keyframes slide {
+  0% {
+    right: -100%;
+  }
+
+  10% {
+    right: 1rem;
+  }
+
+  90% {
+    right: 1rem;
+  }
+
+  100% {
+    right: -100%;
+  }
 }

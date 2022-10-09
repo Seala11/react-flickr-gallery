@@ -39,6 +39,7 @@ class FormCard extends React.Component<FormCardListProps> {
             src={this.state.imagePreview}
             alt={`${card.firstName} ${card.lastName} avatar`}
             className={styles.img}
+            data-testId="avatar-img"
           />
         )}
         <p className={styles.title}>

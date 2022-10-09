@@ -1,10 +1,11 @@
 import React from 'react';
 import COUNTRIES from 'shared/data/countries';
 import styles from './index.module.scss';
-import { FormCardType, FormFields, UserInput } from './models';
+import { FormCardType, FormElements, UserInput } from './models';
 
 type FormPropsType = {
   createCard: (card: FormCardType) => void;
+  messageDisplay: boolean;
 };
 
 type ErrorsType = {
@@ -23,9 +24,11 @@ type StateType = {
 
 class Form extends React.Component<FormPropsType> {
   state: StateType = { disabled: true, errors: {} };
+  formElement: React.RefObject<HTMLFormElement>;
 
   constructor(props: FormPropsType) {
     super(props);
+    this.formElement = React.createRef();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.enableSubmitButton = this.enableSubmitButton.bind(this);
     this.disableSubmitButton = this.disableSubmitButton.bind(this);
@@ -43,10 +46,29 @@ class Form extends React.Component<FormPropsType> {
     return false;
   }
 
+  componentDidUpdate(): void {
+    if (this.props.messageDisplay) {
+      if (this.formElement.current) {
+        const form = this.formElement.current;
+        const { firstName, lastName, birthday, country, avatar, agreement, notifications } =
+          form?.elements as FormElements;
+
+        firstName.value = '';
+        lastName.value = '';
+        birthday.value = '';
+        country.value = '';
+        agreement.checked = false;
+        notifications.checked = false;
+        avatar.value = '';
+      }
+    }
+  }
+
   handleSubmit(event: React.ChangeEvent<HTMLFormElement>): void {
     event.preventDefault();
-    const form = event.currentTarget.elements as typeof event.currentTarget.elements & FormFields;
-    const { firstName, lastName, birthday, country, avatar, agreement, notifications } = form;
+    const form = this.formElement.current;
+    const { firstName, lastName, birthday, country, avatar, agreement, notifications } =
+      form?.elements as FormElements;
 
     const formData: FormCardType = {
       firstName: firstName?.value,
@@ -65,17 +87,7 @@ class Form extends React.Component<FormPropsType> {
         const copy = new File([avatar.files[0]], avatar.files[0].name);
         formData.avatar = copy;
       }
-
       this.props.createCard(formData);
-
-      firstName.value = '';
-      lastName.value = '';
-      birthday.value = '';
-      country.value = '';
-      agreement.checked = false;
-      notifications.checked = false;
-      avatar.value = '';
-
       this.disableSubmitButton();
     }
   }
@@ -184,6 +196,7 @@ class Form extends React.Component<FormPropsType> {
           onSubmit={this.handleSubmit}
           data-testid="react-form"
           autoComplete="off"
+          ref={this.formElement}
           noValidate
         >
           <label htmlFor="firstName" className={styles.label}>
@@ -224,7 +237,9 @@ class Form extends React.Component<FormPropsType> {
             data-testid="birthday"
             autoComplete="off"
             onChange={this.enableSubmitButton}
-            className={`${styles.input} ${errors.birthday ? styles.inputError : ''}`}
+            className={`${styles.input} ${styles.birthday} ${
+              errors.birthday ? styles.inputError : ''
+            }`}
           />
           {errors.birthday && <small className={styles.error}>{errors.birthday}</small>}
 

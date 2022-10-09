@@ -8,6 +8,16 @@ export type FormFields = {
   notifications: HTMLInputElement;
 };
 
+export interface FormElements extends HTMLCollection {
+  lastName: HTMLInputElement;
+  firstName: HTMLInputElement;
+  birthday: HTMLInputElement;
+  country: HTMLSelectElement;
+  avatar: HTMLInputElement;
+  agreement: HTMLInputElement;
+  notifications: HTMLInputElement;
+}
+
 export type FormCardType = {
   firstName: string;
   lastName: string;

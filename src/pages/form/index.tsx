@@ -10,26 +10,40 @@ type FormPropsType = {
 
 type StateType = {
   cards: FormCardType[];
+  messageDisplay: boolean;
 };
 
 class FormPage extends React.Component {
-  state: StateType = { cards: [] };
+  state: StateType = { cards: [], messageDisplay: false };
 
   constructor(props: FormPropsType) {
     super(props);
     this.createCard = this.createCard.bind(this);
   }
 
+  componentDidUpdate(): void {
+    if (this.state.messageDisplay) {
+      setTimeout(() => {
+        this.setState((prevState) => {
+          return { ...prevState, messageDisplay: false };
+        });
+      }, 8500);
+    }
+  }
+
   createCard(card: FormCardType) {
     this.setState((prevState) => {
-      return { ...prevState, cards: [...this.state.cards, card] };
+      return { ...prevState, cards: [...this.state.cards, card], messageDisplay: true };
     });
   }
 
   render() {
     return (
       <main className={styles.wrapper}>
-        <Form createCard={this.createCard} />
+        {this.state.messageDisplay && (
+          <div className={styles.sucsess}>Your form has been successfully submitted</div>
+        )}
+        <Form createCard={this.createCard} messageDisplay={this.state.messageDisplay} />
         <FormCardList cards={this.state.cards} />
       </main>
     );
