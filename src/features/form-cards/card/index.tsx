@@ -39,30 +39,34 @@ class FormCard extends React.Component<FormCardListProps> {
             src={this.state.imagePreview}
             alt={`${card.firstName} ${card.lastName} avatar`}
             className={styles.img}
-            data-testId="avatar-img"
+            data-testid="avatar-img"
           />
         )}
         <p className={styles.title}>
           First Name:{' '}
-          <span className={styles.titleInfo}>{`${
+          <span data-testid="firstName" className={styles.titleInfo}>{`${
             card.firstName.length < 250 ? card.firstName : card.firstName.slice(0, 250) + '...'
           }`}</span>
         </p>
         <p className={styles.title}>
           Last Name:{' '}
-          <span className={styles.titleInfo}>{`${
+          <span data-testid="lastName" className={styles.titleInfo}>{`${
             card.lastName.length < 250 ? card.lastName : card.lastName.slice(0, 250) + '...'
           }`}</span>
         </p>
         <p className={styles.title}>
-          Birthday: <span className={styles.titleInfo}>{`${card.birthday}`}</span>
+          Birthday:{' '}
+          <span data-testid="birthday" className={styles.titleInfo}>{`${card.birthday}`}</span>
         </p>
         <p className={styles.title}>
-          Country: <span className={styles.titleInfo}>{`${card.country}`}</span>
+          Country:{' '}
+          <span data-testid="country" className={styles.titleInfo}>{`${card.country}`}</span>
         </p>
         <p className={styles.title}>
           Notifications:{' '}
-          <span className={styles.titleInfo}>{`${card.notifications ? 'On' : 'Off'}`}</span>
+          <span data-testid="notifications" className={styles.titleInfo}>{`${
+            card.notifications ? 'On' : 'Off'
+          }`}</span>
         </p>
       </>
     );

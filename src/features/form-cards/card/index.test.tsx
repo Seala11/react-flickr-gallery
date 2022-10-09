@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import FormCard from '.';
 import { FormCardType } from 'features/form/models';
 
@@ -13,23 +13,56 @@ const TEST_CARD: FormCardType = {
   notifications: false,
 };
 
+const TEST_CARD2: FormCardType = {
+  agreement: true,
+  avatar: new File(['file'], 'file.png', { type: 'image/png' }),
+  birthday: '2022-09-25',
+  country: 'Latvia',
+  firstName:
+    'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.',
+  lastName:
+    'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.',
+  notifications: true,
+};
+
 describe('Wnen Form Card component renders', () => {
-  it('should display a card', () => {
+  it('should display a card', async () => {
     render(<FormCard card={TEST_CARD} />);
 
-    const name = screen.getByText(/first name/i, { exact: false });
-    expect(name.textContent).toEqual('First Name: Hanna');
+    expect(screen.getByTestId('firstName')).toHaveTextContent(TEST_CARD.firstName);
+    expect(screen.getByTestId('lastName')).toHaveTextContent(TEST_CARD.lastName);
+    expect(screen.getByTestId('birthday')).toHaveTextContent(TEST_CARD.birthday);
+    expect(screen.getByTestId('country')).toHaveTextContent(TEST_CARD.country);
+    expect(screen.getByTestId('notifications')).toHaveTextContent(
+      TEST_CARD.notifications ? 'On' : 'Off'
+    );
 
-    const surname = screen.getByText(/last name/i, { exact: false });
-    expect(surname.textContent).toEqual('Last Name: Papova');
+    await waitFor(() => {
+      expect(screen.getByTestId('avatar-img')).toBeInTheDocument();
+    });
+  });
 
-    const birth = screen.getByText(/birthday/i, { exact: false });
-    expect(birth.textContent).toEqual('Birthday: 2022-09-25');
+  it('should display notifications ON if notification selected', async () => {
+    render(<FormCard card={TEST_CARD} />);
+    expect(screen.getByTestId('notifications')).toHaveTextContent('Off');
+  });
 
-    const country = screen.getByText(/country/i, { exact: false });
-    expect(country.textContent).toEqual('Country: Latvia');
+  it('should display notifications OFF if notification not selected', async () => {
+    render(<FormCard card={TEST_CARD2} />);
+    expect(screen.getByTestId('notifications')).toHaveTextContent('On');
+  });
 
-    const notifications = screen.getByText(/notifications/i, { exact: false });
-    expect(notifications.textContent).toEqual('Notifications: Off');
+  it('should display only first 250 chars of first name if its more than 250 characters', async () => {
+    render(<FormCard card={TEST_CARD2} />);
+    expect(screen.getByTestId('firstName')).toHaveTextContent(
+      `${TEST_CARD2.firstName.slice(0, 250)}...`
+    );
+  });
+
+  it('should display only first 250 chars of last name if its more than 250 characters', async () => {
+    render(<FormCard card={TEST_CARD2} />);
+    expect(screen.getByTestId('lastName')).toHaveTextContent(
+      `${TEST_CARD2.lastName.slice(0, 250)}...`
+    );
   });
 });
