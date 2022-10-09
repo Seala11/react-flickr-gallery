@@ -31,18 +31,18 @@
   padding: 0.8rem;
   font-size: 1.6rem;
   border-radius: 0.6rem;
-  border: 2px solid var(--dark-l);
+  border: 0.2rem solid var(--dark-l);
   margin: 1rem 0 2.08rem;
   background-color: var(--light);
 
   &:focus-visible {
     outline: none;
-    border: 2px solid var(--dark-xxl);
+    border: 0.2rem solid var(--dark-xxl);
   }
 }
 
 .inputError {
-  border: 2px solid var(--error);
+  border: 0.2rem solid var(--error);
   margin-bottom: 0.5rem;
 }
 
@@ -87,33 +87,33 @@
 
 // avatar file
 
-.label[for*='avatar']:hover,
-.input[type='file']:hover {
+.avatarLabel:hover,
+.avatarInput:hover {
   cursor: pointer;
 }
 
-.input[type='file'],
+.avatarInput,
 .birthday {
   width: 100%;
   box-sizing: border-box;
 }
 
-.label:hover > .input[type='file']::file-selector-button {
+.label:hover > .avatarInput::file-selector-button {
   cursor: pointer;
   color: var(--dark-xxl);
   background-color: var(--primary);
 }
 
-.input[type='file']::file-selector-button {
+.avatarInput::file-selector-button {
   @include poppins;
-  border: 2px solid var(--dark-l);
+  border: 0.2rem solid var(--dark-l);
   padding: 0.2em 0.4em;
   border-radius: 0.6rem;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
 }
 
-.input[type='file']::file-selector-button:hover {
+.avatarInput::file-selector-button:hover {
   color: var(--dark-xxl);
   background-color: var(--primary);
 }
@@ -216,7 +216,7 @@
   height: 2.6rem;
   background: var(--light);
   border-radius: 10rem;
-  border: 2px solid var(--dark-l);
+  border: 0.2rem solid var(--dark-l);
   position: relative;
   transition: background-color 0.2s;
   margin-right: 1rem;
@@ -230,12 +230,12 @@
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  transition: 0.2s;
+  transition: 0.25s;
   background: var(--dark-l);
 }
 
 .switcher:checked + .switcherLabel .switcherBtn {
-  left: calc(100% - 2px);
+  left: calc(100% - 0.2rem);
   transform: translateX(-100%);
 }
 

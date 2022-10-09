@@ -6,7 +6,7 @@
   margin: 0 auto;
 }
 
-.sucsess {
+.message {
   background-color: var(--primary);
   font-weight: 600;
   padding: 3rem;
@@ -20,6 +20,10 @@
   animation: slide forwards;
   animation-duration: 8s;
   z-index: 9999;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
   @include media-tablet {
     font-weight: 400;

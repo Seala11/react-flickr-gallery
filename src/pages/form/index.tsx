@@ -41,7 +41,7 @@ class FormPage extends React.Component {
     return (
       <main className={styles.wrapper}>
         {this.state.messageDisplay && (
-          <div className={styles.sucsess}>Your form has been successfully submitted</div>
+          <div className={styles.message}>Your form has been successfully submitted</div>
         )}
         <Form createCard={this.createCard} messageDisplay={this.state.messageDisplay} />
         <FormCardList cards={this.state.cards} />

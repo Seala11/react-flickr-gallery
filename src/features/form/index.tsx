@@ -47,7 +47,11 @@ class Form extends React.Component<FormPropsType> {
   }
 
   componentDidUpdate(): void {
-    if (this.props.messageDisplay) {
+    if (
+      this.props.messageDisplay &&
+      this.state.disabled &&
+      !Object.keys(this.state.errors).length
+    ) {
       if (this.formElement.current) {
         const form = this.formElement.current;
         const { firstName, lastName, birthday, country, avatar, agreement, notifications } =
@@ -84,8 +88,7 @@ class Form extends React.Component<FormPropsType> {
 
     if (dataIsValid) {
       if (avatar.files) {
-        const copy = new File([avatar.files[0]], avatar.files[0].name);
-        formData.avatar = copy;
+        formData.avatar = avatar.files[0];
       }
       this.props.createCard(formData);
       this.disableSubmitButton();
@@ -264,7 +267,7 @@ class Form extends React.Component<FormPropsType> {
           </select>
           {errors.country && <small className={styles.error}>{errors.country}</small>}
 
-          <label htmlFor="avatar" className={styles.label}>
+          <label htmlFor="avatar" className={`${styles.label} ${styles.avatarLabel}`}>
             Avatar
             <input
               type="file"
@@ -273,7 +276,9 @@ class Form extends React.Component<FormPropsType> {
               data-testid="avatar"
               onChange={this.enableSubmitButton}
               accept="image/*"
-              className={`${styles.input} ${errors.avatar ? styles.inputError : ''}`}
+              className={`${styles.input} ${styles.avatarInput} ${
+                errors.avatar ? styles.inputError : ''
+              }`}
             />
           </label>
           {errors.avatar && <small className={styles.error}>{`${errors.avatar}`}</small>}
