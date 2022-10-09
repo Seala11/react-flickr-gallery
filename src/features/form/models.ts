@@ -1,13 +1,3 @@
-export type FormFields = {
-  lastName: HTMLInputElement;
-  firstName: HTMLInputElement;
-  birthday: HTMLInputElement;
-  country: HTMLSelectElement;
-  avatar: HTMLInputElement;
-  agreement: HTMLInputElement;
-  notifications: HTMLInputElement;
-};
-
 export interface FormElements extends HTMLCollection {
   lastName: HTMLInputElement;
   firstName: HTMLInputElement;
