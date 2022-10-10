@@ -14,8 +14,18 @@ const TEST_DATA = {
 };
 
 describe('on submitting complete Form', () => {
-  it('should reset all inputs, disable the submit button and add new card', async () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
+  it('should reset all inputs, disable the submit button, add new card and remove submit message', async () => {
     jest.setTimeout(10000);
+    jest.useFakeTimers();
     render(<FormPage />);
     expect(screen.getByText(/You have not submitted any form yet/i)).toBeInTheDocument;
 
@@ -37,10 +47,12 @@ describe('on submitting complete Form', () => {
       /First Name: Hanna\s*Last Name: Papova\s*Birthday: 2022-09-25\s*Country: Latvia\s*Notifications: Off/i
     );
 
-    waitFor(
-      () =>
-        expect(screen.findByText(/Your form has been successfully submitted/i)).not
-          .toBeInTheDocument
-    );
+    jest.advanceTimersByTime(8500);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/Your form has been successfully submitted/i)
+      ).not.toBeInTheDocument();
+    });
   }, 10000);
 });
