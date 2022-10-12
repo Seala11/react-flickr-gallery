@@ -86,9 +86,7 @@ class Home extends React.Component {
   }
 
   clearSearchValue() {
-    this.setState({ searchValue: '' }, () => {
-      this.searchHandler();
-    });
+    this.setState({ searchValue: '' });
   }
 
   render() {

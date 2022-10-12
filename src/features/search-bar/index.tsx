@@ -10,6 +10,8 @@ interface ISearchBarProps {
 }
 
 class SearchBar extends React.Component<ISearchBarProps> {
+  input: React.RefObject<HTMLInputElement>;
+
   constructor(props: ISearchBarProps) {
     super(props);
     this.updateLocalStorage = this.updateLocalStorage.bind(this);
@@ -17,10 +19,15 @@ class SearchBar extends React.Component<ISearchBarProps> {
     this.state = {
       searchValue: this.props.searchValue,
     };
+
+    this.input = React.createRef();
   }
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.updateLocalStorage);
+  }
+  componentDidUpdate(): void {
+    this.input.current?.focus();
   }
 
   componentWillUnmount() {
@@ -50,6 +57,7 @@ class SearchBar extends React.Component<ISearchBarProps> {
             autoComplete="off"
             className={styles.input}
             data-testid="search-input"
+            ref={this.input}
           />
           {this.props.searchValue && (
             <button
