@@ -6,7 +6,12 @@ import userEvent from '@testing-library/user-event';
 describe('When the search bar is rendered', () => {
   it('search bar should be empty if search value from props is null, search button is displayed', () => {
     const { getByTestId } = render(
-      <SearchBar updateInputHandler={() => {}} clearInputHandler={() => {}} searchValue={null} />
+      <SearchBar
+        updateInputHandler={() => {}}
+        clearInputHandler={() => {}}
+        searchValue={null}
+        searchHandler={() => {}}
+      />
     );
     expect(getByTestId('search-input')).toBeEmptyDOMElement();
     expect(getByTestId('search-btn')).toBeInTheDocument();
@@ -18,6 +23,7 @@ describe('When the search bar is rendered', () => {
       <SearchBar
         updateInputHandler={() => {}}
         clearInputHandler={() => {}}
+        searchHandler={() => {}}
         searchValue={propsValue}
       />
     );
@@ -27,7 +33,12 @@ describe('When the search bar is rendered', () => {
 
   it('input should have a focus on it', async () => {
     const { getByTestId } = render(
-      <SearchBar updateInputHandler={() => {}} clearInputHandler={() => {}} searchValue={null} />
+      <SearchBar
+        updateInputHandler={() => {}}
+        clearInputHandler={() => {}}
+        searchHandler={() => {}}
+        searchValue={null}
+      />
     );
     expect(getByTestId('search-input')).toHaveFocus();
   });
@@ -37,7 +48,12 @@ describe('when typing in search bar', () => {
   it('should update its value', () => {
     const update = jest.fn();
     const { getByTestId } = render(
-      <SearchBar updateInputHandler={update} clearInputHandler={() => {}} searchValue={null} />
+      <SearchBar
+        updateInputHandler={update}
+        clearInputHandler={() => {}}
+        searchHandler={() => {}}
+        searchValue={null}
+      />
     );
     userEvent.type(getByTestId('search-input'), 'test');
     expect(update).toHaveBeenCalledTimes(4);
@@ -49,7 +65,12 @@ describe('when input contains a value', () => {
     const propsValue = 'test';
     const clear = jest.fn();
     const { getByTestId } = render(
-      <SearchBar updateInputHandler={() => {}} clearInputHandler={clear} searchValue={propsValue} />
+      <SearchBar
+        updateInputHandler={() => {}}
+        searchHandler={() => {}}
+        clearInputHandler={clear}
+        searchValue={propsValue}
+      />
     );
     userEvent.click(getByTestId('clear-btn'));
     expect(clear).toHaveBeenCalledTimes(1);

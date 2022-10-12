@@ -5,6 +5,7 @@ import { setSearchValueToStorage } from 'shared/helpers/storage';
 interface ISearchBarProps {
   updateInputHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
   clearInputHandler: () => void;
+  searchHandler: () => void;
   searchValue: string | null;
 }
 
@@ -50,19 +51,22 @@ class SearchBar extends React.Component<ISearchBarProps> {
             className={styles.input}
             data-testid="search-input"
           />
-          {this.props.searchValue ? (
+          {this.props.searchValue && (
             <button
               className={`${styles.icon} ${styles.icon_clear}`}
               onClick={this.props.clearInputHandler}
               data-testid="clear-btn"
             ></button>
-          ) : (
-            <button
-              className={`${styles.icon} ${styles.icon_search}`}
-              data-testid="search-btn"
-            ></button>
           )}
         </div>
+        <button
+          className={styles.searchBtn}
+          data-testid="search-btn"
+          onClick={this.props.searchHandler}
+          disabled={!this.props.searchValue}
+        >
+          Search
+        </button>
       </div>
     );
   }

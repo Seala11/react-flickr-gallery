@@ -24,9 +24,11 @@
   font-size: 1.8rem;
   margin: 0;
   color: var(--dark-xl);
+  word-break: break-all;
 }
 
 .subtitle {
   font-size: 1.4rem;
   color: var(--dark-l);
+  word-break: break-all;
 }

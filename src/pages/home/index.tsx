@@ -2,9 +2,7 @@ import React from 'react';
 import styles from './index.module.scss';
 import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
-// import { getSearchValueFromStorage } from 'shared/helpers/storage';
-import CARDS from 'shared/data/cards';
-import { filterByName } from 'shared/helpers/filters';
+import { getSearchValueFromStorage } from 'shared/helpers/storage';
 import { FlickrCard, requestData, SearchFetchType } from './models';
 
 interface IHomeProps {
@@ -19,6 +17,7 @@ type HomePageState = {
   cardsPerPage: number;
   totalCards: number | null;
   sort: string;
+  loading: boolean;
 };
 
 class Home extends React.Component {
@@ -30,69 +29,79 @@ class Home extends React.Component {
     cardsPerPage: 12,
     totalCards: null,
     sort: 'interestingness-desc',
+    loading: false,
   };
 
   constructor(props: IHomeProps) {
     super(props);
     this.updateSearchValue = this.updateSearchValue.bind(this);
     this.clearSearchValue = this.clearSearchValue.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
   }
 
   async componentDidMount() {
-    console.log('MOUNT');
-    // const storedValue = getSearchValueFromStorage();
-    // if (storedValue) {
-    //   this.setState({ searchValue: storedValue });
-    //   this.filterCards(storedValue);
-    // } else {
-    //   this.setState({ cards: CARDS });
-    // }
-    requestData.sort = this.state.sort;
-    requestData.text = this.state.searchValue || 'cats';
-    requestData.per_page = `${this.state.cardsPerPage}`;
+    const storedValue = getSearchValueFromStorage();
+    if (storedValue) {
+      this.setState({ searchValue: storedValue }, () => {
+        this.searchHandler();
+      });
+    } else {
+      this.searchHandler();
+    }
 
-    const parameters = new URLSearchParams(requestData);
+    window.addEventListener('keypress', this.searchEnterHandler);
+  }
 
+  componentWillUnmount(): void {
+    window.removeEventListener('keypress', this.searchEnterHandler);
+  }
+
+  searchEnterHandler = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      this.searchHandler();
+    }
+  };
+
+  async searchHandler() {
+    this.setState({ loading: true });
     try {
+      requestData.sort = this.state.sort;
+      requestData.text = this.state.searchValue || 'cats';
+      requestData.per_page = `${this.state.cardsPerPage}`;
+      const parameters = new URLSearchParams(requestData);
       const result = await fetch(`https://api.flickr.com/services/rest/?${parameters}`);
-      // console.log('here');
-      // const result = await fetch(
-      //   `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=d1743560a339c2a8d5327c0466b8874b&content_type=1&tags=nature&&per_page=20&page=1&format=json&nojsoncallback=1`
-      // );
-      // console.log('RESULT', result);
+
       const data: SearchFetchType = await result.json();
       this.setState({ cards: data.photos.photo });
       console.log(data);
     } catch (err) {
-      console.log('FETCH ERR');
       console.log(err);
+    } finally {
+      this.setState({ loading: false });
     }
-  }
-
-  filterCards(value: string) {
-    const data = this.state.cards.filter((card) => filterByName(card.title, value));
-    this.setState({ cards: data });
   }
 
   updateSearchValue(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ searchValue: event.target.value });
-    this.filterCards(event.target.value);
   }
 
   clearSearchValue() {
-    this.setState({ searchValue: '', cards: CARDS });
+    this.setState({ searchValue: '' }, () => {
+      this.searchHandler();
+    });
   }
 
   render() {
-    // console.log(this.state);
+    console.log(this.state);
     return (
       <main className={styles.wrapper}>
         <SearchBar
           updateInputHandler={this.updateSearchValue}
           clearInputHandler={this.clearSearchValue}
+          searchHandler={this.searchHandler}
           searchValue={this.state.searchValue}
         />
-        <CardList cards={this.state.cards} />
+        {this.state.loading ? <p>Loading...</p> : <CardList cards={this.state.cards} />}
       </main>
     );
   }

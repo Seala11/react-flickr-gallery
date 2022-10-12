@@ -20,6 +20,7 @@
 .input {
   @include poppins;
   padding: 0.8rem;
+  padding-right: 2.5rem;
   font-size: 1.6rem;
   border-radius: 0.6rem;
   border: 2px solid var(--dark-l);
@@ -59,5 +60,48 @@
       background-color: var(--primary);
       border-radius: 0.3rem;
     }
+  }
+}
+
+.searchBtn {
+  position: relative;
+  @include poppins($color: var(--dark-xl));
+  padding: 0.8rem 1.5rem 0.8rem 3rem;
+  border-radius: 0.5rem;
+  background-color: var(--primary);
+  border: 0.2rem solid var(--dark-l);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    color: var(--dark-xxl);
+    border: 0.2rem solid var(--dark-xxl);
+  }
+
+  &:disabled {
+    cursor: auto;
+    background-color: var(--dark-s);
+    border: 0.2rem solid var(--dark-l);
+
+    &:hover {
+      $color: var(--dark-xl);
+      background-color: var(--dark-s);
+    }
+  }
+
+  &::before {
+    content: '';
+    background-image: url('../../../public/assets/icons/search.svg');
+    border: 0;
+    background-size: contain;
+    background-position: center;
+    position: absolute;
+    top: 1rem;
+    left: 0.8rem;
+    background-color: transparent;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 }
