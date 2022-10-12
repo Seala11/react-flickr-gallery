@@ -29,6 +29,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false --coverage",
+    "test-debug": "react-scripts test --watchAll --detectOpenHandles",
     "test-pre-commit": "react-scripts test --watchAll=false --findRelatedTests --bail",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .ts,.tsx,.js,.jsx src/ --max-warnings=0",
@@ -55,11 +56,14 @@
     ]
   },
   "devDependencies": {
+    "@types/whatwg-fetch": "^0.0.33",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
-    "typescript": "^4.8.3"
+    "msw": "^0.47.4",
+    "typescript": "^4.8.3",
+    "whatwg-fetch": "^3.6.2"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [

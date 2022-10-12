@@ -9,7 +9,6 @@
   border-radius: 0.5rem;
   box-shadow: 0 0 0.9rem 0.2rem var(--dark-s);
   width: 22rem;
-  min-height: 38rem;
 }
 
 .img {
@@ -28,20 +27,6 @@
 }
 
 .subtitle {
-  padding-bottom: 1rem;
-  font-size: 1.6rem;
-  font-weight: 400;
-  margin: 0;
-  color: var(--dark-xxl);
-}
-
-.info {
-  margin: 0;
-  padding-bottom: 1rem;
-  color: var(--dark-xxl);
-
-  &__span {
-    font-size: 1.4rem;
-    color: var(--dark-l);
-  }
+  font-size: 1.4rem;
+  color: var(--dark-l);
 }

@@ -18,13 +18,12 @@ describe('on submitting complete Form', () => {
     jest.useFakeTimers();
   });
 
-  afterEach(() => {
+  afterAll(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
   });
 
   it('should reset all inputs, disable the submit button, add new card and remove submit message', async () => {
-    jest.setTimeout(10000);
     jest.useFakeTimers();
     render(<FormPage />);
     expect(screen.getByText(/You have not submitted any form yet/i)).toBeInTheDocument;
@@ -33,7 +32,16 @@ describe('on submitting complete Form', () => {
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.type(screen.getByTestId('birthday'), TEST_DATA.birthday);
     userEvent.selectOptions(screen.getByTestId('country'), TEST_DATA.country);
-    userEvent.upload(screen.getByTestId('avatar'), TEST_DATA.avatar);
+
+    const avatarInput: HTMLInputElement = screen.getByTestId('avatar');
+
+    await waitFor(() => userEvent.upload(avatarInput, TEST_DATA.avatar));
+
+    if (!avatarInput.files) {
+      throw new Error('No files have been uploaded');
+    }
+    expect(avatarInput.files[0]).toStrictEqual(TEST_DATA.avatar);
+
     userEvent.click(screen.getByTestId('agreement'));
 
     userEvent.click(screen.getByTestId('submit-button'));
@@ -54,5 +62,5 @@ describe('on submitting complete Form', () => {
         screen.queryByText(/Your form has been successfully submitted/i)
       ).not.toBeInTheDocument();
     });
-  }, 10000);
+  });
 });

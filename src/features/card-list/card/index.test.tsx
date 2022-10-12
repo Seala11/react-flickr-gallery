@@ -1,32 +1,34 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Card from '.';
-import CARDS from 'shared/data/cards';
 
 describe('when the card is rendered', () => {
-  const testCard = CARDS[0];
+  const testCard = {
+    farm: 66,
+    id: '36493087974',
+    isfamily: 0,
+    isfriend: 0,
+    ispublic: 1,
+    license: '4',
+    owner: '96925387@N00',
+    ownername: 'Jeanne Menjoulet',
+    secret: '4df1b792a8',
+    server: '65535',
+    title: 'Cannelle au soleil',
+  };
 
   it('should contain an expected image', () => {
     render(<Card card={testCard} />);
-    expect(screen.getByAltText(/Rick Sanchez/i)).toBeInTheDocument();
+    expect(screen.getByTestId('card-image')).toBeInTheDocument();
   });
 
   it('should contain an expected title', () => {
     render(<Card card={testCard} />);
-    expect(screen.getByText(/Rick Sanchez/i)).toBeInTheDocument();
+    expect(screen.getByTestId('card-title')).toBeInTheDocument();
   });
 
   it('should contain an expected subtitle', () => {
     render(<Card card={testCard} />);
-    expect(screen.getByText(/Human/i)).toBeInTheDocument();
-    expect(screen.getByText(/Male/i)).toBeInTheDocument();
-  });
-
-  it('should contain an expected info', () => {
-    render(<Card card={testCard} />);
-    expect(screen.getByText(/location/i)).toBeInTheDocument();
-    expect(screen.getByText(/Citadel of Ricks/i)).toBeInTheDocument();
-    expect(screen.getByText(/status/i)).toBeInTheDocument();
-    expect(screen.getByText(/Alive/i)).toBeInTheDocument();
+    expect(screen.getByTestId('card-subtitle')).toBeInTheDocument();
   });
 });

@@ -10,7 +10,7 @@ import Footer from 'widgets/footer';
 describe('when App component renders', () => {
   it('should initially display home page', () => {
     render(<App />);
-    expect(screen.getByText(/Search/i)).toBeInTheDocument();
+    expect(screen.getByTestId('search-bar')).toBeInTheDocument();
   });
 
   it('should display about page by clicking on "about us" link', () => {
@@ -34,7 +34,7 @@ describe('when App component renders', () => {
       </MemoryRouter>
     );
     userEvent.click(screen.getByText(/home/i));
-    expect(screen.getByText(/search/i)).toBeInTheDocument();
+    expect(screen.getByTestId('search-bar')).toBeInTheDocument();
   });
 
   it('should display form page by clicking on "form" link', () => {
@@ -75,6 +75,6 @@ describe('when App component renders', () => {
 
     expect(backHomeButton).toBeInTheDocument();
     userEvent.click(backHomeButton);
-    expect(screen.getByText(/search/i)).toBeInTheDocument();
+    expect(screen.getByTestId('search-bar')).toBeInTheDocument();
   });
 });

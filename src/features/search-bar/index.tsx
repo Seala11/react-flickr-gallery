@@ -33,9 +33,9 @@ class SearchBar extends React.Component<ISearchBarProps> {
 
   render() {
     return (
-      <div className={styles.wrapper}>
+      <div className={styles.wrapper} data-testid="search-bar">
         <label htmlFor="search-bar" className={styles.label}>
-          Search the character:
+          Search photos:
         </label>
         <div className={styles.search}>
           <input
@@ -45,7 +45,7 @@ class SearchBar extends React.Component<ISearchBarProps> {
             type="search"
             id="search-bar"
             name="search"
-            placeholder="Rick"
+            placeholder="Cats"
             autoComplete="off"
             className={styles.input}
             data-testid="search-input"

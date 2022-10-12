@@ -7,7 +7,7 @@ class Header extends React.Component {
     return (
       <header className={styles.header}>
         <div className={styles.wrapper}>
-          <h1 className={styles.logo}>React. Components</h1>
+          <h1 className={styles.logo}>React. API</h1>
           <LinkList />
         </div>
       </header>

@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './index.module.scss';
 import Card from './card';
-import { CardType } from './models';
+import { FlickrCard } from 'pages/home/models';
 
 interface ICardListProps {
-  cards: CardType[];
+  cards: FlickrCard[];
 }
 
 class CardList extends React.Component<ICardListProps> {
@@ -18,7 +18,7 @@ class CardList extends React.Component<ICardListProps> {
         {this.props.cards.length > 0 ? (
           this.props.cards.map((card) => <Card key={card.id} card={card} />)
         ) : (
-          <p data-testid="error-message">Sorry, no characters matched your search.</p>
+          <p data-testid="error-message">Sorry, no images matched your search.</p>
         )}
       </ul>
     );
