@@ -27,6 +27,11 @@ class PopUp extends React.Component<PopUpProps> {
       year: 'numeric',
     });
 
+    const description =
+      card.description._content.length < 150
+        ? card.description._content
+        : card.description._content.slice(0, 150) + '...';
+
     return (
       <div className={styles.popup} data-testid="popup">
         <img src={img} alt={card.title} className={styles.img} data-testid="popup-image" />
@@ -50,12 +55,12 @@ class PopUp extends React.Component<PopUpProps> {
           <p>
             Description:{' '}
             <span className={styles.descr} data-testid="popup-descr">
-              {card.description._content ? card.description._content : 'not provided'}
+              {card.description._content ? description : 'not provided'}
             </span>
           </p>
 
           <p>
-            Taken on{' '}
+            Taken in{' '}
             <span className={styles.date} data-testid="popup-date">
               {date}
             </span>
@@ -71,7 +76,7 @@ class PopUp extends React.Component<PopUpProps> {
           <p>
             Tags:{' '}
             <span className={styles.tags} data-testid="popup-tags">
-              {tags}
+              {card.tags ? tags : 'not provided'}
             </span>
           </p>
         </section>
