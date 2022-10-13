@@ -1,26 +1,20 @@
 // react-testing-library renders your components to document.body,
 // this adds jest-dom's custom assertions
 import '@testing-library/jest-dom';
+import { mockLocalStorage } from 'mocks/localStorage';
+import { server } from './mocks/server';
 
-interface IStorage {
-  [key: string]: string | null;
-}
+beforeAll(() => {
+  server.listen({ onUnhandledRequest: 'error' });
+});
 
-let store: IStorage = {};
-const mockLocalStorage = {
-  getItem: (key: string): string | null => {
-    return store[key] ? store[key] : null;
-  },
-  setItem: (key: string, value: string) => {
-    store[key] = `${value}`;
-  },
-  removeItem: (key: string) => {
-    delete store[key];
-  },
-  clear: () => {
-    store = {};
-  },
-};
+afterEach(() => {
+  server.resetHandlers();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 Object.defineProperty(window, 'localStorage', {
   value: mockLocalStorage,

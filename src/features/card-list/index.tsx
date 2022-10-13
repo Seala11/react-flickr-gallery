@@ -5,6 +5,7 @@ import { FlickrCard } from 'pages/home/models';
 
 interface ICardListProps {
   cards: FlickrCard[];
+  error: boolean;
 }
 
 class CardList extends React.Component<ICardListProps> {
@@ -14,11 +15,13 @@ class CardList extends React.Component<ICardListProps> {
 
   render() {
     return (
-      <ul className={styles.list}>
+      <ul className={styles.list} data-testid="cardlist">
         {this.props.cards.length > 0 ? (
           this.props.cards.map((card) => <Card key={card.id} card={card} />)
         ) : (
-          <p data-testid="error-message">Sorry, no images matched your search.</p>
+          <p data-testid="error-message">
+            {this.props.error ? '' : `Sorry, no images matched your search.`}
+          </p>
         )}
       </ul>
     );

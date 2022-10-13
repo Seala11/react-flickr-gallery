@@ -33,12 +33,12 @@ const TEST_CARDS = [
 
 describe('when the card list is rendered', () => {
   it('initially should contain all cards', () => {
-    render(<CardList cards={TEST_CARDS} />);
+    render(<CardList cards={TEST_CARDS} error={false} />);
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 
   it('if no cards were passed show error message', () => {
-    render(<CardList cards={[]} />);
+    render(<CardList cards={[]} error={false} />);
     expect(screen.getByTestId('error-message')).toBeInTheDocument();
   });
 });

@@ -18,6 +18,7 @@ type HomePageState = {
   totalCards: number | null;
   sort: string;
   loading: boolean;
+  error: boolean;
 };
 
 class Home extends React.Component {
@@ -30,6 +31,7 @@ class Home extends React.Component {
     totalCards: null,
     sort: 'interestingness-desc',
     loading: false,
+    error: false,
   };
 
   constructor(props: IHomeProps) {
@@ -70,12 +72,11 @@ class Home extends React.Component {
       requestData.per_page = `${this.state.cardsPerPage}`;
       const parameters = new URLSearchParams(requestData);
       const result = await fetch(`https://api.flickr.com/services/rest/?${parameters}`);
-
       const data: SearchFetchType = await result.json();
-      this.setState({ cards: data.photos.photo });
-      console.log(data);
+      this.setState({ cards: data.photos.photo, error: false });
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      this.setState({ error: true, cards: [] });
     } finally {
       this.setState({ loading: false });
     }
@@ -90,7 +91,6 @@ class Home extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <main className={styles.wrapper}>
         <SearchBar
@@ -99,7 +99,12 @@ class Home extends React.Component {
           searchHandler={this.searchHandler}
           searchValue={this.state.searchValue}
         />
-        {this.state.loading ? <p>Loading...</p> : <CardList cards={this.state.cards} />}
+        {this.state.error && <p data-testid="error">Oops! Something went wrong</p>}
+        {this.state.loading ? (
+          <p data-testid="loader">Loading...</p>
+        ) : (
+          <CardList cards={this.state.cards} error={this.state.error} />
+        )}
       </main>
     );
   }

@@ -16,7 +16,7 @@ const API_KEY = 'd1743560a339c2a8d5327c0466b8874b';
 export const requestData = {
   method: 'flickr.photos.search',
   api_key: API_KEY,
-  text: 'cats',
+  text: '',
   sort: '',
   per_page: '',
   license: '4',

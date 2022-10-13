@@ -1,113 +1,128 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import Home from '.';
-// import { HANDLERS } from 'mocks/handlers';
-
+import { setSearchValueToStorage } from 'shared/helpers/storage';
+import userEvent from '@testing-library/user-event';
+import { server } from '../../mocks/server';
 import { rest } from 'msw';
-import { setupServer } from 'msw/node';
-// import 'whatwg-fetch';
-
-const server = setupServer(
-  rest.get('https://www.flickr.com/services/rest/', (req, res, ctx) => {
-    return res(ctx.status(200), ctx.json({}));
-  })
-);
-
-beforeAll(() => {
-  server.listen({ onUnhandledRequest: 'error' });
-});
-
-afterEach(() => {
-  server.resetHandlers();
-});
-
-afterAll(() => {
-  server.close();
-});
 
 describe('Wnen Home component renders', () => {
-  it.only('should contain empty search input and default amount of cards if there are no stored value in storage', async () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('should contain empty search input and default amount of cards if there are no stored value in storage', async () => {
     render(<Home />);
+    const loader = await screen.getByTestId('loader');
 
-    // await screen.getByRole('');
+    waitForElementToBeRemoved(loader);
 
-    // screen.debug();
-    // expect(screen.getByRole('listitem')).toHaveLength(8);
-    // expect(screen.getByTestId('search-input')).toBeEmptyDOMElement();
+    expect(await screen.queryByText(/Oops! Something went wrong/i)).not.toBeInTheDocument();
+    expect(await screen.findByTestId('cardlist')).toBeInTheDocument();
+    expect(screen.getByTestId('search-input')).toBeEmptyDOMElement();
+  });
+
+  it('stored value should be displayed in the search input on component`s mount', () => {
+    const TEST_VAL = 'test';
+    setSearchValueToStorage(TEST_VAL);
+
+    render(<Home />);
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
+  });
+
+  it('input value should be saved to LocalStorage during component`s unmount', () => {
+    const TEST_VAL = 'test1';
+
+    const { unmount } = render(<Home />);
+    const input = screen.getByRole('searchbox');
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue('');
+
+    userEvent.type(input, TEST_VAL);
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
+
+    unmount();
+
+    render(<Home />);
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
   });
 });
 
-// it('stored value should be displayed in the search input on component`s mount', () => {
-//   const TEST_VAL = 'test';
-//   setSearchValueToStorage(TEST_VAL);
+describe('When search input is updated', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
-//   render(<Home />);
-//   expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
-// });
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
 
-// it('input value should be saved to LocalStorage during component`s unmount', () => {
-//   const TEST_VAL = 'test1';
+  it('should make an api call if enter pressed', async () => {
+    const requestSpy = jest.fn();
+    server.events.on('request:start', requestSpy);
+    const TEST_VAL = 'test';
+    render(<Home />);
+    const loader = await screen.getByTestId('loader');
+    waitForElementToBeRemoved(loader);
 
-//   const { unmount } = render(<Home />);
-//   const input = screen.getByRole('searchbox');
+    const input = screen.getByRole('searchbox');
+    userEvent.type(input, TEST_VAL);
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
 
-//   expect(screen.getByTestId('search-input')).toBeEmptyDOMElement();
-//   userEvent.type(input, TEST_VAL);
+    fireEvent.keyDown(input, { key: 'enter', keyCode: 13 });
+    expect(await screen.getByTestId('loader')).toBeInTheDocument();
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    expect(requestSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        method: 'GET',
+        url: new URL('https://api.flickr.com/services/rest/'),
+      })
+    );
+  });
 
-//   unmount();
+  it('should display error if api call failed', async () => {
+    server.use(
+      rest.get('https://api.flickr.com/services/rest/', (req, res, ctx) => {
+        return res.once(
+          ctx.status(500),
+          ctx.json({
+            error: 'error',
+          })
+        );
+      })
+    );
 
-//   render(<Home />);
-//   expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
-// });
+    render(<Home />);
+    const loader = await screen.getByTestId('loader');
+    waitForElementToBeRemoved(loader);
 
-// describe('When search input is updated', () => {
-//   beforeEach(() => {
-//     localStorage.clear();
-//   });
+    await screen.findByTestId('error');
+    expect(await screen.queryByText(/Oops! Something went wrong/i)).toBeInTheDocument();
+  });
 
-//   afterAll(() => {
-//     jest.restoreAllMocks();
-//   });
+  it('after clearing search input should be empty', async () => {
+    const TEST_VAL = 'test1';
 
-//   it('should filter cards with valid search input', async () => {
-//     const SEARCH_VALUE = 'Rick';
+    render(<Home />);
+    const input = screen.getByRole('searchbox');
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue('');
 
-//     render(<Home />);
-//     const input = screen.getByRole('searchbox');
+    userEvent.type(input, TEST_VAL);
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
 
-//     expect(screen.getAllByRole('heading')).toHaveLength(8);
-//     userEvent.type(input, SEARCH_VALUE);
+    const clearButton = await waitFor(() => screen.getByTestId('clear-btn'));
+    userEvent.click(clearButton);
 
-//     await waitFor(() => screen.getAllByRole('listitem'));
-//     const cardList = screen.getAllByRole('heading');
-//     cardList.forEach((card) => expect(card).toHaveTextContent(new RegExp(SEARCH_VALUE, 'i')));
-//   });
-
-//   it('should display error message if no cards much the search input value ', async () => {
-//     const INVALID_SEARCH_VALUE = 'jdhjshfjsdfhsdjfhsdjfhsdjfhsdkdj';
-
-//     render(<Home />);
-//     const input = screen.getByRole('searchbox');
-
-//     userEvent.type(input, INVALID_SEARCH_VALUE);
-//     await waitFor(() => screen.getByTestId('error-message'));
-//   });
-
-//   it('after clearing search input value should display all cards and input should be empty', async () => {
-//     render(<Home />);
-
-//     const input = screen.getByRole('searchbox');
-//     userEvent.type(input, 'new search value');
-
-//     const clearButton = await waitFor(() => screen.getByTestId('clear-btn'));
-//     userEvent.click(clearButton);
-
-//     await waitFor(() => screen.getAllByRole('listitem'));
-//     expect(screen.getAllByRole('heading')).toHaveLength(8);
-//     expect(input).toHaveDisplayValue('');
-//     expect(screen.getByTestId('search-btn')).toBeInTheDocument();
-//   });
-// });
-
-// describe('Local storage for the search component', () => {});
+    expect(input).toHaveDisplayValue('');
+    expect(clearButton).not.toBeInTheDocument();
+  });
+});
