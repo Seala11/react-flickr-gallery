@@ -126,3 +126,77 @@ describe('When search input is updated', () => {
     expect(clearButton).not.toBeInTheDocument();
   });
 });
+
+describe('When clicking on the card', () => {
+  beforeEach(() => {
+    window.scrollTo = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  it('popup should be displayed', async () => {
+    render(<Home />);
+    const loader = await screen.getByTestId('loader');
+    waitForElementToBeRemoved(loader);
+
+    const cards = await screen.findAllByRole('listitem');
+    userEvent.click(cards[0]);
+
+    expect(screen.getByTestId('popup')).toBeInTheDocument();
+    expect(screen.getByTestId('overlay')).toBeInTheDocument();
+  });
+});
+
+describe('When popup is displayed', () => {
+  beforeEach(() => {
+    window.scrollTo = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
+  it('clicking on overlay should close popup', async () => {
+    render(<Home />);
+    const loader = await screen.getByTestId('loader');
+    waitForElementToBeRemoved(loader);
+
+    const cards = await screen.findAllByRole('listitem');
+    userEvent.click(cards[0]);
+
+    expect(screen.getByTestId('popup')).toBeInTheDocument();
+    expect(screen.getByTestId('overlay')).toBeInTheDocument();
+
+    userEvent.click(screen.getByTestId('overlay'));
+
+    expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+  });
+
+  it('clicking on close button close popup', async () => {
+    render(<Home />);
+    const loader = await screen.getByTestId('loader');
+    waitForElementToBeRemoved(loader);
+
+    const cards = await screen.findAllByRole('listitem');
+    userEvent.click(cards[0]);
+
+    expect(screen.getByTestId('popup')).toBeInTheDocument();
+    expect(screen.getByTestId('overlay')).toBeInTheDocument();
+
+    userEvent.click(screen.getByTestId('popup-close-btn'));
+
+    expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+  });
+});

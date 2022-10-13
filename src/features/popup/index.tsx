@@ -42,6 +42,8 @@ class PopUp extends React.Component<PopUpProps> {
               alt={card.ownername}
               className={styles.avatar}
               data-testid="popup-avatar-image"
+              width="48"
+              height="48"
             />
             <span className={styles.subtitle} data-testid="popup-subtitle">
               {card.ownername}
@@ -80,7 +82,9 @@ class PopUp extends React.Component<PopUpProps> {
             </span>
           </p>
         </section>
-        <button onClick={this.props.popUpClose}>Close</button>
+        <button onClick={this.props.popUpClose} data-testid="popup-close-btn">
+          Close
+        </button>
       </div>
     );
   }

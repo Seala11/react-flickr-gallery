@@ -104,7 +104,8 @@ class Home extends React.Component {
   }
 
   popUpHandler(card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) {
-    console.log(card, event);
+    // console.log(card, event);
+    event.preventDefault();
     this.setState({
       scrollPosition: window.pageYOffset,
     });
@@ -113,17 +114,19 @@ class Home extends React.Component {
   }
 
   popUpClose(event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) {
-    console.log(event);
+    // console.log(event);
     event.preventDefault();
     this.setState({ popUp: null });
     document.body.style.overflowY = 'unset';
   }
 
   render() {
-    console.log(this.state.scrollPosition);
+    // console.log(this.state.scrollPosition);
     return (
       <main className={styles.wrapper}>
-        {this.state.popUp && <div className={styles.overlay} onClick={this.popUpClose} />}
+        {this.state.popUp && (
+          <div className={styles.overlay} onClick={this.popUpClose} data-testid="overlay" />
+        )}
         {this.state.popUp && <PopUp card={this.state.popUp} popUpClose={this.popUpClose} />}
         <SearchBar
           updateInputHandler={this.updateSearchValue}
