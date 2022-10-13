@@ -6,8 +6,8 @@ html {
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
   @include poppins;
+  font-family: 'Poppins', sans-serif;
   background: var(--main-bg);
   margin: 0;
   width: 100vw;

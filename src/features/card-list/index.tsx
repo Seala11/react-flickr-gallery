@@ -6,6 +6,7 @@ import { FlickrCard } from 'pages/home/models';
 interface ICardListProps {
   cards: FlickrCard[];
   error: boolean;
+  showPopUp: (card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 }
 
 class CardList extends React.Component<ICardListProps> {
@@ -17,7 +18,9 @@ class CardList extends React.Component<ICardListProps> {
     return (
       <ul className={styles.list} data-testid="cardlist">
         {this.props.cards.length > 0 ? (
-          this.props.cards.map((card) => <Card key={card.id} card={card} />)
+          this.props.cards.map((card) => (
+            <Card key={card.id} card={card} showPopUp={this.props.showPopUp} />
+          ))
         ) : (
           <p data-testid="error-message">
             {this.props.error ? '' : `Sorry, no images matched your search.`}

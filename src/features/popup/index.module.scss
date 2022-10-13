@@ -1,0 +1,24 @@
+.popup {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  background-color: var(--light);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.9rem 0.2rem var(--dark-xl);
+  width: 70rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+}
+
+.avatarWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  border-radius: 50%;
+}

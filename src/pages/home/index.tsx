@@ -4,6 +4,7 @@ import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
 import { getSearchValueFromStorage } from 'shared/helpers/storage';
 import { FlickrCard, requestData, SearchFetchType } from './models';
+import PopUp from 'features/popup';
 
 interface IHomeProps {
   searchValue: string | null;
@@ -19,6 +20,8 @@ type HomePageState = {
   sort: string;
   loading: boolean;
   error: boolean;
+  popUp: FlickrCard | null;
+  scrollPosition: number;
 };
 
 class Home extends React.Component {
@@ -32,6 +35,8 @@ class Home extends React.Component {
     sort: 'interestingness-desc',
     loading: false,
     error: false,
+    popUp: null,
+    scrollPosition: 0,
   };
 
   constructor(props: IHomeProps) {
@@ -39,6 +44,8 @@ class Home extends React.Component {
     this.updateSearchValue = this.updateSearchValue.bind(this);
     this.clearSearchValue = this.clearSearchValue.bind(this);
     this.searchHandler = this.searchHandler.bind(this);
+    this.popUpHandler = this.popUpHandler.bind(this);
+    this.popUpClose = this.popUpClose.bind(this);
   }
 
   async componentDidMount() {
@@ -52,6 +59,12 @@ class Home extends React.Component {
     }
 
     window.addEventListener('keypress', this.searchEnterHandler);
+  }
+
+  componentDidUpdate(prevProps: Readonly<IHomeProps>, prevState: Readonly<HomePageState>): void {
+    if (this.state.popUp !== prevState.popUp) {
+      window.scrollTo(0, this.state.scrollPosition);
+    }
   }
 
   componentWillUnmount(): void {
@@ -90,9 +103,28 @@ class Home extends React.Component {
     this.setState({ searchValue: '' });
   }
 
+  popUpHandler(card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) {
+    console.log(card, event);
+    this.setState({
+      scrollPosition: window.pageYOffset,
+    });
+    this.setState({ popUp: card });
+    document.body.style.overflowY = 'hidden';
+  }
+
+  popUpClose(event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) {
+    console.log(event);
+    event.preventDefault();
+    this.setState({ popUp: null });
+    document.body.style.overflowY = 'unset';
+  }
+
   render() {
+    console.log(this.state.scrollPosition);
     return (
       <main className={styles.wrapper}>
+        {this.state.popUp && <div className={styles.overlay} onClick={this.popUpClose} />}
+        {this.state.popUp && <PopUp card={this.state.popUp} popUpClose={this.popUpClose} />}
         <SearchBar
           updateInputHandler={this.updateSearchValue}
           clearInputHandler={this.clearSearchValue}
@@ -103,7 +135,11 @@ class Home extends React.Component {
         {this.state.loading ? (
           <p data-testid="loader">Loading...</p>
         ) : (
-          <CardList cards={this.state.cards} error={this.state.error} />
+          <CardList
+            cards={this.state.cards}
+            error={this.state.error}
+            showPopUp={this.popUpHandler}
+          />
         )}
       </main>
     );

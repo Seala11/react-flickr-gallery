@@ -5,6 +5,8 @@ import Card from '.';
 describe('when the card is rendered', () => {
   const testCard = {
     farm: 66,
+    iconfarm: 99,
+    iconserver: '7285',
     id: '36493087974',
     isfamily: 0,
     isfriend: 0,
@@ -15,20 +17,24 @@ describe('when the card is rendered', () => {
     secret: '4df1b792a8',
     server: '65535',
     title: 'Cannelle au soleil',
+    views: '6211',
+    tags: 'bird nest spring fieldfare ngc',
+    description: { _content: '' },
+    datetaken: '2017-04-30 11:24:39',
   };
 
   it('should contain an expected image', () => {
-    render(<Card card={testCard} />);
+    render(<Card card={testCard} showPopUp={() => {}} />);
     expect(screen.getByTestId('card-image')).toBeInTheDocument();
   });
 
   it('should contain an expected title', () => {
-    render(<Card card={testCard} />);
+    render(<Card card={testCard} showPopUp={() => {}} />);
     expect(screen.getByTestId('card-title')).toBeInTheDocument();
   });
 
   it('should contain an expected subtitle', () => {
-    render(<Card card={testCard} />);
+    render(<Card card={testCard} showPopUp={() => {}} />);
     expect(screen.getByTestId('card-subtitle')).toBeInTheDocument();
   });
 });
