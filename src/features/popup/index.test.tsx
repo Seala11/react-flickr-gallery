@@ -104,7 +104,7 @@ describe('Wnen PopUp component renders', () => {
   });
 
   it('should cut card description if its too long', () => {
-    const descrValue = CARD_LONG_DESCR.description._content.slice(0, 150) + '...';
+    const descrValue = CARD_LONG_DESCR.description._content.slice(0, 350) + '...';
     render(<PopUp card={CARD_LONG_DESCR} popUpClose={jest.fn()} />);
 
     expect(screen.getByTestId('popup-descr')).toBeInTheDocument();
@@ -115,16 +115,12 @@ describe('Wnen PopUp component renders', () => {
   it('should display description not provided if card has no description', () => {
     render(<PopUp card={CARD_NO_DESCR} popUpClose={jest.fn()} />);
 
-    expect(screen.getByTestId('popup-descr')).toBeInTheDocument();
-    const desc = screen.getByTestId('popup-descr');
-    expect(desc).toHaveTextContent('not provided');
+    expect(screen.queryByTestId('popup-descr')).not.toBeInTheDocument();
   });
 
   it('should display tags not provided if card has no tags', () => {
     render(<PopUp card={CARD_NO_DESCR} popUpClose={jest.fn()} />);
 
-    expect(screen.getByTestId('popup-tags')).toBeInTheDocument();
-    const tags = screen.getByTestId('popup-tags');
-    expect(tags).toHaveTextContent('not provided');
+    expect(screen.queryByTestId('popup-tags')).not.toBeInTheDocument();
   });
 });
