@@ -11,6 +11,10 @@
 
 .search {
   position: relative;
+
+  @include media-mobile {
+    width: 80%;
+  }
 }
 
 .label {
@@ -24,6 +28,10 @@
   font-size: 1.6rem;
   border-radius: 0.6rem;
   border: 2px solid var(--dark-l);
+
+  @include media-mobile {
+    width: 100%;
+  }
 
   &:focus-visible {
     outline: none;
@@ -72,6 +80,10 @@
   border: 0.2rem solid var(--dark-l);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+
+  @include media-mobile {
+    width: 80%;
+  }
 
   &:hover {
     color: var(--dark-xxl);
