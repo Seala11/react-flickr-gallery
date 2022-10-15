@@ -134,7 +134,7 @@ class Home extends React.Component {
         />
         {this.state.error && <p data-testid="error">Oops! Something went wrong</p>}
         {this.state.loading ? (
-          <p data-testid="loader">Loading...</p>
+          <div data-testid="loader" className={styles.loader} />
         ) : (
           <CardList
             cards={this.state.cards}
