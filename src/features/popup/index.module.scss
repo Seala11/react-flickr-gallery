@@ -1,5 +1,31 @@
 @use './app/styles/mixins.scss' as *;
 
+.overlay {
+  background-color: rgb(41 41 41 / 66%);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  -webkit-transition: background-color 500ms linear;
+  -ms-transition: background-color 500ms linear;
+  transition: background-color 500ms linear;
+  overflow-y: hidden;
+  cursor: zoom-out;
+  animation: overlay 0.5s forwards;
+}
+
+@keyframes overlay {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 .popup {
   display: flex;
   flex-direction: column;
@@ -14,8 +40,9 @@
   left: 50%;
   z-index: 999;
   max-height: 90vh;
-  overflow: auto;
   transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  overflow: auto;
   animation: show 0.5s forwards;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -29,12 +56,14 @@
 @keyframes show {
   0% {
     transform-origin: center center;
-    transform: translate(-50%, -50%) scale(0);
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
   }
 
   100% {
     transform-origin: center center;
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
   }
 }
 

@@ -6,9 +6,13 @@ import { getSearchValueFromStorage } from 'shared/helpers/storage';
 import { FlickrCard, requestData, SearchFetchType } from './models';
 import PopUp from 'features/popup';
 
-interface IHomeProps {
-  searchValue: string | null;
-}
+type HomeProps = {
+  updateSearchValue: () => void;
+  clearSearchValue: () => void;
+  searchHandler: () => void;
+  popUpHandler: () => void;
+  popUpClose: () => void;
+};
 
 type HomePageState = {
   searchValue: string | null;
@@ -39,7 +43,7 @@ class Home extends React.Component {
     scrollPosition: 0,
   };
 
-  constructor(props: IHomeProps) {
+  constructor(props: HomeProps) {
     super(props);
     this.updateSearchValue = this.updateSearchValue.bind(this);
     this.clearSearchValue = this.clearSearchValue.bind(this);
@@ -61,7 +65,7 @@ class Home extends React.Component {
     window.addEventListener('keypress', this.searchEnterHandler);
   }
 
-  componentDidUpdate(prevProps: Readonly<IHomeProps>, prevState: Readonly<HomePageState>): void {
+  componentDidUpdate(prevProps: Readonly<HomeProps>, prevState: Readonly<HomePageState>): void {
     if (this.state.popUp !== prevState.popUp) {
       window.scrollTo(0, this.state.scrollPosition);
     }
@@ -104,7 +108,6 @@ class Home extends React.Component {
   }
 
   popUpHandler(card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) {
-    // console.log(card, event);
     event.preventDefault();
     this.setState({
       scrollPosition: window.pageYOffset,
@@ -114,19 +117,14 @@ class Home extends React.Component {
   }
 
   popUpClose(event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) {
-    // console.log(event);
     event.preventDefault();
     this.setState({ popUp: null });
     document.body.style.overflowY = 'unset';
   }
 
   render() {
-    // console.log(this.state.scrollPosition);
     return (
       <main className={styles.wrapper}>
-        {this.state.popUp && (
-          <div className={styles.overlay} onClick={this.popUpClose} data-testid="overlay" />
-        )}
         {this.state.popUp && <PopUp card={this.state.popUp} popUpClose={this.popUpClose} />}
         <SearchBar
           updateInputHandler={this.updateSearchValue}
