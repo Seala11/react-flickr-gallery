@@ -16,7 +16,7 @@ class Card extends React.Component<ICardProps> {
     const card = this.props.card;
     const img = `https://farm${card.farm}.staticflickr.com/${card.server}/${card.id}_${card.secret}.jpg`;
     const title = card.title.length < 35 ? card.title : card.title.slice(0, 35) + '...';
-    const name = card.ownername.length < 39 ? card.ownername : card.ownername.slice(0, 39) + '...';
+    const name = card.ownername.length < 35 ? card.ownername : card.ownername.slice(0, 35) + '...';
 
     return (
       <li className={styles.card} onClick={(event) => this.props.showPopUp(this.props.card, event)}>

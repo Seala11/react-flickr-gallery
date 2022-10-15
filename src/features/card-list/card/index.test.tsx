@@ -13,10 +13,10 @@ describe('when the card is rendered', () => {
     ispublic: 1,
     license: '4',
     owner: '96925387@N00',
-    ownername: 'Jeanne Menjoulet',
+    ownername: 'Jeanne Menjoulet ddfjsdhfgjshfgjsdhfgsjdhgfdj',
     secret: '4df1b792a8',
     server: '65535',
-    title: 'Cannelle au soleil',
+    title: 'Cannelle au soleil hdjkhkjhdkjdhkjhdkdjfhkjdfhsdkfhdkj',
     views: '6211',
     tags: 'bird nest spring fieldfare ngc',
     description: { _content: '' },
@@ -36,5 +36,17 @@ describe('when the card is rendered', () => {
   it('should contain an expected subtitle', () => {
     render(<Card card={testCard} showPopUp={() => {}} />);
     expect(screen.getByTestId('card-subtitle')).toBeInTheDocument();
+  });
+
+  it('if title is larger than 35 characters display should replace the rest with ...', () => {
+    render(<Card card={testCard} showPopUp={() => {}} />);
+    expect(screen.getByTestId('card-title')).toBeInTheDocument();
+    expect(screen.getByTestId('card-title')).toHaveTextContent(testCard.title.slice(0, 35));
+  });
+
+  it('if name is larger than 35 characters display should replace the rest with ...', () => {
+    render(<Card card={testCard} showPopUp={() => {}} />);
+    expect(screen.getByTestId('card-subtitle')).toBeInTheDocument();
+    expect(screen.getByTestId('card-subtitle')).toHaveTextContent(testCard.ownername.slice(0, 35));
   });
 });

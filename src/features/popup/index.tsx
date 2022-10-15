@@ -18,7 +18,8 @@ class PopUp extends React.Component<PopUpProps> {
     const img = `https://farm${card.farm}.staticflickr.com/${card.server}/${card.id}_${card.secret}.jpg`;
     const tags = card.tags
       .split(' ')
-      .map((tag, index) => (index < 20 ? `#${tag}` : ''))
+      .slice(0, 20)
+      .map((tag) => `#${tag}`)
       .join(' ');
 
     const date = new Date(card.datetaken).toLocaleString('en-US', {
