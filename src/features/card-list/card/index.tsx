@@ -24,9 +24,9 @@ class Card extends React.Component<ICardProps> {
         <h2 className={styles.title} data-testid="card-title">
           {title}
         </h2>
-        <span className={styles.subtitle} data-testid="card-subtitle">
+        <p className={styles.subtitle} data-testid="card-subtitle">
           {name}
-        </span>
+        </p>
       </li>
     );
   }
