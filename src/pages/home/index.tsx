@@ -67,7 +67,7 @@ class Home extends React.Component {
 
   componentDidUpdate(prevProps: Readonly<HomeProps>, prevState: Readonly<HomePageState>): void {
     if (this.state.popUp !== prevState.popUp) {
-      window.scrollTo(0, this.state.scrollPosition);
+      window.scrollTo({ top: this.state.scrollPosition });
     }
   }
 
@@ -119,7 +119,7 @@ class Home extends React.Component {
   popUpClose(event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) {
     event.preventDefault();
     this.setState({ popUp: null });
-    document.body.style.overflowY = 'unset';
+    document.body.style.overflowY = 'auto';
   }
 
   render() {
