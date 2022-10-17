@@ -32,6 +32,7 @@ export const requestData = {
   format: 'json',
   nojsoncallback: '1',
   safe_search: '1',
+  content_type: '1',
 };
 
 export type SearchFetchType = {

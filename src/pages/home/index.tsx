@@ -25,7 +25,6 @@ type HomePageState = {
   loading: boolean;
   error: boolean;
   popUp: FlickrCard | null;
-  scrollPosition: number;
 };
 
 class Home extends React.Component {
@@ -40,7 +39,6 @@ class Home extends React.Component {
     loading: false,
     error: false,
     popUp: null,
-    scrollPosition: 0,
   };
 
   constructor(props: HomeProps) {
@@ -65,9 +63,20 @@ class Home extends React.Component {
     window.addEventListener('keypress', this.searchEnterHandler);
   }
 
-  componentDidUpdate(prevProps: Readonly<HomeProps>, prevState: Readonly<HomePageState>): void {
+  getSnapshotBeforeUpdate(prevProps: Readonly<HomeProps>, prevState: Readonly<HomePageState>) {
     if (this.state.popUp !== prevState.popUp) {
-      window.scrollTo({ top: this.state.scrollPosition });
+      return window.pageYOffset;
+    }
+    return null;
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<HomeProps>,
+    prevState: Readonly<HomePageState>,
+    snapshot: number | null
+  ): void {
+    if (snapshot !== null) {
+      window.scrollTo({ top: snapshot });
     }
   }
 
@@ -109,9 +118,6 @@ class Home extends React.Component {
 
   popUpHandler(card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) {
     event.preventDefault();
-    this.setState({
-      scrollPosition: window.pageYOffset,
-    });
     this.setState({ popUp: card });
     document.body.style.overflowY = 'hidden';
   }
