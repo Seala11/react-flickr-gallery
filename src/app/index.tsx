@@ -7,18 +7,14 @@ import Routing from 'pages';
 import Header from 'widgets/header';
 import Footer from 'widgets/footer';
 
-class App extends React.Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <div className={styles.app}>
-          <Header />
-          <Routing />
-          <Footer />
-        </div>
-      </BrowserRouter>
-    );
-  }
-}
+const App = () => (
+  <BrowserRouter>
+    <div className={styles.app}>
+      <Header />
+      <Routing />
+      <Footer />
+    </div>
+  </BrowserRouter>
+);
 
 export default App;
