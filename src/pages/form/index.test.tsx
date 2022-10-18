@@ -43,12 +43,11 @@ describe('on submitting complete Form', () => {
     expect(avatarInput.files[0]).toStrictEqual(TEST_DATA.avatar);
 
     userEvent.click(screen.getByTestId('agreement'));
-
     userEvent.click(screen.getByTestId('submit-button'));
 
-    expect(screen.findByRole('listitem')).toBeInTheDocument;
+    await waitFor(() => expect(screen.queryByRole('listitem')).toBeInTheDocument());
     const card = await screen.findByRole('listitem');
-    expect(screen.findByText(/Your form has been successfully submitted/i)).toBeInTheDocument;
+    expect(screen.queryByText(/Your form has been successfully submitted/i)).toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
 
     expect(card).toHaveTextContent(
