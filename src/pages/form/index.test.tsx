@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import FormPage from '.';
 import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
 
 const TEST_DATA = {
   agreement: true,
@@ -54,7 +55,9 @@ describe('on submitting complete Form', () => {
       /First Name: Hanna\s*Last Name: Papova\s*Birthday: 2022-09-25\s*Country: Latvia\s*Notifications: Off/i
     );
 
-    jest.advanceTimersByTime(8500);
+    act(() => {
+      jest.advanceTimersByTime(8500);
+    });
 
     await waitFor(() => {
       expect(

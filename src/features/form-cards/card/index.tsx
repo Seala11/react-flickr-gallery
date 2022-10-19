@@ -11,14 +11,14 @@ const FormCard = ({ card }: Props) => {
 
   useEffect(() => {
     const { avatar } = card;
-    if (avatar && avatar instanceof FileList && avatar[0]) {
+    if (avatar && avatar instanceof File) {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
           setImagePreview(reader.result);
         }
       };
-      reader.readAsDataURL(avatar[0]);
+      reader.readAsDataURL(avatar);
     }
   }, [card]);
 

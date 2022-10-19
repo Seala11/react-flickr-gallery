@@ -24,14 +24,16 @@ describe('when Form component renders', () => {
 });
 
 describe('when typing in Form inputs', () => {
-  it('submit button should not be disabled', () => {
+  it('submit button should not be disabled', async () => {
     render(<Form createCard={jest.fn()} />);
     const firstNameInput = screen.getByTestId('firstName');
     userEvent.type(firstNameInput, TEST_DATA.firstName);
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    });
   });
 
-  it('should allow user to change first name', () => {
+  it('should allow user to change first name', async () => {
     render(<Form createCard={jest.fn()} />);
     const firstNameInput = screen.getByTestId('firstName');
     expect(firstNameInput).toBeEmptyDOMElement();
@@ -39,10 +41,12 @@ describe('when typing in Form inputs', () => {
 
     userEvent.type(firstNameInput, TEST_DATA.firstName);
     expect(firstNameInput).toHaveDisplayValue(TEST_DATA.firstName);
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    });
   });
 
-  it('should allow user to change last name', () => {
+  it('should allow user to change last name', async () => {
     render(<Form createCard={jest.fn()} />);
     const lastNameInput = screen.getByTestId('lastName');
     expect(lastNameInput).toBeEmptyDOMElement();
@@ -50,10 +54,12 @@ describe('when typing in Form inputs', () => {
 
     userEvent.type(lastNameInput, TEST_DATA.lastName);
     expect(lastNameInput).toHaveDisplayValue(TEST_DATA.lastName);
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    });
   });
 
-  it('should allow user to change birthday date', () => {
+  it('should allow user to change birthday date', async () => {
     render(<Form createCard={jest.fn()} />);
     const birthdayInput = screen.getByTestId('birthday');
     expect(birthdayInput).toBeEmptyDOMElement();
@@ -61,10 +67,12 @@ describe('when typing in Form inputs', () => {
 
     userEvent.type(birthdayInput, TEST_DATA.birthday);
     expect(birthdayInput).toHaveDisplayValue(TEST_DATA.birthday);
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    });
   });
 
-  it('should allow user to select a country', () => {
+  it('should allow user to select a country', async () => {
     render(<Form createCard={jest.fn()} />);
     const countrySelect = screen.getByTestId('country');
     expect(countrySelect).toHaveDisplayValue(/---/);
@@ -72,7 +80,9 @@ describe('when typing in Form inputs', () => {
 
     userEvent.selectOptions(countrySelect, TEST_DATA.country);
     expect((screen.getByText(TEST_DATA.country) as HTMLOptionElement).selected).toBeTruthy();
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    });
   });
 
   it('should allow user to upload an avatar', async () => {
@@ -91,7 +101,7 @@ describe('when typing in Form inputs', () => {
     expect(screen.getByTestId('submit-button')).not.toBeDisabled();
   });
 
-  it('should allow user to select receive notifications', () => {
+  it('should allow user to select receive notifications', async () => {
     render(<Form createCard={jest.fn()} />);
     const notificationsInput: HTMLInputElement = screen.getByTestId('notifications');
     expect(notificationsInput.checked).toEqual(false);
@@ -99,10 +109,12 @@ describe('when typing in Form inputs', () => {
 
     userEvent.click(notificationsInput);
     expect(notificationsInput.checked).toEqual(true);
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    });
   });
 
-  it('should allow user to agree on data processing', () => {
+  it('should allow user to agree on data processing', async () => {
     render(<Form createCard={jest.fn()} />);
     const agreementCheckbox: HTMLInputElement = screen.getByTestId('agreement');
     expect(agreementCheckbox.checked).toEqual(false);
@@ -110,9 +122,9 @@ describe('when typing in Form inputs', () => {
 
     userEvent.click(agreementCheckbox);
     expect(agreementCheckbox.checked).toEqual(true);
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
-
-    userEvent.click(screen.getByTestId('submit-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    });
   });
 });
 
@@ -123,10 +135,15 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    await screen.findByText(/First name is required/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/First name is required/i)).toBeInTheDocument();
+    });
 
     userEvent.type(screen.getByTestId('firstName'), 'h');
-    await expect(screen.findByText(/First name is required/i)).not.toBeInTheDocument;
+
+    await waitFor(() => {
+      expect(screen.queryByText(/First name is required/i)).not.toBeInTheDocument();
+    });
   });
 
   it('should display error if first name is invalid and remove it if user type again', async () => {
@@ -135,26 +152,32 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(screen.getByTestId('firstName'), 'k');
     userEvent.click(screen.getByTestId('submit-button'));
 
-    await screen.findByText(/Should contain at least 2 characters/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/Should contain at least 2 characters/i)).toBeInTheDocument();
+    });
 
     userEvent.type(screen.getByTestId('firstName'), 'h');
-    await expect(
-      screen.queryByText(/Should contain at least 2 characters/i)
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText(/Should contain at least 2 characters/i)).not.toBeInTheDocument();
+    });
   });
 
-  // it('should display error if there are no last name and remove it if user type again', async () => {
-  //   render(<Form createCard={jest.fn()} messageDisplay={false} />);
+  it('should display error if there are no last name and remove it if user type again', async () => {
+    render(<Form createCard={jest.fn()} />);
 
-  //   userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
-  //   expect(screen.getByTestId('lastName')).toHaveDisplayValue('');
-  //   userEvent.click(screen.getByTestId('submit-button'));
+    userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
+    userEvent.click(screen.getByTestId('submit-button'));
 
-  //   await screen.findByText(/Last name is required/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/Last name is required/i)).toBeInTheDocument();
+    });
 
-  //   userEvent.type(screen.getByTestId('lastName'), 'h');
-  //   expect(screen.queryByText(/Last name is required/i)).not.toBeInTheDocument();
-  // });
+    userEvent.type(screen.getByTestId('lastName'), 'h');
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Last name is required/i)).not.toBeInTheDocument();
+    });
+  });
 
   it('should display error if last name is invalid and remove it if user type again', async () => {
     render(<Form createCard={jest.fn()} />);
@@ -162,12 +185,15 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(screen.getByTestId('lastName'), 'k');
     userEvent.click(screen.getByTestId('submit-button'));
 
-    await screen.findByText(/Should contain at least 2 characters/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/Should contain at least 2 characters/i)).toBeInTheDocument();
+    });
 
     userEvent.type(screen.getByTestId('lastName'), 'h');
-    await expect(
-      screen.queryByText(/Should contain at least 2 characters/i)
-    ).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Should contain at least 2 characters/i)).not.toBeInTheDocument();
+    });
   });
 
   it('should display error if no date was picked and remove it if user pick a date', async () => {
@@ -176,26 +202,31 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    await screen.findByText(/Birth date is required/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/Birth date is required/i)).toBeInTheDocument();
+    });
 
     userEvent.type(screen.getByTestId('birthday'), TEST_DATA.birthday);
-    expect(screen.queryByText(/Birth date is required/i)).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Birth date is required/i)).not.toBeInTheDocument();
+    });
   });
 
-  // it('should display error if birth date is invalid', async () => {
-  //   render(<Form createCard={jest.fn()} messageDisplay={false} />);
+  it('should display error if birth date is invalid', async () => {
+    render(<Form createCard={jest.fn()} />);
 
-  //   const birthdayInput = screen.getByTestId('birthday');
-  //   expect(birthdayInput).toBeEmptyDOMElement();
-  //   expect(screen.getByTestId('submit-button')).toBeDisabled();
+    const birthdayInput = screen.getByTestId('birthday');
 
-  //   userEvent.type(birthdayInput, '2200-01-01');
-  //   expect(birthdayInput).toHaveDisplayValue('2200-01-01');
+    userEvent.type(birthdayInput, '2200-01-01');
+    expect(birthdayInput).toHaveDisplayValue('2200-01-01');
 
-  //   userEvent.click(screen.getByTestId('submit-button'));
+    userEvent.click(screen.getByTestId('submit-button'));
 
-  //   expect(screen.queryByText(/'Invalid birth date'/i)).toBeInTheDocument();
-  // });
+    await waitFor(() => {
+      expect(screen.queryByText(/Invalid birth date/i)).toBeInTheDocument();
+    });
+  });
 
   it('should display error if no country was picked and remove it if user pick a country', async () => {
     render(<Form createCard={jest.fn()} />);
@@ -203,10 +234,15 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    await screen.findByText(/Country is required/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/Country is required/i)).toBeInTheDocument();
+    });
 
     userEvent.selectOptions(screen.getByTestId('country'), TEST_DATA.country);
-    await expect(screen.queryByText(/Country is required/i)).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Country is required/i)).not.toBeInTheDocument();
+    });
   });
 
   it('should display error if no avatar was uploaded and remove it if user upload a file', async () => {
@@ -216,7 +252,9 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    await screen.findByText(/Avatar is required/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/Avatar is required/i)).toBeInTheDocument();
+    });
 
     await waitFor(() => userEvent.upload(avatarInput, TEST_DATA.avatar));
 
@@ -224,7 +262,9 @@ describe('on submitting uncomplete Form', () => {
       throw new Error('No files have been uploaded');
     }
 
-    await expect(screen.queryByText(/Avatar is required/i)).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText(/Avatar is required/i)).not.toBeInTheDocument();
+    });
   });
 
   it('should display error if user did not agree on data processing and remove it after agreement', async () => {
@@ -233,10 +273,15 @@ describe('on submitting uncomplete Form', () => {
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
     userEvent.click(screen.getByTestId('submit-button'));
 
-    await screen.findByText(/Required field/i);
+    await waitFor(() => {
+      expect(screen.queryByText(/Required field/i)).toBeInTheDocument();
+    });
 
     userEvent.click(screen.getByTestId('agreement'));
-    await expect(screen.queryByText(/Required field/i)).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Required field/i)).not.toBeInTheDocument();
+    });
   });
 
   it('should set submit button active again after filling all inputs with errors', async () => {
@@ -253,6 +298,6 @@ describe('on submitting uncomplete Form', () => {
     userEvent.upload(screen.getByTestId('avatar'), TEST_DATA.avatar);
     userEvent.click(screen.getByTestId('agreement'));
 
-    expect(screen.getByTestId('submit-button')).not.toBeDisabled();
+    await waitFor(() => expect(screen.getByTestId('submit-button')).not.toBeDisabled());
   });
 });

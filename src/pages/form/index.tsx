@@ -1,53 +1,35 @@
 import Form from 'features/form';
 import FormCardList from 'features/form-cards';
 import { FormCardType } from 'features/form/models';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.module.scss';
 
-type FormPropsType = {
-  createCard: (card: FormCardType) => void;
-};
+const FormPage = () => {
+  const [cards, setCards] = useState<FormCardType[]>([]);
+  const [messageDisplay, setMessageDisplay] = useState<boolean>(false);
 
-type StateType = {
-  cards: FormCardType[];
-  messageDisplay: boolean;
-};
-
-class FormPage extends React.Component {
-  state: StateType = { cards: [], messageDisplay: false };
-
-  constructor(props: FormPropsType) {
-    super(props);
-    this.createCard = this.createCard.bind(this);
-  }
-
-  componentDidUpdate(): void {
-    if (this.state.messageDisplay) {
+  useEffect(() => {
+    if (messageDisplay) {
       setTimeout(() => {
-        this.setState((prevState) => {
-          return { ...prevState, messageDisplay: false };
-        });
+        setMessageDisplay(false);
       }, 8500);
     }
-  }
+  }, [messageDisplay]);
 
-  createCard(card: FormCardType) {
-    this.setState((prevState) => {
-      return { ...prevState, cards: [...this.state.cards, card], messageDisplay: true };
-    });
-  }
+  const createCard = (card: FormCardType) => {
+    setCards([...cards, card]);
+    setMessageDisplay(true);
+  };
 
-  render() {
-    return (
-      <main className={styles.wrapper}>
-        {this.state.messageDisplay && (
-          <div className={styles.message}>Your form has been successfully submitted</div>
-        )}
-        <Form createCard={this.createCard} />
-        <FormCardList cards={this.state.cards} />
-      </main>
-    );
-  }
-}
+  return (
+    <main className={styles.wrapper}>
+      {messageDisplay && (
+        <div className={styles.message}>Your form has been successfully submitted</div>
+      )}
+      <Form createCard={createCard} />
+      <FormCardList cards={cards} />
+    </main>
+  );
+};
 
 export default FormPage;

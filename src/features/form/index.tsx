@@ -19,17 +19,6 @@ const Form = ({ createCard }: Props) => {
     reset,
   } = useForm<FormCardType>();
 
-  // TODO: shouldComponentUpdate hook
-  // shouldComponentUpdate(
-  //   nextProps: Readonly<FormPropsType>,
-  //   nextState: Readonly<StateType>
-  // ): boolean {
-  //   if (this.state.disabled !== nextState.disabled || Object.keys(this.state.errors).length > 0) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
@@ -45,12 +34,14 @@ const Form = ({ createCard }: Props) => {
   }, [isSubmitSuccessful, reset]);
 
   const onSubmit: SubmitHandler<FormCardType> = (data) => {
-    console.log(data);
-
     const dataIsValid: boolean = validateData(data);
 
     if (dataIsValid) {
-      createCard(data);
+      const cardData = { ...data };
+      if (cardData.avatar && cardData.avatar instanceof FileList) {
+        cardData.avatar = cardData.avatar[0];
+      }
+      createCard(cardData);
     }
   };
 
@@ -138,7 +129,6 @@ const Form = ({ createCard }: Props) => {
     return !formIsInvalid;
   };
 
-  console.log('update');
   return (
     <section className={styles.section}>
       <form

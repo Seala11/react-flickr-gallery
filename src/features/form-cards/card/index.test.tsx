@@ -42,27 +42,39 @@ describe('Wnen Form Card component renders', () => {
     });
   });
 
-  it('should display notifications ON if notification selected', async () => {
+  it('should display notifications ON if notification selected', () => {
     render(<FormCard card={TEST_CARD} />);
     expect(screen.getByTestId('notifications')).toHaveTextContent('Off');
   });
 
-  it('should display notifications OFF if notification not selected', async () => {
+  it('should display notifications OFF if notification not selected', () => {
     render(<FormCard card={TEST_CARD2} />);
     expect(screen.getByTestId('notifications')).toHaveTextContent('On');
   });
 
-  it('should display only first 250 chars of first name if its more than 250 characters', async () => {
+  it('should display only first 250 chars of first name if its more than 250 characters', () => {
     render(<FormCard card={TEST_CARD2} />);
     expect(screen.getByTestId('firstName')).toHaveTextContent(
       `${TEST_CARD2.firstName.slice(0, 250)}...`
     );
   });
 
-  it('should display only first 250 chars of last name if its more than 250 characters', async () => {
+  it('should display only first 250 chars of last name if its more than 250 characters', () => {
     render(<FormCard card={TEST_CARD2} />);
     expect(screen.getByTestId('lastName')).toHaveTextContent(
       `${TEST_CARD2.lastName.slice(0, 250)}...`
     );
+  });
+
+  it('should display image with FileReader', async () => {
+    render(<FormCard card={TEST_CARD} />);
+
+    expect((screen.getByTestId('avatar-img') as HTMLImageElement).src).toEqual('http://localhost/');
+
+    await waitFor(() => {
+      expect((screen.getByTestId('avatar-img') as HTMLImageElement).src).not.toEqual(
+        'http://localhost/'
+      );
+    });
   });
 });
