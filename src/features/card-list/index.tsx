@@ -3,32 +3,22 @@ import styles from './index.module.scss';
 import Card from './card';
 import { FlickrCard } from 'pages/home/models';
 
-interface ICardListProps {
+type CardListProps = {
   cards: FlickrCard[];
   error: boolean;
   showPopUp: (card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
-}
+};
 
-class CardList extends React.Component<ICardListProps> {
-  constructor(props: ICardListProps) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <ul className={styles.list} data-testid="cardlist">
-        {this.props.cards.length > 0 ? (
-          this.props.cards.map((card) => (
-            <Card key={card.id} card={card} showPopUp={this.props.showPopUp} />
-          ))
-        ) : (
-          <p data-testid="error-message">
-            {this.props.error ? '' : `Sorry, no images matched your search.`}
-          </p>
-        )}
-      </ul>
-    );
-  }
-}
+const CardList = ({ cards, error, showPopUp }: CardListProps) => {
+  return (
+    <ul className={styles.list} data-testid="cardlist">
+      {cards.length > 0 ? (
+        cards.map((card) => <Card key={card.id} card={card} showPopUp={showPopUp} />)
+      ) : (
+        <p data-testid="error-message">{error ? '' : `Sorry, no images matched your search.`}</p>
+      )}
+    </ul>
+  );
+};
 
 export default CardList;
