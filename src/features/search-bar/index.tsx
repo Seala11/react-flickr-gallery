@@ -12,6 +12,7 @@ type SearchBarProps = {
 const SearchBar = ({ ...props }: SearchBarProps) => {
   const { updateInputHandler, clearInputHandler, searchHandler, searchValue } = props;
   const mount = useRef<boolean>(false);
+  const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (mount.current) return;
@@ -28,6 +29,11 @@ const SearchBar = ({ ...props }: SearchBarProps) => {
       mount.current = false;
     };
   }, [searchValue]);
+
+  const inpuReset = () => {
+    clearInputHandler();
+    searchInput.current?.focus();
+  };
 
   return (
     <div className={styles.wrapper} data-testid="search-bar">
@@ -46,11 +52,12 @@ const SearchBar = ({ ...props }: SearchBarProps) => {
           autoComplete="off"
           className={styles.input}
           data-testid="search-input"
+          ref={searchInput}
         />
         {searchValue && (
           <button
             className={`${styles.icon} ${styles.icon_clear}`}
-            onClick={clearInputHandler}
+            onClick={inpuReset}
             data-testid="clear-btn"
           ></button>
         )}
