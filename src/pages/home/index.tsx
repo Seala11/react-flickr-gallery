@@ -6,19 +6,6 @@ import { getSearchValueFromStorage } from 'shared/helpers/storage';
 import { FlickrCard, requestData, SearchFetchType } from './models';
 import PopUp from 'features/popup';
 
-// type HomePageState = {
-//   searchValue: string | null;
-//   cards: FlickrCard[];
-//   currPage: number;
-//   totalPages: number;
-//   cardsPerPage: number;
-//   totalCards: number | null;
-//   sort: string;
-//   loading: boolean;
-//   error: boolean;
-//   popUp: FlickrCard | null;
-// };
-
 type SearchPageType = {
   currPage: number;
   totalPages: number;
@@ -28,7 +15,7 @@ type SearchPageType = {
 };
 
 const Home = () => {
-  const mount = useRef(false);
+  const mount = useRef<boolean>(false);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [cards, setCards] = useState<FlickrCard[]>([]);
   const [popUp, setPopUp] = useState<FlickrCard | null>(null);
@@ -46,7 +33,6 @@ const Home = () => {
   const searchHandler = useCallback(
     async (value: string) => {
       setLoading(true);
-      console.log('passed value', value);
       try {
         requestData.sort = searchPage.sort;
         requestData.text = value;
@@ -68,6 +54,18 @@ const Home = () => {
   );
 
   useEffect(() => {
+    if (mount.current) return;
+    const storedValue = getSearchValueFromStorage();
+    if (storedValue && !mount.current) {
+      setSearchValue(storedValue);
+      searchHandler(storedValue);
+    } else {
+      searchHandler('cats');
+    }
+    mount.current = true;
+  }, [searchHandler]);
+
+  useEffect(() => {
     const searchEnterHandler = (event: KeyboardEvent) => {
       if (event.key === 'Enter' && searchValue) {
         searchHandler(searchValue);
@@ -80,20 +78,6 @@ const Home = () => {
       window.removeEventListener('keypress', searchEnterHandler);
     };
   }, [searchHandler, searchValue]);
-
-  useEffect(() => {
-    if (mount.current) return;
-    const storedValue = getSearchValueFromStorage();
-    if (storedValue && !mount.current) {
-      setSearchValue(storedValue);
-      console.log('render stored value', storedValue);
-      searchHandler(storedValue);
-    } else {
-      searchHandler('cats');
-    }
-    mount.current = true;
-    console.log('first time mounting');
-  }, [searchHandler]);
 
   const updateSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
