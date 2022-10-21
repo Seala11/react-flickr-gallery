@@ -1,30 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './index.module.scss';
 import { setSearchValueToStorage } from 'shared/helpers/storage';
 
 type SearchBarProps = {
   updateInputHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
   clearInputHandler: () => void;
-  searchHandler: () => void;
+  searchHandler: (value: string) => Promise<void>;
   searchValue: string | null;
 };
 
-const SearchBar = ({
-  updateInputHandler,
-  clearInputHandler,
-  searchHandler,
-  searchValue,
-}: SearchBarProps) => {
+const SearchBar = ({ ...props }: SearchBarProps) => {
+  const { updateInputHandler, clearInputHandler, searchHandler, searchValue } = props;
+  const mount = useRef<boolean>(false);
+
   useEffect(() => {
+    if (mount.current) return;
     const updateLocalStorage = () => {
       if (typeof searchValue === 'string') setSearchValueToStorage(searchValue);
     };
 
     window.addEventListener('beforeunload', updateLocalStorage);
+    mount.current = true;
 
     return () => {
       updateLocalStorage();
       window.removeEventListener('beforeunload', updateLocalStorage);
+      mount.current = false;
     };
   }, [searchValue]);
 
@@ -57,7 +58,7 @@ const SearchBar = ({
       <button
         className={styles.searchBtn}
         data-testid="search-btn"
-        onClick={searchHandler}
+        onClick={() => searchHandler(searchValue || '')}
         disabled={!searchValue}
       >
         Search

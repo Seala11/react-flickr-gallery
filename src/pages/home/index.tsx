@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './index.module.scss';
 import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
@@ -6,151 +6,132 @@ import { getSearchValueFromStorage } from 'shared/helpers/storage';
 import { FlickrCard, requestData, SearchFetchType } from './models';
 import PopUp from 'features/popup';
 
-type HomeProps = {
-  updateSearchValue: () => void;
-  clearSearchValue: () => void;
-  searchHandler: () => void;
-  popUpHandler: () => void;
-  popUpClose: () => void;
-};
+// type HomePageState = {
+//   searchValue: string | null;
+//   cards: FlickrCard[];
+//   currPage: number;
+//   totalPages: number;
+//   cardsPerPage: number;
+//   totalCards: number | null;
+//   sort: string;
+//   loading: boolean;
+//   error: boolean;
+//   popUp: FlickrCard | null;
+// };
 
-type HomePageState = {
-  searchValue: string | null;
-  cards: FlickrCard[];
+type SearchPageType = {
   currPage: number;
   totalPages: number;
   cardsPerPage: number;
   totalCards: number | null;
   sort: string;
-  loading: boolean;
-  error: boolean;
-  popUp: FlickrCard | null;
 };
 
-class Home extends React.Component {
-  state: HomePageState = {
-    searchValue: null,
-    cards: [],
+const Home = () => {
+  const mount = useRef(false);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [cards, setCards] = useState<FlickrCard[]>([]);
+  const [popUp, setPopUp] = useState<FlickrCard | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchPage, setSearchPage] = useState<SearchPageType>({
     currPage: 1,
     totalPages: 1,
     cardsPerPage: 12,
     totalCards: null,
     sort: 'interestingness-desc',
-    loading: false,
-    error: false,
-    popUp: null,
-  };
+  });
 
-  constructor(props: HomeProps) {
-    super(props);
-    this.updateSearchValue = this.updateSearchValue.bind(this);
-    this.clearSearchValue = this.clearSearchValue.bind(this);
-    this.searchHandler = this.searchHandler.bind(this);
-    this.popUpHandler = this.popUpHandler.bind(this);
-    this.popUpClose = this.popUpClose.bind(this);
-  }
+  const searchHandler = useCallback(
+    async (value: string) => {
+      setLoading(true);
+      console.log('passed value', value);
+      try {
+        requestData.sort = searchPage.sort;
+        requestData.text = value;
+        requestData.per_page = `${searchPage.cardsPerPage}`;
+        const parameters = new URLSearchParams(requestData);
+        const result = await fetch(`https://api.flickr.com/services/rest/?${parameters}`);
+        const data: SearchFetchType = await result.json();
+        setCards(data.photos.photo);
+        setError(false);
+      } catch (err) {
+        console.error(err);
+        setCards([]);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [searchPage.cardsPerPage, searchPage.sort]
+  );
 
-  async componentDidMount() {
+  useEffect(() => {
+    const searchEnterHandler = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && searchValue) {
+        searchHandler(searchValue);
+      }
+    };
+
+    window.addEventListener('keypress', searchEnterHandler);
+
+    return () => {
+      window.removeEventListener('keypress', searchEnterHandler);
+    };
+  }, [searchHandler, searchValue]);
+
+  useEffect(() => {
+    if (mount.current) return;
     const storedValue = getSearchValueFromStorage();
-    if (storedValue) {
-      this.setState({ searchValue: storedValue }, () => {
-        this.searchHandler();
-      });
+    if (storedValue && !mount.current) {
+      setSearchValue(storedValue);
+      console.log('render stored value', storedValue);
+      searchHandler(storedValue);
     } else {
-      this.searchHandler();
+      searchHandler('cats');
     }
+    mount.current = true;
+    console.log('first time mounting');
+  }, [searchHandler]);
 
-    window.addEventListener('keypress', this.searchEnterHandler);
-  }
-
-  getSnapshotBeforeUpdate(prevProps: Readonly<HomeProps>, prevState: Readonly<HomePageState>) {
-    if (this.state.popUp !== prevState.popUp) {
-      return window.pageYOffset;
-    }
-    return null;
-  }
-
-  componentDidUpdate(
-    prevProps: Readonly<HomeProps>,
-    prevState: Readonly<HomePageState>,
-    snapshot: number | null
-  ): void {
-    if (snapshot !== null) {
-      window.scrollTo({ top: snapshot });
-    }
-  }
-
-  componentWillUnmount(): void {
-    window.removeEventListener('keypress', this.searchEnterHandler);
-  }
-
-  searchEnterHandler = (event: KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      this.searchHandler();
-    }
+  const updateSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
   };
 
-  async searchHandler() {
-    this.setState({ loading: true });
-    try {
-      requestData.sort = this.state.sort;
-      requestData.text = this.state.searchValue || 'cats';
-      requestData.per_page = `${this.state.cardsPerPage}`;
-      const parameters = new URLSearchParams(requestData);
-      const result = await fetch(`https://api.flickr.com/services/rest/?${parameters}`);
-      const data: SearchFetchType = await result.json();
-      this.setState({ cards: data.photos.photo, error: false });
-    } catch (err) {
-      console.error(err);
-      this.setState({ error: true, cards: [] });
-    } finally {
-      this.setState({ loading: false });
-    }
-  }
+  const clearSearchValue = () => {
+    setSearchValue('');
+  };
 
-  updateSearchValue(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ searchValue: event.target.value });
-  }
-
-  clearSearchValue() {
-    this.setState({ searchValue: '' });
-  }
-
-  popUpHandler(card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) {
+  const popUpHandler = (card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     event.preventDefault();
-    this.setState({ popUp: card });
+    setPopUp(card);
     document.body.style.overflowY = 'hidden';
-  }
+  };
 
-  popUpClose(event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) {
+  const popUpClose = (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     event.preventDefault();
-    this.setState({ popUp: null });
+    setPopUp(null);
     document.body.style.overflowY = 'auto';
-  }
+  };
 
-  render() {
-    return (
-      <main className={styles.wrapper}>
-        {this.state.popUp && <PopUp card={this.state.popUp} popUpClose={this.popUpClose} />}
-        <SearchBar
-          updateInputHandler={this.updateSearchValue}
-          clearInputHandler={this.clearSearchValue}
-          searchHandler={this.searchHandler}
-          searchValue={this.state.searchValue}
-        />
-        {this.state.error && <p data-testid="error">Oops! Something went wrong</p>}
-        {this.state.loading ? (
-          <div data-testid="loader" className={styles.loader} />
-        ) : (
-          <CardList
-            cards={this.state.cards}
-            error={this.state.error}
-            showPopUp={this.popUpHandler}
-          />
-        )}
-      </main>
-    );
-  }
-}
+  return (
+    <main className={styles.wrapper}>
+      {popUp && <PopUp card={popUp} popUpClose={popUpClose} />}
+      <SearchBar
+        updateInputHandler={updateSearchValue}
+        clearInputHandler={clearSearchValue}
+        searchHandler={searchHandler}
+        searchValue={searchValue}
+      />
+      {error && <p data-testid="error">Oops! Something went wrong</p>}
+      {loading ? (
+        <div data-testid="loader" className={styles.loader} />
+      ) : (
+        <CardList cards={cards} error={error} showPopUp={popUpHandler} />
+      )}
+    </main>
+  );
+};
 
 export default Home;

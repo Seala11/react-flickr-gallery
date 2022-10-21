@@ -7,10 +7,10 @@ describe('When the search bar is rendered', () => {
   it('search bar should be empty if search value from props is null, search button is displayed', () => {
     const { getByTestId } = render(
       <SearchBar
-        updateInputHandler={() => {}}
-        clearInputHandler={() => {}}
+        updateInputHandler={jest.fn()}
+        clearInputHandler={jest.fn()}
         searchValue={null}
-        searchHandler={() => {}}
+        searchHandler={jest.fn()}
       />
     );
     expect(getByTestId('search-input')).toBeEmptyDOMElement();
@@ -21,9 +21,9 @@ describe('When the search bar is rendered', () => {
     const propsValue = 'test';
     const { getByTestId } = render(
       <SearchBar
-        updateInputHandler={() => {}}
-        clearInputHandler={() => {}}
-        searchHandler={() => {}}
+        updateInputHandler={jest.fn()}
+        clearInputHandler={jest.fn()}
+        searchHandler={jest.fn()}
         searchValue={propsValue}
       />
     );
@@ -34,9 +34,9 @@ describe('When the search bar is rendered', () => {
   it('input should have a focus on it', async () => {
     const { getByTestId } = render(
       <SearchBar
-        updateInputHandler={() => {}}
-        clearInputHandler={() => {}}
-        searchHandler={() => {}}
+        updateInputHandler={jest.fn()}
+        clearInputHandler={jest.fn()}
+        searchHandler={jest.fn()}
         searchValue={null}
       />
     );
@@ -50,8 +50,8 @@ describe('when typing in search bar', () => {
     const { getByTestId } = render(
       <SearchBar
         updateInputHandler={update}
-        clearInputHandler={() => {}}
-        searchHandler={() => {}}
+        clearInputHandler={jest.fn()}
+        searchHandler={jest.fn()}
         searchValue={null}
       />
     );
@@ -66,8 +66,8 @@ describe('when input contains a value', () => {
     const clear = jest.fn();
     const { getByTestId } = render(
       <SearchBar
-        updateInputHandler={() => {}}
-        searchHandler={() => {}}
+        updateInputHandler={jest.fn()}
+        searchHandler={jest.fn()}
         clearInputHandler={clear}
         searchValue={propsValue}
       />
