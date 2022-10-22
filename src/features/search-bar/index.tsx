@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from './index.module.scss';
-import { setSearchValueToStorage } from 'shared/helpers/storage';
+import { useBeforeUnload } from './useBeforeUnload';
 
 type SearchBarProps = {
   setSearchValue: React.Dispatch<React.SetStateAction<string | null>>;
@@ -10,21 +10,11 @@ type SearchBarProps = {
 
 const SearchBar = ({ setSearchValue, searchHandler, searchValue }: SearchBarProps) => {
   const searchInput = useRef<HTMLInputElement>(null);
-
-  const updateLocalStorage = useCallback(() => {
-    if (typeof searchValue === 'string') {
-      setSearchValueToStorage(searchValue);
-    }
-  }, [searchValue]);
+  const setUpdatedValue = useBeforeUnload();
 
   useEffect(() => {
-    window.addEventListener('beforeunload', updateLocalStorage);
-
-    return () => {
-      updateLocalStorage();
-      window.removeEventListener('beforeunload', updateLocalStorage);
-    };
-  }, [updateLocalStorage]);
+    setUpdatedValue(searchValue);
+  }, [searchValue, setUpdatedValue]);
 
   const resetSearchValue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
