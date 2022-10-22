@@ -29,7 +29,9 @@ const SearchBar = ({ setSearchValue, searchHandler, searchValue }: SearchBarProp
 
   const submitSearchForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    searchHandler(searchValue || '');
+    if (searchValue) {
+      searchHandler(searchValue);
+    }
   };
 
   return (

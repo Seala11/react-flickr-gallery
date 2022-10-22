@@ -89,6 +89,28 @@ describe('When search input is updated', () => {
     );
   });
 
+  it('should make an api call if search button is pressed', async () => {
+    const requestSpy = jest.fn();
+    server.events.on('request:start', requestSpy);
+    const TEST_VAL = 'test';
+    render(<Home />);
+    const loader = await screen.getByTestId('loader');
+    waitForElementToBeRemoved(loader);
+
+    const input = screen.getByRole('searchbox');
+    userEvent.type(input, TEST_VAL);
+    expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
+
+    userEvent.click(screen.getByTestId('search-btn'));
+    expect(await screen.getByTestId('loader')).toBeInTheDocument();
+    expect(requestSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        method: 'GET',
+        url: new URL('https://api.flickr.com/services/rest/'),
+      })
+    );
+  });
+
   it('should display error if api call failed', async () => {
     server.use(
       rest.get('https://api.flickr.com/services/rest/', (req, res, ctx) => {
