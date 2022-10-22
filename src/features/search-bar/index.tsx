@@ -1,56 +1,56 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import styles from './index.module.scss';
 import { setSearchValueToStorage } from 'shared/helpers/storage';
 
 type SearchBarProps = {
-  updateInputHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  clearInputHandler: () => void;
+  setSearchValue: React.Dispatch<React.SetStateAction<string | null>>;
   searchHandler: (value: string) => Promise<void>;
   searchValue: string | null;
 };
 
-const SearchBar = ({ ...props }: SearchBarProps) => {
-  const { updateInputHandler, clearInputHandler, searchHandler, searchValue } = props;
-  const mount = useRef<boolean>(false);
+const SearchBar = ({ setSearchValue, searchHandler, searchValue }: SearchBarProps) => {
   const searchInput = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (mount.current) return;
-    const updateLocalStorage = () => {
-      if (typeof searchValue === 'string') setSearchValueToStorage(searchValue);
-    };
+  const updateLocalStorage = useCallback(() => {
+    if (typeof searchValue === 'string') {
+      setSearchValueToStorage(searchValue);
+    }
+  }, [searchValue]);
 
+  useEffect(() => {
     window.addEventListener('beforeunload', updateLocalStorage);
-    mount.current = true;
 
     return () => {
       updateLocalStorage();
       window.removeEventListener('beforeunload', updateLocalStorage);
-      mount.current = false;
     };
-  }, [searchValue]);
+  }, [updateLocalStorage]);
 
-  const resetInput = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const resetSearchValue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
-    clearInputHandler();
+    setSearchValue('');
     searchInput.current?.focus();
   };
 
-  const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+  const changeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    setSearchValue(event.target.value);
+  };
+
+  const submitSearchForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     searchHandler(searchValue || '');
   };
 
-  console.log(searchValue);
   return (
-    <form className={styles.wrapper} data-testid="search-bar" onSubmit={submitForm}>
+    <form className={styles.wrapper} data-testid="search-bar" onSubmit={submitSearchForm}>
       <label htmlFor="search-bar" className={styles.label}>
         Search photos:
       </label>
       <div className={styles.search}>
         <input
           value={searchValue || ''}
-          onChange={updateInputHandler}
+          onChange={changeSearchValue}
           autoFocus
           type="search"
           id="search-bar"
@@ -64,7 +64,7 @@ const SearchBar = ({ ...props }: SearchBarProps) => {
         {searchValue && (
           <button
             className={`${styles.icon} ${styles.icon_clear}`}
-            onClick={resetInput}
+            onClick={resetSearchValue}
             data-testid="clear-btn"
             type="button"
           ></button>

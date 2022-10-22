@@ -20,6 +20,7 @@ export interface FlickrCard {
 }
 
 const API_KEY = 'd1743560a339c2a8d5327c0466b8874b';
+export const DEFAULT_SEARCH = 'cats';
 
 export const requestData = {
   method: 'flickr.photos.search',
