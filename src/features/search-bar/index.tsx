@@ -30,13 +30,20 @@ const SearchBar = ({ ...props }: SearchBarProps) => {
     };
   }, [searchValue]);
 
-  const inpuReset = () => {
+  const resetInput = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
     clearInputHandler();
     searchInput.current?.focus();
   };
 
+  const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    searchHandler(searchValue || '');
+  };
+
+  console.log(searchValue);
   return (
-    <div className={styles.wrapper} data-testid="search-bar">
+    <form className={styles.wrapper} data-testid="search-bar" onSubmit={submitForm}>
       <label htmlFor="search-bar" className={styles.label}>
         Search photos:
       </label>
@@ -57,20 +64,21 @@ const SearchBar = ({ ...props }: SearchBarProps) => {
         {searchValue && (
           <button
             className={`${styles.icon} ${styles.icon_clear}`}
-            onClick={inpuReset}
+            onClick={resetInput}
             data-testid="clear-btn"
+            type="button"
           ></button>
         )}
       </div>
       <button
+        type="submit"
         className={styles.searchBtn}
         data-testid="search-btn"
-        onClick={() => searchHandler(searchValue || '')}
         disabled={!searchValue}
       >
         Search
       </button>
-    </div>
+    </form>
   );
 };
 

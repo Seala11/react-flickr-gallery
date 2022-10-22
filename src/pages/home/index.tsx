@@ -62,24 +62,10 @@ const Home = () => {
     } else {
       searchHandler('cats');
     }
-    mount.current = true;
   }, [searchHandler]);
 
-  useEffect(() => {
-    const searchEnterHandler = (event: KeyboardEvent) => {
-      if (event.key === 'Enter' && searchValue) {
-        searchHandler(searchValue);
-      }
-    };
-
-    window.addEventListener('keypress', searchEnterHandler);
-
-    return () => {
-      window.removeEventListener('keypress', searchEnterHandler);
-    };
-  }, [searchHandler, searchValue]);
-
   const updateSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     setSearchValue(event.target.value);
   };
 
