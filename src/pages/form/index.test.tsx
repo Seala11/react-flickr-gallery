@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import FormPage from '.';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
+import AppProvider from 'app/store/provider';
 
 const TEST_DATA = {
   agreement: true,
@@ -26,7 +27,15 @@ describe('on submitting complete Form', () => {
 
   it('should reset all inputs, disable the submit button, add new card and remove submit message', async () => {
     jest.useFakeTimers();
-    render(<FormPage />);
+
+    act(() => {
+      render(
+        <AppProvider>
+          <FormPage />
+        </AppProvider>
+      );
+    });
+
     expect(screen.getByText(/You have not submitted any form yet/i)).toBeInTheDocument;
 
     userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
