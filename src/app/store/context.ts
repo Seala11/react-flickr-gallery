@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { FormAction } from './provider';
 
 export type FormCardType = {
   firstName: string;
@@ -12,7 +13,7 @@ export type FormCardType = {
 
 export interface IAppContext {
   formCards: FormCardType[];
-  setFormCards: React.Dispatch<React.SetStateAction<FormCardType[]>>;
+  setFormCards: React.Dispatch<FormAction>;
 }
 
 const defaultContext = {

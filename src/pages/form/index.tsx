@@ -1,4 +1,5 @@
 import AppContext from 'app/store/context';
+import { FormProviderActions } from 'app/store/provider';
 import Form from 'features/form';
 import FormCardList from 'features/form-cards';
 import { FormCardType } from 'features/form/models';
@@ -6,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 
 const FormPage = () => {
-  const { setFormCards, formCards } = useContext(AppContext);
+  const { setFormCards } = useContext(AppContext);
   const [messageDisplay, setMessageDisplay] = useState<boolean>(false);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const FormPage = () => {
   }, [messageDisplay]);
 
   const createCard = (card: FormCardType) => {
-    setFormCards([...formCards, card]);
+    setFormCards({ type: FormProviderActions.ADD, formCard: card });
     setMessageDisplay(true);
   };
 
