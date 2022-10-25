@@ -5,13 +5,14 @@ import styles from './index.module.scss';
 
 const FormCardList = () => {
   const { formCards } = useContext(AppContext);
+  const cards = formCards.cards;
 
   return (
     <section className={styles.section}>
       <h2 className={styles.title}>Submitted forms</h2>
-      {!formCards.length && <p className={styles.title}>You have not submitted any form yet</p>}
+      {!cards.length && <p className={styles.title}>You have not submitted any form yet</p>}
       <ul className={styles.wrapper}>
-        {formCards.map((card, index) => {
+        {cards.map((card, index) => {
           return (
             <li key={index} className={styles.card}>
               <FormCard card={card} />

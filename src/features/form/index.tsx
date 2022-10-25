@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import COUNTRIES from 'shared/data/countries';
 import styles from './index.module.scss';
 import { UserInput } from './models';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { FormCardType } from 'app/store/formPageReducer';
+import { FormCardType, FormProviderActions } from 'app/store/formPageReducer';
+import AppContext from 'app/store/context';
 
 type Props = {
   createCard: (card: FormCardType) => void;
@@ -16,9 +17,20 @@ const Form = ({ createCard }: Props) => {
     setError,
     clearErrors,
     getFieldState,
-    formState: { errors, isDirty, isSubmitSuccessful },
+    formState: { errors, isSubmitSuccessful },
     reset,
   } = useForm<FormCardType>();
+
+  const { formCards, setFormCards } = useContext(AppContext);
+  const { firstName, lastName, birthday, country, agreement, notifications } = formCards;
+
+  const [btnDisable, setBtnDisable] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (firstName || lastName || birthday || country || agreement || notifications) {
+      setBtnDisable(false);
+    }
+  }, [firstName, lastName, birthday, country, agreement, notifications]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -31,8 +43,10 @@ const Form = ({ createCard }: Props) => {
         notifications: false,
         avatar: null,
       });
+      setFormCards({ type: FormProviderActions.RESET });
+      setBtnDisable(true);
     }
-  }, [isSubmitSuccessful, reset]);
+  }, [isSubmitSuccessful, reset, setFormCards]);
 
   const onSubmit: SubmitHandler<FormCardType> = (data) => {
     const dataIsValid: boolean = validateData(data);
@@ -143,12 +157,21 @@ const Form = ({ createCard }: Props) => {
           First Name
         </label>
         <input
+          value={firstName}
           id="firstName"
           type="text"
           data-testid="firstName"
           autoComplete="off"
           className={`${styles.input} ${errors.firstName ? styles.inputError : ''}`}
-          {...register('firstName', { onChange: () => clearErrors('firstName') })}
+          {...register('firstName', {
+            onChange: (e) => {
+              clearErrors('firstName');
+              setFormCards({
+                type: FormProviderActions.CHANGE_FIRST_NAME,
+                firstName: e.target.value,
+              });
+            },
+          })}
         />
         {errors.firstName && <small className={styles.error}>{errors.firstName.message}</small>}
 
@@ -156,12 +179,21 @@ const Form = ({ createCard }: Props) => {
           Last Name
         </label>
         <input
+          value={lastName}
           id="lastName"
           data-testid="lastName"
           type="text"
           autoComplete="off"
           className={`${styles.input} ${errors.lastName ? styles.inputError : ''}`}
-          {...register('lastName', { onChange: () => clearErrors('lastName') })}
+          {...register('lastName', {
+            onChange: (e) => {
+              clearErrors('lastName');
+              setFormCards({
+                type: FormProviderActions.CHANGE_LAST_NAME,
+                lastName: e.target.value,
+              });
+            },
+          })}
         />
         {errors.lastName && <small className={styles.error}>{errors.lastName.message}</small>}
 
@@ -169,6 +201,7 @@ const Form = ({ createCard }: Props) => {
           Birthday
         </label>
         <input
+          value={birthday}
           id="birthday"
           type="date"
           data-testid="birthday"
@@ -176,7 +209,15 @@ const Form = ({ createCard }: Props) => {
           className={`${styles.input} ${styles.birthday} ${
             errors.birthday ? styles.inputError : ''
           }`}
-          {...register('birthday', { onChange: () => clearErrors('birthday') })}
+          {...register('birthday', {
+            onChange: (e) => {
+              clearErrors('birthday');
+              setFormCards({
+                type: FormProviderActions.CHANGE_BIRTHDAY,
+                birthday: e.target.value,
+              });
+            },
+          })}
         />
         {errors.birthday && <small className={styles.error}>{errors.birthday.message}</small>}
 
@@ -184,10 +225,19 @@ const Form = ({ createCard }: Props) => {
           Country
         </label>
         <select
+          value={country}
           id="country"
           data-testid="country"
           className={`${styles.input} ${styles.select} ${errors.country ? styles.inputError : ''}`}
-          {...register('country', { onChange: () => clearErrors('country') })}
+          {...register('country', {
+            onChange: (e) => {
+              clearErrors('country');
+              setFormCards({
+                type: FormProviderActions.CHANGE_COUNTRY,
+                country: e.target.value,
+              });
+            },
+          })}
         >
           <option hidden>---</option>
           {COUNTRIES.map((country) => (
@@ -208,18 +258,31 @@ const Form = ({ createCard }: Props) => {
             className={`${styles.input} ${styles.avatarInput} ${
               errors.avatar ? styles.inputError : ''
             }`}
-            {...register('avatar', { onChange: () => clearErrors('avatar') })}
+            {...register('avatar', {
+              onChange: () => {
+                setBtnDisable(false);
+                clearErrors('avatar');
+              },
+            })}
           />
         </label>
         {errors.avatar && <small className={styles.error}>{`${errors.avatar.message}`}</small>}
 
         <div className={styles.switcherWrapper}>
           <input
+            checked={notifications}
             id="notifications"
             type="checkbox"
             data-testid="notifications"
             className={styles.switcher}
-            {...register('notifications')}
+            {...register('notifications', {
+              onChange: (e) => {
+                setFormCards({
+                  type: FormProviderActions.CHANGE_NOTIFICATIONS,
+                  notifications: e.target.checked,
+                });
+              },
+            })}
           />
           <label htmlFor="notifications" className={styles.switcherLabel}>
             <span className={styles.switcherBtn} />
@@ -234,13 +297,22 @@ const Form = ({ createCard }: Props) => {
           }`}
         >
           <input
+            checked={agreement}
             id="agreement"
             type="checkbox"
             data-testid="agreement"
             className={`${styles.input} ${styles.checkbox} ${
               errors.agreement ? styles.inputError : ''
             }`}
-            {...register('agreement', { onChange: () => clearErrors('agreement') })}
+            {...register('agreement', {
+              onChange: (e) => {
+                clearErrors('agreement');
+                setFormCards({
+                  type: FormProviderActions.CHANGE_AGREEMENT,
+                  agreement: e.target.checked,
+                });
+              },
+            })}
           />
           <span
             className={`${styles.checkmark} ${errors.agreement ? styles.checkmarkError : ''}`}
@@ -252,7 +324,7 @@ const Form = ({ createCard }: Props) => {
         <button
           type="submit"
           data-testid="submit-button"
-          disabled={Object.keys(errors).length > 0 || !isDirty}
+          disabled={Object.keys(errors).length > 0 || btnDisable}
           className={styles.button}
         >
           Submit

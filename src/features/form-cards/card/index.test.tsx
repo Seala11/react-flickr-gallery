@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import FormCard from '.';
-import { FormCardType } from 'features/form/models';
+import { FormCardType } from 'app/store/formPageReducer';
 
 const TEST_CARD: FormCardType = {
   agreement: true,

@@ -1,4 +1,4 @@
-import { FormCardType } from 'features/form/models';
+import { FormCardType } from 'app/store/formPageReducer';
 import React, { useEffect, useState } from 'react';
 import styles from './index.module.scss';
 

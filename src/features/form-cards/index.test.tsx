@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import FormCardList from '.';
-import { FormCardType } from 'features/form/models';
 import { act } from 'react-dom/test-utils';
 import AppProvider from 'app/store/provider';
 import AppContext from 'app/store/context';
+import { FormCardType } from 'app/store/formPageReducer';
 
 const TEST_CARDS: FormCardType[] = [
   {
@@ -27,10 +27,21 @@ const TEST_CARDS: FormCardType[] = [
   },
 ];
 
+const initialFormState = {
+  cards: TEST_CARDS,
+  firstName: '',
+  lastName: '',
+  birthday: '',
+  country: '',
+  avatar: null,
+  agreement: false,
+  notifications: false,
+};
+
 describe('Wnen Form Cards component renders', () => {
   it('should display cards', async () => {
     const providerProps = {
-      formCards: TEST_CARDS,
+      formCards: initialFormState,
       setFormCards: jest.fn(),
     };
 

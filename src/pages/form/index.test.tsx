@@ -57,8 +57,10 @@ describe('on submitting complete Form', () => {
 
     await waitFor(() => expect(screen.queryByRole('listitem')).toBeInTheDocument());
     const card = await screen.findByRole('listitem');
-    expect(screen.queryByText(/Your form has been successfully submitted/i)).toBeInTheDocument();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
+    await waitFor(() =>
+      expect(screen.queryByText(/Your form has been successfully submitted/i)).toBeInTheDocument()
+    );
+    await waitFor(() => expect(screen.queryByTestId('submit-button')).toBeDisabled());
 
     expect(card).toHaveTextContent(
       /First Name: Hanna\s*Last Name: Papova\s*Birthday: 2022-09-25\s*Country: Latvia\s*Notifications: Off/i
