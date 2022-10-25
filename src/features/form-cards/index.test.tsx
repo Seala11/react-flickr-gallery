@@ -36,6 +36,7 @@ const initialFormState = {
   avatar: null,
   agreement: false,
   notifications: false,
+  btnDisable: true,
 };
 
 describe('Wnen Form Cards component renders', () => {

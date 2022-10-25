@@ -15,6 +15,7 @@ export enum FormProviderActions {
   CHANGE_BIRTHDAY = 'change birthday',
   CHANGE_COUNTRY = 'change country',
   CHANGE_AGREEMENT = 'change agreement',
+  CHANGE_AVATAR = 'change avatar',
   CHANGE_NOTIFICATIONS = 'change notifications',
   RESET = 'reset all inputs',
 }
@@ -27,6 +28,8 @@ export type FormState = {
   country: string;
   agreement: boolean;
   notifications: boolean;
+  avatar: FileList | File | null;
+  btnDisable: boolean;
 };
 
 export type FormAction =
@@ -37,6 +40,7 @@ export type FormAction =
   | { type: FormProviderActions.CHANGE_BIRTHDAY; birthday: string }
   | { type: FormProviderActions.CHANGE_AGREEMENT; agreement: boolean }
   | { type: FormProviderActions.CHANGE_NOTIFICATIONS; notifications: boolean }
+  | { type: FormProviderActions.CHANGE_AVATAR; avatar: FileList | null }
   | { type: FormProviderActions.RESET };
 
 export const formPageReducer = (state: FormState, action: FormAction): FormState => {
@@ -46,22 +50,25 @@ export const formPageReducer = (state: FormState, action: FormAction): FormState
       return { ...state, cards: newState };
 
     case FormProviderActions.CHANGE_FIRST_NAME:
-      return { ...state, firstName: action.firstName };
+      return { ...state, btnDisable: false, firstName: action.firstName };
 
     case FormProviderActions.CHANGE_LAST_NAME:
-      return { ...state, lastName: action.lastName };
+      return { ...state, btnDisable: false, lastName: action.lastName };
 
     case FormProviderActions.CHANGE_BIRTHDAY:
-      return { ...state, birthday: action.birthday };
+      return { ...state, btnDisable: false, birthday: action.birthday };
 
     case FormProviderActions.CHANGE_COUNTRY:
-      return { ...state, country: action.country };
+      return { ...state, btnDisable: false, country: action.country };
+
+    case FormProviderActions.CHANGE_AVATAR:
+      return { ...state, btnDisable: false, avatar: action.avatar };
 
     case FormProviderActions.CHANGE_AGREEMENT:
-      return { ...state, agreement: action.agreement };
+      return { ...state, btnDisable: false, agreement: action.agreement };
 
     case FormProviderActions.CHANGE_NOTIFICATIONS:
-      return { ...state, notifications: action.notifications };
+      return { ...state, btnDisable: false, notifications: action.notifications };
 
     case FormProviderActions.RESET:
       return {
@@ -72,6 +79,8 @@ export const formPageReducer = (state: FormState, action: FormAction): FormState
         country: '',
         agreement: false,
         notifications: false,
+        avatar: null,
+        btnDisable: true,
       };
 
     default:
@@ -87,4 +96,6 @@ export const initialFormState: FormState = {
   country: '',
   agreement: false,
   notifications: false,
+  avatar: null,
+  btnDisable: true,
 };

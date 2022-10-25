@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import COUNTRIES from 'shared/data/countries';
 import styles from './index.module.scss';
 import { UserInput } from './models';
@@ -20,17 +20,20 @@ const Form = ({ createCard }: Props) => {
     formState: { errors, isSubmitSuccessful },
     reset,
   } = useForm<FormCardType>();
-
+  const avatarInput = useRef<HTMLInputElement>(null);
   const { formCards, setFormCards } = useContext(AppContext);
-  const { firstName, lastName, birthday, country, agreement, notifications } = formCards;
-
-  const [btnDisable, setBtnDisable] = useState<boolean>(true);
+  const { firstName, lastName, birthday, country, agreement, notifications, avatar, btnDisable } =
+    formCards;
 
   useEffect(() => {
-    if (firstName || lastName || birthday || country || agreement || notifications) {
-      setBtnDisable(false);
+    if (avatar && avatar instanceof FileList && avatarInput.current) {
+      avatarInput.current.files = avatar;
     }
-  }, [firstName, lastName, birthday, country, agreement, notifications]);
+
+    if (!avatar && avatarInput.current) {
+      avatarInput.current.value = '';
+    }
+  }, [avatar]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -44,15 +47,15 @@ const Form = ({ createCard }: Props) => {
         avatar: null,
       });
       setFormCards({ type: FormProviderActions.RESET });
-      setBtnDisable(true);
     }
   }, [isSubmitSuccessful, reset, setFormCards]);
 
-  const onSubmit: SubmitHandler<FormCardType> = (data) => {
-    const dataIsValid: boolean = validateData(data);
+  const onSubmit: SubmitHandler<FormCardType> = () => {
+    const formData = { firstName, lastName, birthday, country, agreement, notifications, avatar };
+    const dataIsValid: boolean = validateData(formData);
 
     if (dataIsValid) {
-      const cardData = { ...data };
+      const cardData = { ...formData };
       if (cardData.avatar && cardData.avatar instanceof FileList) {
         cardData.avatar = cardData.avatar[0];
       }
@@ -259,11 +262,15 @@ const Form = ({ createCard }: Props) => {
               errors.avatar ? styles.inputError : ''
             }`}
             {...register('avatar', {
-              onChange: () => {
-                setBtnDisable(false);
+              onChange: (e) => {
                 clearErrors('avatar');
+                setFormCards({
+                  type: FormProviderActions.CHANGE_AVATAR,
+                  avatar: e.target.files,
+                });
               },
             })}
+            ref={avatarInput}
           />
         </label>
         {errors.avatar && <small className={styles.error}>{`${errors.avatar.message}`}</small>}
