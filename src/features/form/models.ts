@@ -1,13 +1,3 @@
-export type FormCardType = {
-  firstName: string;
-  lastName: string;
-  birthday: string;
-  country: string;
-  avatar: FileList | File | null;
-  agreement: boolean;
-  notifications: boolean;
-};
-
 export enum UserInput {
   LAST_NAME = 'lastName',
   FIRST_NAME = 'firstName',

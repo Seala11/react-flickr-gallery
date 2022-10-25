@@ -16,6 +16,7 @@ type SearchPageType = {
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState<string | null>(null);
+
   const [cards, setCards] = useState<FlickrCard[]>([]);
   const [popUp, setPopUp] = useState<FlickrCard | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

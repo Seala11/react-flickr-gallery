@@ -1,18 +1,8 @@
 import { createContext } from 'react';
-import { FormAction } from './provider';
-
-export type FormCardType = {
-  firstName: string;
-  lastName: string;
-  birthday: string;
-  country: string;
-  avatar: FileList | File | null;
-  agreement: boolean;
-  notifications: boolean;
-};
+import { FormAction, FormCardType, FormState } from './formPageReducer';
 
 export interface IAppContext {
-  formCards: FormCardType[];
+  formCards: FormState;
   setFormCards: React.Dispatch<FormAction>;
 }
 

@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import COUNTRIES from 'shared/data/countries';
 import styles from './index.module.scss';
-import { FormCardType, UserInput } from './models';
+import { UserInput } from './models';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { FormCardType } from 'app/store/formPageReducer';
 
 type Props = {
   createCard: (card: FormCardType) => void;
