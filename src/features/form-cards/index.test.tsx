@@ -42,8 +42,8 @@ const initialFormState = {
 describe('Wnen Form Cards component renders', () => {
   it('should display cards', async () => {
     const providerProps = {
-      formCards: initialFormState,
-      setFormCards: jest.fn(),
+      formPageState: initialFormState,
+      formPageDispatch: jest.fn(),
     };
 
     render(

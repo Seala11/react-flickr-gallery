@@ -21,9 +21,9 @@ const Form = ({ createCard }: Props) => {
     reset,
   } = useForm<FormCardType>();
   const avatarInput = useRef<HTMLInputElement>(null);
-  const { formCards, setFormCards } = useContext(AppContext);
+  const { formPageState, formPageDispatch } = useContext(AppContext);
   const { firstName, lastName, birthday, country, agreement, notifications, avatar, btnDisable } =
-    formCards;
+    formPageState;
 
   useEffect(() => {
     if (avatar && avatar instanceof FileList && avatarInput.current) {
@@ -46,9 +46,9 @@ const Form = ({ createCard }: Props) => {
         notifications: false,
         avatar: null,
       });
-      setFormCards({ type: FormProviderActions.RESET });
+      formPageDispatch({ type: FormProviderActions.RESET });
     }
-  }, [isSubmitSuccessful, reset, setFormCards]);
+  }, [isSubmitSuccessful, reset, formPageDispatch]);
 
   const onSubmit: SubmitHandler<FormCardType> = () => {
     const formData = { firstName, lastName, birthday, country, agreement, notifications, avatar };
@@ -169,7 +169,7 @@ const Form = ({ createCard }: Props) => {
           {...register('firstName', {
             onChange: (e) => {
               clearErrors('firstName');
-              setFormCards({
+              formPageDispatch({
                 type: FormProviderActions.CHANGE_FIRST_NAME,
                 firstName: e.target.value,
               });
@@ -191,7 +191,7 @@ const Form = ({ createCard }: Props) => {
           {...register('lastName', {
             onChange: (e) => {
               clearErrors('lastName');
-              setFormCards({
+              formPageDispatch({
                 type: FormProviderActions.CHANGE_LAST_NAME,
                 lastName: e.target.value,
               });
@@ -215,7 +215,7 @@ const Form = ({ createCard }: Props) => {
           {...register('birthday', {
             onChange: (e) => {
               clearErrors('birthday');
-              setFormCards({
+              formPageDispatch({
                 type: FormProviderActions.CHANGE_BIRTHDAY,
                 birthday: e.target.value,
               });
@@ -235,7 +235,7 @@ const Form = ({ createCard }: Props) => {
           {...register('country', {
             onChange: (e) => {
               clearErrors('country');
-              setFormCards({
+              formPageDispatch({
                 type: FormProviderActions.CHANGE_COUNTRY,
                 country: e.target.value,
               });
@@ -264,13 +264,13 @@ const Form = ({ createCard }: Props) => {
             {...register('avatar', {
               onChange: (e) => {
                 clearErrors('avatar');
-                setFormCards({
+                formPageDispatch({
                   type: FormProviderActions.CHANGE_AVATAR,
                   avatar: e.target.files,
                 });
               },
             })}
-            ref={avatarInput}
+            // ref={avatarInput}
           />
         </label>
         {errors.avatar && <small className={styles.error}>{`${errors.avatar.message}`}</small>}
@@ -284,7 +284,7 @@ const Form = ({ createCard }: Props) => {
             className={styles.switcher}
             {...register('notifications', {
               onChange: (e) => {
-                setFormCards({
+                formPageDispatch({
                   type: FormProviderActions.CHANGE_NOTIFICATIONS,
                   notifications: e.target.checked,
                 });
@@ -314,7 +314,7 @@ const Form = ({ createCard }: Props) => {
             {...register('agreement', {
               onChange: (e) => {
                 clearErrors('agreement');
-                setFormCards({
+                formPageDispatch({
                   type: FormProviderActions.CHANGE_AGREEMENT,
                   agreement: e.target.checked,
                 });

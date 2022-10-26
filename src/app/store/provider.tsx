@@ -7,14 +7,14 @@ export interface IAppProvider {
 }
 
 const AppProvider = ({ children }: IAppProvider) => {
-  const [formCards, setFormCards] = useReducer(formPageReducer, initialFormState);
+  const [formPageState, formPageDispatch] = useReducer(formPageReducer, initialFormState);
 
   const providerValue = useMemo(
     () => ({
-      formCards,
-      setFormCards,
+      formPageState,
+      formPageDispatch,
     }),
-    [formCards, setFormCards]
+    [formPageState, formPageDispatch]
   );
 
   return <AppContext.Provider value={providerValue}>{children}</AppContext.Provider>;

@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 
 const FormPage = () => {
-  const { setFormCards } = useContext(AppContext);
+  const { formPageDispatch } = useContext(AppContext);
   const [messageDisplay, setMessageDisplay] = useState<boolean>(false);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const FormPage = () => {
   }, [messageDisplay]);
 
   const createCard = (card: FormCardType) => {
-    setFormCards({ type: FormProviderActions.ADD, formCard: card });
+    formPageDispatch({ type: FormProviderActions.ADD, formCard: card });
     setMessageDisplay(true);
   };
 

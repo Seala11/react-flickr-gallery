@@ -4,8 +4,8 @@ import FormCard from './card';
 import styles from './index.module.scss';
 
 const FormCardList = () => {
-  const { formCards } = useContext(AppContext);
-  const cards = formCards.cards;
+  const { formPageState } = useContext(AppContext);
+  const cards = formPageState.cards;
 
   return (
     <section className={styles.section}>
