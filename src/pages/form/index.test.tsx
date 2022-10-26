@@ -36,7 +36,7 @@ describe('on submitting complete Form', () => {
       );
     });
 
-    expect(screen.getByText(/You have not submitted any form yet/i)).toBeInTheDocument;
+    expect(screen.getByText(/You have not submitted any form yet/i)).toBeInTheDocument();
 
     userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);

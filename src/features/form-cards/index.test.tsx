@@ -29,13 +29,15 @@ const TEST_CARDS: FormCardType[] = [
 
 const initialFormState = {
   cards: TEST_CARDS,
-  firstName: '',
-  lastName: '',
-  birthday: '',
-  country: '',
-  avatar: null,
-  agreement: false,
-  notifications: false,
+  inputValues: {
+    firstName: '',
+    lastName: '',
+    birthday: '',
+    country: '',
+    avatar: null,
+    agreement: false,
+    notifications: false,
+  },
   btnDisable: true,
 };
 

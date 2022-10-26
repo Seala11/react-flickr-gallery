@@ -5,4 +5,5 @@ export enum UserInput {
   COUNTRY = 'country',
   AVATAR = 'avatar',
   AGREEMENT = 'agreement',
+  NOTIFY = 'notifications',
 }

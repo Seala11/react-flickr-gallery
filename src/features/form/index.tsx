@@ -3,7 +3,7 @@ import COUNTRIES from 'shared/data/countries';
 import styles from './index.module.scss';
 import { UserInput } from './models';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { FormCardType, FormProviderActions } from 'app/store/formPageReducer';
+import { defaultValues, FormCardType, FormProviderActions } from 'app/store/formPageReducer';
 import AppContext from 'app/store/context';
 
 type Props = {
@@ -11,6 +11,8 @@ type Props = {
 };
 
 const Form = ({ createCard }: Props) => {
+  const { formPageState, formPageDispatch } = useContext(AppContext);
+  const { inputValues, btnDisable } = formPageState;
   const {
     register,
     handleSubmit,
@@ -19,43 +21,39 @@ const Form = ({ createCard }: Props) => {
     getFieldState,
     formState: { errors, isSubmitSuccessful },
     reset,
-  } = useForm<FormCardType>();
-  const avatarInput = useRef<HTMLInputElement>(null);
-  const { formPageState, formPageDispatch } = useContext(AppContext);
-  const { firstName, lastName, birthday, country, agreement, notifications, avatar, btnDisable } =
-    formPageState;
-
-  useEffect(() => {
-    if (avatar && avatar instanceof FileList && avatarInput.current) {
-      avatarInput.current.files = avatar;
-    }
-
-    if (!avatar && avatarInput.current) {
-      avatarInput.current.value = '';
-    }
-  }, [avatar]);
+    getValues,
+  } = useForm<FormCardType>({ defaultValues: inputValues });
+  const avatarInput = useRef<HTMLInputElement | null>(null);
+  const { ref, ...rest } = register('avatar', {
+    onChange: () => changeHandler(UserInput.AVATAR),
+  });
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      reset({
-        firstName: '',
-        lastName: '',
-        birthday: '',
-        country: '',
-        agreement: false,
-        notifications: false,
-        avatar: null,
-      });
+      reset(defaultValues);
       formPageDispatch({ type: FormProviderActions.RESET });
+      formPageDispatch({ type: FormProviderActions.DISABLE_BTN });
     }
   }, [isSubmitSuccessful, reset, formPageDispatch]);
 
-  const onSubmit: SubmitHandler<FormCardType> = () => {
-    const formData = { firstName, lastName, birthday, country, agreement, notifications, avatar };
-    const dataIsValid: boolean = validateData(formData);
+  useEffect(() => {
+    const avatar = inputValues.avatar;
+    if (avatar && avatar instanceof FileList && avatarInput.current) {
+      avatarInput.current.files = avatar;
+    }
+  }, [inputValues.avatar]);
+
+  useEffect(() => {
+    return () => {
+      formPageDispatch({ type: FormProviderActions.CHANGE_INPUT_VALUES, values: getValues() });
+    };
+  }, [formPageDispatch, getValues]);
+
+  const onSubmit: SubmitHandler<FormCardType> = (data) => {
+    const dataIsValid: boolean = validateData(data);
 
     if (dataIsValid) {
-      const cardData = { ...formData };
+      const cardData = { ...data };
       if (cardData.avatar && cardData.avatar instanceof FileList) {
         cardData.avatar = cardData.avatar[0];
       }
@@ -147,6 +145,11 @@ const Form = ({ createCard }: Props) => {
     return !formIsInvalid;
   };
 
+  const changeHandler = (key: UserInput) => {
+    clearErrors(key);
+    formPageDispatch({ type: FormProviderActions.ENABLE_BTN });
+  };
+
   return (
     <section className={styles.section}>
       <form
@@ -160,21 +163,12 @@ const Form = ({ createCard }: Props) => {
           First Name
         </label>
         <input
-          value={firstName}
           id="firstName"
           type="text"
           data-testid="firstName"
           autoComplete="off"
           className={`${styles.input} ${errors.firstName ? styles.inputError : ''}`}
-          {...register('firstName', {
-            onChange: (e) => {
-              clearErrors('firstName');
-              formPageDispatch({
-                type: FormProviderActions.CHANGE_FIRST_NAME,
-                firstName: e.target.value,
-              });
-            },
-          })}
+          {...register('firstName', { onChange: () => changeHandler(UserInput.FIRST_NAME) })}
         />
         {errors.firstName && <small className={styles.error}>{errors.firstName.message}</small>}
 
@@ -182,21 +176,12 @@ const Form = ({ createCard }: Props) => {
           Last Name
         </label>
         <input
-          value={lastName}
           id="lastName"
           data-testid="lastName"
           type="text"
           autoComplete="off"
           className={`${styles.input} ${errors.lastName ? styles.inputError : ''}`}
-          {...register('lastName', {
-            onChange: (e) => {
-              clearErrors('lastName');
-              formPageDispatch({
-                type: FormProviderActions.CHANGE_LAST_NAME,
-                lastName: e.target.value,
-              });
-            },
-          })}
+          {...register('lastName', { onChange: () => changeHandler(UserInput.LAST_NAME) })}
         />
         {errors.lastName && <small className={styles.error}>{errors.lastName.message}</small>}
 
@@ -204,7 +189,6 @@ const Form = ({ createCard }: Props) => {
           Birthday
         </label>
         <input
-          value={birthday}
           id="birthday"
           type="date"
           data-testid="birthday"
@@ -212,15 +196,7 @@ const Form = ({ createCard }: Props) => {
           className={`${styles.input} ${styles.birthday} ${
             errors.birthday ? styles.inputError : ''
           }`}
-          {...register('birthday', {
-            onChange: (e) => {
-              clearErrors('birthday');
-              formPageDispatch({
-                type: FormProviderActions.CHANGE_BIRTHDAY,
-                birthday: e.target.value,
-              });
-            },
-          })}
+          {...register('birthday', { onChange: () => changeHandler(UserInput.BIRTHDAY) })}
         />
         {errors.birthday && <small className={styles.error}>{errors.birthday.message}</small>}
 
@@ -228,19 +204,10 @@ const Form = ({ createCard }: Props) => {
           Country
         </label>
         <select
-          value={country}
           id="country"
           data-testid="country"
           className={`${styles.input} ${styles.select} ${errors.country ? styles.inputError : ''}`}
-          {...register('country', {
-            onChange: (e) => {
-              clearErrors('country');
-              formPageDispatch({
-                type: FormProviderActions.CHANGE_COUNTRY,
-                country: e.target.value,
-              });
-            },
-          })}
+          {...register('country', { onChange: () => changeHandler(UserInput.COUNTRY) })}
         >
           <option hidden>---</option>
           {COUNTRIES.map((country) => (
@@ -261,35 +228,23 @@ const Form = ({ createCard }: Props) => {
             className={`${styles.input} ${styles.avatarInput} ${
               errors.avatar ? styles.inputError : ''
             }`}
-            {...register('avatar', {
-              onChange: (e) => {
-                clearErrors('avatar');
-                formPageDispatch({
-                  type: FormProviderActions.CHANGE_AVATAR,
-                  avatar: e.target.files,
-                });
-              },
-            })}
-            // ref={avatarInput}
+            {...rest}
+            name="avatar"
+            ref={(e) => {
+              ref(e);
+              avatarInput.current = e;
+            }}
           />
         </label>
         {errors.avatar && <small className={styles.error}>{`${errors.avatar.message}`}</small>}
 
         <div className={styles.switcherWrapper}>
           <input
-            checked={notifications}
             id="notifications"
             type="checkbox"
             data-testid="notifications"
             className={styles.switcher}
-            {...register('notifications', {
-              onChange: (e) => {
-                formPageDispatch({
-                  type: FormProviderActions.CHANGE_NOTIFICATIONS,
-                  notifications: e.target.checked,
-                });
-              },
-            })}
+            {...register('notifications', { onChange: () => changeHandler(UserInput.NOTIFY) })}
           />
           <label htmlFor="notifications" className={styles.switcherLabel}>
             <span className={styles.switcherBtn} />
@@ -304,22 +259,13 @@ const Form = ({ createCard }: Props) => {
           }`}
         >
           <input
-            checked={agreement}
             id="agreement"
             type="checkbox"
             data-testid="agreement"
             className={`${styles.input} ${styles.checkbox} ${
               errors.agreement ? styles.inputError : ''
             }`}
-            {...register('agreement', {
-              onChange: (e) => {
-                clearErrors('agreement');
-                formPageDispatch({
-                  type: FormProviderActions.CHANGE_AGREEMENT,
-                  agreement: e.target.checked,
-                });
-              },
-            })}
+            {...register('agreement', { onChange: () => changeHandler(UserInput.AGREEMENT) })}
           />
           <span
             className={`${styles.checkmark} ${errors.agreement ? styles.checkmarkError : ''}`}
@@ -331,7 +277,7 @@ const Form = ({ createCard }: Props) => {
         <button
           type="submit"
           data-testid="submit-button"
-          disabled={Object.keys(errors).length > 0 || btnDisable}
+          disabled={btnDisable || Object.keys(errors).length > 0}
           className={styles.button}
         >
           Submit
