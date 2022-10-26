@@ -1,60 +1,51 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styles from './index.module.scss';
 import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
 import { getSearchValueFromStorage } from 'shared/helpers/storage';
 import { DEFAULT_SEARCH, FlickrCard, requestData, SearchFetchType } from './models';
 import PopUp from 'features/popup';
-
-type SearchPageType = {
-  currPage: number;
-  totalPages: number;
-  cardsPerPage: number;
-  totalCards: number | null;
-  sort: string;
-};
+import AppContext from 'app/store/context';
+import { SearchProviderActions } from 'app/store/searchPageReducer';
 
 const Home = () => {
   const [searchValue, setSearchValue] = useState<string | null>(null);
-
-  const [cards, setCards] = useState<FlickrCard[]>([]);
   const [popUp, setPopUp] = useState<FlickrCard | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [searchPage, setSearchPage] = useState<SearchPageType>({
-    currPage: 1,
-    totalPages: 1,
-    cardsPerPage: 12,
-    totalCards: null,
-    sort: 'interestingness-desc',
-  });
+
+  const { homePageState, homePageDispatch } = useContext(AppContext);
+  const { pageState, loading, error, cards } = homePageState;
 
   const searchHandler = useCallback(
     async (value: string) => {
-      setLoading(true);
+      homePageDispatch({ type: SearchProviderActions.SET_LOADING });
       try {
-        requestData.sort = searchPage.sort;
+        requestData.sort = pageState.sort;
         requestData.text = value;
-        requestData.per_page = `${searchPage.cardsPerPage}`;
+        requestData.per_page = `${pageState.cardsPerPage}`;
         const parameters = new URLSearchParams(requestData);
         const result = await fetch(`https://api.flickr.com/services/rest/?${parameters}`);
         const data: SearchFetchType = await result.json();
-        setCards(data.photos.photo);
-        setError(false);
+        homePageDispatch({ type: SearchProviderActions.ADD_CARDS, cards: data.photos.photo });
       } catch (err) {
         console.error(err);
-        setCards([]);
-        setError(true);
+        homePageDispatch({ type: SearchProviderActions.REMOVE_CARDS });
       } finally {
-        setLoading(false);
+        homePageDispatch({ type: SearchProviderActions.REMOVE_LOADING });
       }
     },
-    [searchPage.cardsPerPage, searchPage.sort]
+    [pageState.cardsPerPage, pageState.sort, homePageDispatch]
   );
+
+  const mountingRef = useRef({ cards, error });
 
   useEffect(() => {
     const storedValue = getSearchValueFromStorage();
+    const { cards, error } = mountingRef.current;
+    if (cards.length > 0 || error) {
+      setSearchValue(storedValue);
+      return;
+    }
+
     if (storedValue) {
       setSearchValue(storedValue);
       searchHandler(storedValue);
@@ -83,11 +74,11 @@ const Home = () => {
         searchHandler={searchHandler}
         searchValue={searchValue}
       />
-      {error && <p data-testid="error">Oops! Something went wrong</p>}
+      {error && <p data-testid="error">{error}</p>}
       {loading ? (
         <div data-testid="loader" className={styles.loader} />
       ) : (
-        <CardList cards={cards} error={error} showPopUp={popUpHandler} />
+        <CardList cards={cards} showPopUp={popUpHandler} />
       )}
     </main>
   );

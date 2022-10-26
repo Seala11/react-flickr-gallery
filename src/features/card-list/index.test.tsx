@@ -45,12 +45,7 @@ const TEST_CARDS = [
 
 describe('when the card list is rendered', () => {
   it('initially should contain all cards', () => {
-    render(<CardList cards={TEST_CARDS} error={false} showPopUp={() => {}} />);
+    render(<CardList cards={TEST_CARDS} showPopUp={() => {}} />);
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
-  });
-
-  it('if no cards were passed show error message', () => {
-    render(<CardList cards={[]} error={false} showPopUp={() => {}} />);
-    expect(screen.getByTestId('error-message')).toBeInTheDocument();
   });
 });

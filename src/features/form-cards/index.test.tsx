@@ -5,6 +5,7 @@ import { act } from 'react-dom/test-utils';
 import AppProvider from 'app/store/provider';
 import AppContext from 'app/store/context';
 import { FormCardType } from 'app/store/formPageReducer';
+import { initialSearchState } from 'app/store/searchPageReducer';
 
 const TEST_CARDS: FormCardType[] = [
   {
@@ -46,6 +47,8 @@ describe('Wnen Form Cards component renders', () => {
     const providerProps = {
       formPageState: initialFormState,
       formPageDispatch: jest.fn(),
+      homePageState: initialSearchState,
+      homePageDispatch: () => {},
     };
 
     render(

@@ -11,6 +11,7 @@ import { setSearchValueToStorage } from 'shared/helpers/storage';
 import userEvent from '@testing-library/user-event';
 import { server } from '../../mocks/server';
 import { rest } from 'msw';
+import AppProvider from 'app/store/provider';
 
 describe('Wnen Home component renders', () => {
   beforeEach(() => {
@@ -22,7 +23,12 @@ describe('Wnen Home component renders', () => {
   });
 
   it('should contain empty search input and default amount of cards if there are no stored value in storage', async () => {
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const loader = await screen.getByTestId('loader');
 
     waitForElementToBeRemoved(loader);
@@ -36,14 +42,24 @@ describe('Wnen Home component renders', () => {
     const TEST_VAL = 'test';
     setSearchValueToStorage(TEST_VAL);
 
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
   });
 
   it('input value should be saved to LocalStorage during component`s unmount', () => {
     const TEST_VAL = 'test1';
 
-    const { unmount } = render(<Home />);
+    const { unmount } = render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const input = screen.getByRole('searchbox');
     expect(screen.getByTestId('search-input')).toHaveDisplayValue('');
 
@@ -70,7 +86,13 @@ describe('When search input is updated', () => {
     const requestSpy = jest.fn();
     server.events.on('request:start', requestSpy);
     const TEST_VAL = 'test';
-    render(<Home />);
+
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const loader = await screen.getByTestId('loader');
     waitForElementToBeRemoved(loader);
 
@@ -93,7 +115,13 @@ describe('When search input is updated', () => {
     const requestSpy = jest.fn();
     server.events.on('request:start', requestSpy);
     const TEST_VAL = 'test';
-    render(<Home />);
+
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const loader = await screen.getByTestId('loader');
     waitForElementToBeRemoved(loader);
 
@@ -123,7 +151,12 @@ describe('When search input is updated', () => {
       })
     );
 
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const loader = await screen.getByTestId('loader');
     waitForElementToBeRemoved(loader);
 
@@ -134,7 +167,12 @@ describe('When search input is updated', () => {
   it('after clearing search input should be empty', async () => {
     const TEST_VAL = 'test1';
 
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const input = screen.getByRole('searchbox');
     expect(screen.getByTestId('search-input')).toHaveDisplayValue('');
 
@@ -163,7 +201,12 @@ describe('When clicking on the card', () => {
   });
 
   it('popup should be displayed', async () => {
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const loader = await screen.getByTestId('loader');
     waitForElementToBeRemoved(loader);
 
@@ -189,7 +232,12 @@ describe('When popup is displayed', () => {
   });
 
   it('clicking on overlay should close popup', async () => {
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const loader = await screen.getByTestId('loader');
     waitForElementToBeRemoved(loader);
 
@@ -206,7 +254,12 @@ describe('When popup is displayed', () => {
   });
 
   it('clicking on close button close popup', async () => {
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     const loader = await screen.getByTestId('loader');
     waitForElementToBeRemoved(loader);
 
