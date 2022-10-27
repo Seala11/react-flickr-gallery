@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styles from './index.module.scss';
 import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
@@ -7,12 +7,13 @@ import { DEFAULT_SEARCH, FlickrCard, requestData, SearchFetchType } from './mode
 import PopUp from 'features/popup';
 import AppContext from 'app/store/context';
 import { SearchProviderActions } from 'app/store/searchPageReducer';
+import SearchControls from 'features/search-controls';
 
 const Home = () => {
   const [popUp, setPopUp] = useState<FlickrCard | null>(null);
 
   const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { loading, error, cards, cardsPerPage, sort, searchValue, mounting } = homePageState;
+  const { loading, error, cards, cardsPerPage, sort } = homePageState;
 
   const searchHandler = useCallback(
     async (value: string, sort: string, cardsPerPage: string) => {
@@ -35,9 +36,12 @@ const Home = () => {
     [homePageDispatch]
   );
 
+  const ref = useRef({ sort, cardsPerPage, cards, error });
+
   useEffect(() => {
     const storedValue = getSearchValueFromStorage();
-    if (mounting) {
+    const { sort, cardsPerPage, cards, error } = ref.current;
+    if (cards.length > 0 || error) {
       homePageDispatch({ type: SearchProviderActions.SET_SEARCH_VALUE, searchValue: storedValue });
       return;
     }
@@ -47,14 +51,8 @@ const Home = () => {
       searchHandler(storedValue, sort, cardsPerPage);
     } else {
       searchHandler(DEFAULT_SEARCH, sort, cardsPerPage);
-      homePageDispatch({
-        type: SearchProviderActions.SET_SEARCH_VALUE,
-        searchValue: DEFAULT_SEARCH,
-      });
     }
-
-    homePageDispatch({ type: SearchProviderActions.SET_MOUNTING });
-  }, [homePageDispatch, searchHandler, mounting, sort, cardsPerPage]);
+  }, [homePageDispatch, searchHandler]);
 
   const popUpHandler = (card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     event.preventDefault();
@@ -68,40 +66,12 @@ const Home = () => {
     document.body.style.overflowY = 'auto';
   };
 
-  const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    homePageDispatch({
-      type: SearchProviderActions.CHANGE_CARDS_PER_PAGE,
-      cardsPerPage: e.target.value,
-    });
-    const search = searchValue ? searchValue : DEFAULT_SEARCH;
-    searchHandler(search, sort, e.target.value);
-  };
-
   return (
     <main className={styles.wrapper}>
       {popUp && <PopUp card={popUp} popUpClose={popUpClose} />}
       <div className={styles.searchWrapper}>
         <SearchBar searchHandler={searchHandler} />
-        <form>
-          <label htmlFor="numberOfCards">Cards Per Page</label>
-          <select
-            value={cardsPerPage}
-            name="numberOfCards"
-            id="numberOfCards"
-            onChange={selectHandler}
-          >
-            <option value="6">6</option>
-            <option value="12">12</option>
-            <option value="24">24</option>
-          </select>
-          <label htmlFor="sortCards">Sort</label>
-          <select name="sortCards" id="sortCards">
-            <option value="relevance">Relevance</option>
-            <option value="interestingness-desc">Interestingness</option>
-            <option value="date-posted-desc">Date uploaded</option>
-            <option value="date-taken-desc">Date taken</option>
-          </select>
-        </form>
+        <SearchControls searchHandler={searchHandler} />
       </div>
       {error && <p data-testid="error">{error}</p>}
       {loading ? (
