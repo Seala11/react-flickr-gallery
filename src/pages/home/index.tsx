@@ -13,15 +13,17 @@ const Home = () => {
   const [popUp, setPopUp] = useState<FlickrCard | null>(null);
 
   const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { pageState, loading, error, cards } = homePageState;
+  const { loading, error, cards, cardsPerPage, sort } = homePageState;
 
+  // TODO: cardsPerPage works only once
   const searchHandler = useCallback(
     async (value: string) => {
+      console.log('here', value);
       homePageDispatch({ type: SearchProviderActions.SET_LOADING });
       try {
-        requestData.sort = pageState.sort;
+        requestData.sort = sort;
         requestData.text = value;
-        requestData.per_page = `${pageState.cardsPerPage}`;
+        requestData.per_page = cardsPerPage;
         const parameters = new URLSearchParams(requestData);
         const result = await fetch(`https://api.flickr.com/services/rest/?${parameters}`);
         const data: SearchFetchType = await result.json();
@@ -33,7 +35,7 @@ const Home = () => {
         homePageDispatch({ type: SearchProviderActions.REMOVE_LOADING });
       }
     },
-    [pageState.cardsPerPage, pageState.sort, homePageDispatch]
+    [cardsPerPage, sort, homePageDispatch]
   );
 
   const mountingRef = useRef({ cards, error });
@@ -69,11 +71,38 @@ const Home = () => {
   return (
     <main className={styles.wrapper}>
       {popUp && <PopUp card={popUp} popUpClose={popUpClose} />}
-      <SearchBar
-        setSearchValue={setSearchValue}
-        searchHandler={searchHandler}
-        searchValue={searchValue}
-      />
+      <div className={styles.searchWrapper}>
+        <SearchBar
+          setSearchValue={setSearchValue}
+          searchHandler={searchHandler}
+          searchValue={searchValue}
+        />
+        <form>
+          <label htmlFor="numberOfCards">Cards Per Page</label>
+          <select
+            value={cardsPerPage}
+            name="numberOfCards"
+            id="numberOfCards"
+            onChange={(e) => {
+              homePageDispatch({
+                type: SearchProviderActions.CHANGE_CARDS_PER_PAGE,
+                cardsPerPage: e.target.value,
+              });
+            }}
+          >
+            <option value="6">6</option>
+            <option value="12">12</option>
+            <option value="24">24</option>
+          </select>
+          <label htmlFor="sortCards">Sort</label>
+          <select name="sortCards" id="sortCards">
+            <option value="relevance">Relevance</option>
+            <option value="interestingness-desc">Interestingness</option>
+            <option value="date-posted-desc">Date uploaded</option>
+            <option value="date-taken-desc">Date taken</option>
+          </select>
+        </form>
+      </div>
       {error && <p data-testid="error">{error}</p>}
       {loading ? (
         <div data-testid="loader" className={styles.loader} />
