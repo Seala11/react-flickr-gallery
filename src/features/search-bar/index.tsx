@@ -1,16 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import AppContext from 'app/store/context';
+import { SearchProviderActions } from 'app/store/searchPageReducer';
+import React, { useContext, useEffect, useRef } from 'react';
 import styles from './index.module.scss';
 import { useBeforeUnload } from './useBeforeUnload';
 
 type SearchBarProps = {
-  setSearchValue: React.Dispatch<React.SetStateAction<string | null>>;
-  searchHandler: (value: string) => Promise<void>;
-  searchValue: string | null;
+  searchHandler: (value: string, sort: string, cardsPerPage: string) => Promise<void>;
 };
 
-const SearchBar = ({ setSearchValue, searchHandler, searchValue }: SearchBarProps) => {
+const SearchBar = ({ searchHandler }: SearchBarProps) => {
   const searchInput = useRef<HTMLInputElement>(null);
   const setUpdatedValue = useBeforeUnload();
+
+  const { homePageState, homePageDispatch } = useContext(AppContext);
+  const { searchValue, sort, cardsPerPage } = homePageState;
 
   useEffect(() => {
     setUpdatedValue(searchValue);
@@ -18,19 +21,22 @@ const SearchBar = ({ setSearchValue, searchHandler, searchValue }: SearchBarProp
 
   const resetSearchValue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
-    setSearchValue('');
+    homePageDispatch({ type: SearchProviderActions.SET_SEARCH_VALUE, searchValue: '' });
     searchInput.current?.focus();
   };
 
   const changeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    setSearchValue(event.target.value);
+    homePageDispatch({
+      type: SearchProviderActions.SET_SEARCH_VALUE,
+      searchValue: event.target.value,
+    });
   };
 
   const submitSearchForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchValue) {
-      searchHandler(searchValue);
+      searchHandler(searchValue, sort, cardsPerPage);
     }
   };
 

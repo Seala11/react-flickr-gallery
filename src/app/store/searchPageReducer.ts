@@ -4,9 +4,11 @@ export enum SearchProviderActions {
   ADD_CARDS = 'add cards',
   REMOVE_CARDS = 'remove all cards',
   SET_LOADING = 'set loading',
+  SET_SEARCH_VALUE = 'set search value',
   REMOVE_LOADING = 'remove loading',
   CHANGE_SORT = 'change sort',
   CHANGE_CARDS_PER_PAGE = 'change cards per page',
+  SET_MOUNTING = 'set mounting on componentDidMount',
 }
 
 export type SearchState = {
@@ -16,10 +18,12 @@ export type SearchState = {
     totalPages: number;
     totalCards: number;
   };
+  searchValue: string | null;
   sort: string;
   cardsPerPage: string;
   loading: boolean;
   error: string | null;
+  mounting: boolean;
 };
 
 export const initialSearchState = {
@@ -29,10 +33,12 @@ export const initialSearchState = {
     totalPages: 1,
     totalCards: 0,
   },
+  searchValue: null,
   sort: 'relevance',
   cardsPerPage: '12',
   loading: false,
   error: null,
+  mounting: false,
 };
 
 export type SearchAction =
@@ -41,7 +47,9 @@ export type SearchAction =
   | { type: SearchProviderActions.SET_LOADING }
   | { type: SearchProviderActions.REMOVE_LOADING }
   | { type: SearchProviderActions.CHANGE_CARDS_PER_PAGE; cardsPerPage: string }
-  | { type: SearchProviderActions.CHANGE_SORT; sort: string };
+  | { type: SearchProviderActions.CHANGE_SORT; sort: string }
+  | { type: SearchProviderActions.SET_SEARCH_VALUE; searchValue: string | null }
+  | { type: SearchProviderActions.SET_MOUNTING };
 
 export const searchPageReducer = (state: SearchState, action: SearchAction): SearchState => {
   switch (action.type) {
@@ -65,6 +73,12 @@ export const searchPageReducer = (state: SearchState, action: SearchAction): Sea
 
     case SearchProviderActions.CHANGE_SORT:
       return { ...state, sort: action.sort };
+
+    case SearchProviderActions.SET_SEARCH_VALUE:
+      return { ...state, searchValue: action.searchValue };
+
+    case SearchProviderActions.SET_MOUNTING:
+      return { ...state, mounting: true };
 
     default:
       return state;

@@ -68,7 +68,12 @@ describe('Wnen Home component renders', () => {
 
     unmount();
 
-    render(<Home />);
+    render(
+      <AppProvider>
+        <Home />
+      </AppProvider>
+    );
+
     expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
   });
 });

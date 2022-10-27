@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
@@ -9,16 +9,13 @@ import AppContext from 'app/store/context';
 import { SearchProviderActions } from 'app/store/searchPageReducer';
 
 const Home = () => {
-  const [searchValue, setSearchValue] = useState<string | null>(null);
   const [popUp, setPopUp] = useState<FlickrCard | null>(null);
 
   const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { loading, error, cards, cardsPerPage, sort } = homePageState;
+  const { loading, error, cards, cardsPerPage, sort, searchValue, mounting } = homePageState;
 
-  // TODO: cardsPerPage works only once
   const searchHandler = useCallback(
-    async (value: string) => {
-      console.log('here', value);
+    async (value: string, sort: string, cardsPerPage: string) => {
       homePageDispatch({ type: SearchProviderActions.SET_LOADING });
       try {
         requestData.sort = sort;
@@ -35,26 +32,29 @@ const Home = () => {
         homePageDispatch({ type: SearchProviderActions.REMOVE_LOADING });
       }
     },
-    [cardsPerPage, sort, homePageDispatch]
+    [homePageDispatch]
   );
-
-  const mountingRef = useRef({ cards, error });
 
   useEffect(() => {
     const storedValue = getSearchValueFromStorage();
-    const { cards, error } = mountingRef.current;
-    if (cards.length > 0 || error) {
-      setSearchValue(storedValue);
+    if (mounting) {
+      homePageDispatch({ type: SearchProviderActions.SET_SEARCH_VALUE, searchValue: storedValue });
       return;
     }
 
     if (storedValue) {
-      setSearchValue(storedValue);
-      searchHandler(storedValue);
+      homePageDispatch({ type: SearchProviderActions.SET_SEARCH_VALUE, searchValue: storedValue });
+      searchHandler(storedValue, sort, cardsPerPage);
     } else {
-      searchHandler(DEFAULT_SEARCH);
+      searchHandler(DEFAULT_SEARCH, sort, cardsPerPage);
+      homePageDispatch({
+        type: SearchProviderActions.SET_SEARCH_VALUE,
+        searchValue: DEFAULT_SEARCH,
+      });
     }
-  }, [searchHandler]);
+
+    homePageDispatch({ type: SearchProviderActions.SET_MOUNTING });
+  }, [homePageDispatch, searchHandler, mounting, sort, cardsPerPage]);
 
   const popUpHandler = (card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     event.preventDefault();
@@ -68,27 +68,27 @@ const Home = () => {
     document.body.style.overflowY = 'auto';
   };
 
+  const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    homePageDispatch({
+      type: SearchProviderActions.CHANGE_CARDS_PER_PAGE,
+      cardsPerPage: e.target.value,
+    });
+    const search = searchValue ? searchValue : DEFAULT_SEARCH;
+    searchHandler(search, sort, e.target.value);
+  };
+
   return (
     <main className={styles.wrapper}>
       {popUp && <PopUp card={popUp} popUpClose={popUpClose} />}
       <div className={styles.searchWrapper}>
-        <SearchBar
-          setSearchValue={setSearchValue}
-          searchHandler={searchHandler}
-          searchValue={searchValue}
-        />
+        <SearchBar searchHandler={searchHandler} />
         <form>
           <label htmlFor="numberOfCards">Cards Per Page</label>
           <select
             value={cardsPerPage}
             name="numberOfCards"
             id="numberOfCards"
-            onChange={(e) => {
-              homePageDispatch({
-                type: SearchProviderActions.CHANGE_CARDS_PER_PAGE,
-                cardsPerPage: e.target.value,
-              });
-            }}
+            onChange={selectHandler}
           >
             <option value="6">6</option>
             <option value="12">12</option>
