@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CardList from '.';
+import AppProvider from 'app/store/provider';
 
 const TEST_CARDS = [
   {
@@ -45,7 +46,11 @@ const TEST_CARDS = [
 
 describe('when the card list is rendered', () => {
   it('initially should contain all cards', () => {
-    render(<CardList cards={TEST_CARDS} showPopUp={() => {}} />);
+    render(
+      <AppProvider>
+        <CardList cards={TEST_CARDS} showPopUp={() => {}} />
+      </AppProvider>
+    );
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });
 });

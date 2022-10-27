@@ -5,7 +5,12 @@ import styles from './index.module.scss';
 import { useBeforeUnload } from './useBeforeUnload';
 
 type SearchBarProps = {
-  searchHandler: (value: string, sort: string, cardsPerPage: string) => Promise<void>;
+  searchHandler: (
+    value: string,
+    sort: string,
+    cardsPerPage: string,
+    currPage: string
+  ) => Promise<void>;
 };
 
 const SearchBar = ({ searchHandler }: SearchBarProps) => {
@@ -36,7 +41,8 @@ const SearchBar = ({ searchHandler }: SearchBarProps) => {
   const submitSearchForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchValue) {
-      searchHandler(searchValue, sort, cardsPerPage);
+      homePageDispatch({ type: SearchProviderActions.SET_CURR_PAGE, page: 1 });
+      searchHandler(searchValue, sort, cardsPerPage, '1');
     }
   };
 

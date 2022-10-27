@@ -1,0 +1,53 @@
+@use './app/styles/mixins.scss' as *;
+
+.list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.button {
+  @include poppins($color: var(--dark-xl));
+  margin: 1rem;
+  padding: 1.5rem;
+
+  &:disabled {
+    cursor: auto;
+    background-color: var(--dark-s);
+    border: 0.2rem solid var(--dark-l);
+
+    &:hover {
+      $color: var(--dark-xl);
+      background-color: var(--dark-s);
+    }
+  }
+}
+
+.dots {
+  border: none;
+  background-color: transparent;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.page {
+  border-radius: 0.5rem;
+  background-color: var(--light);
+  border: 0.2rem solid var(--dark-xl);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    color: var(--dark-xxl);
+    background-color: var(--primary);
+  }
+
+  &.active {
+    color: var(--dark-xxl);
+    background-color: var(--primary);
+  }
+}
+
+.pagination {
+  display: flex;
+}

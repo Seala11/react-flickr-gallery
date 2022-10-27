@@ -5,12 +5,17 @@ import React, { useContext } from 'react';
 import styles from './index.module.scss';
 
 type SearchControlsProps = {
-  searchHandler: (value: string, sort: string, cardsPerPage: string) => Promise<void>;
+  searchHandler: (
+    value: string,
+    sort: string,
+    cardsPerPage: string,
+    currPage: string
+  ) => Promise<void>;
 };
 
 const SearchControls = ({ searchHandler }: SearchControlsProps) => {
   const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { cardsPerPage, sort, searchValue } = homePageState;
+  const { cardsPerPage, sort, searchValue, currPage } = homePageState;
 
   const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>, key: SearchProviderActions) => {
     const search = searchValue ? searchValue : DEFAULT_SEARCH;
@@ -21,7 +26,7 @@ const SearchControls = ({ searchHandler }: SearchControlsProps) => {
           type: SearchProviderActions.CHANGE_CARDS_PER_PAGE,
           cardsPerPage: e.target.value,
         });
-        searchHandler(search, sort, e.target.value);
+        searchHandler(search, sort, e.target.value, `${currPage}`);
         break;
 
       case SearchProviderActions.CHANGE_SORT:
@@ -29,7 +34,7 @@ const SearchControls = ({ searchHandler }: SearchControlsProps) => {
           type: SearchProviderActions.CHANGE_SORT,
           sort: e.target.value,
         });
-        searchHandler(search, e.target.value, cardsPerPage);
+        searchHandler(search, e.target.value, cardsPerPage, `${currPage}`);
         break;
     }
   };

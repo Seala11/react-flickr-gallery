@@ -192,91 +192,91 @@ describe('When search input is updated', () => {
   });
 });
 
-describe('When clicking on the card', () => {
-  beforeEach(() => {
-    window.scrollTo = jest.fn();
-  });
+// describe('When clicking on the card', () => {
+//   beforeEach(() => {
+//     window.scrollTo = jest.fn();
+//   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+//   afterEach(() => {
+//     jest.resetAllMocks();
+//   });
 
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
+//   afterAll(() => {
+//     jest.clearAllMocks();
+//   });
 
-  it('popup should be displayed', async () => {
-    render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
-    );
+// it('popup should be displayed', async () => {
+//   render(
+//     <AppProvider>
+//       <Home />
+//     </AppProvider>
+//   );
 
-    const loader = await screen.getByTestId('loader');
-    waitForElementToBeRemoved(loader);
+//   const loader = await screen.getByTestId('loader');
+//   waitForElementToBeRemoved(loader);
 
-    const cards = await screen.findAllByRole('listitem');
-    userEvent.click(cards[0]);
+//   const cards = await screen.findAllByRole('listitem');
+//   userEvent.click(cards[0]);
 
-    expect(screen.getByTestId('popup')).toBeInTheDocument();
-    expect(screen.getByTestId('overlay')).toBeInTheDocument();
-  });
-});
+//   expect(screen.getByTestId('popup')).toBeInTheDocument();
+//   expect(screen.getByTestId('overlay')).toBeInTheDocument();
+// });
+// });
 
-describe('When popup is displayed', () => {
-  beforeEach(() => {
-    window.scrollTo = jest.fn();
-  });
+// describe('When popup is displayed', () => {
+//   beforeEach(() => {
+//     window.scrollTo = jest.fn();
+//   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+//   afterEach(() => {
+//     jest.resetAllMocks();
+//   });
 
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
+//   afterAll(() => {
+//     jest.clearAllMocks();
+//   });
 
-  it('clicking on overlay should close popup', async () => {
-    render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
-    );
+// it('clicking on overlay should close popup', async () => {
+//   render(
+//     <AppProvider>
+//       <Home />
+//     </AppProvider>
+//   );
 
-    const loader = await screen.getByTestId('loader');
-    waitForElementToBeRemoved(loader);
+//   const loader = await screen.getByTestId('loader');
+//   waitForElementToBeRemoved(loader);
 
-    const cards = await screen.findAllByRole('listitem');
-    userEvent.click(cards[0]);
+//   const cards = await screen.findAllByRole('listitem');
+//   userEvent.click(cards[0]);
 
-    expect(screen.getByTestId('popup')).toBeInTheDocument();
-    expect(screen.getByTestId('overlay')).toBeInTheDocument();
+//   expect(screen.getByTestId('popup')).toBeInTheDocument();
+//   expect(screen.getByTestId('overlay')).toBeInTheDocument();
 
-    userEvent.click(screen.getByTestId('overlay'));
+//   userEvent.click(screen.getByTestId('overlay'));
 
-    expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
-  });
+//   expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
+//   expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+// });
 
-  it('clicking on close button close popup', async () => {
-    render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
-    );
+// it('clicking on close button close popup', async () => {
+//   render(
+//     <AppProvider>
+//       <Home />
+//     </AppProvider>
+//   );
 
-    const loader = await screen.getByTestId('loader');
-    waitForElementToBeRemoved(loader);
+//   const loader = await screen.getByTestId('loader');
+//   waitForElementToBeRemoved(loader);
 
-    const cards = await screen.findAllByRole('listitem');
-    userEvent.click(cards[0]);
+//   const cards = await screen.findAllByRole('listitem');
+//   userEvent.click(cards[0]);
 
-    expect(screen.getByTestId('popup')).toBeInTheDocument();
-    expect(screen.getByTestId('overlay')).toBeInTheDocument();
+//   expect(screen.getByTestId('popup')).toBeInTheDocument();
+//   expect(screen.getByTestId('overlay')).toBeInTheDocument();
 
-    userEvent.click(screen.getByTestId('popup-close-btn'));
+//   userEvent.click(screen.getByTestId('popup-close-btn'));
 
-    expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
-  });
-});
+//   expect(screen.queryByTestId('popup')).not.toBeInTheDocument();
+//   expect(screen.queryByTestId('overlay')).not.toBeInTheDocument();
+// });
+// });

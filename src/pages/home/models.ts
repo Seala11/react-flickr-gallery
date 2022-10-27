@@ -28,12 +28,14 @@ export const requestData = {
   text: '',
   sort: '',
   per_page: '',
+  page: '',
   license: '4',
   extras: 'owner_name, license, description, views, date_taken, tags, icon_server',
   format: 'json',
   nojsoncallback: '1',
   safe_search: '1',
   content_type: '1',
+  min_upload_date: '1603846694',
 };
 
 export type SearchFetchType = {
