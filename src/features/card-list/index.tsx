@@ -5,14 +5,13 @@ import { FlickrCard } from 'pages/home/models';
 
 type CardListProps = {
   cards: FlickrCard[];
-  showPopUp: (card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 };
 
-const CardList = ({ cards, showPopUp }: CardListProps) => {
+const CardList = ({ cards }: CardListProps) => {
   return (
     <ul className={styles.list} data-testid="cardlist">
       {cards.map((card) => (
-        <Card key={card.id} card={card} showPopUp={showPopUp} />
+        <Card key={card.id} card={card} />
       ))}
     </ul>
   );

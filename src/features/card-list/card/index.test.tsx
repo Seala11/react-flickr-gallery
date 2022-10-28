@@ -1,6 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Card from '.';
+import AppProvider from 'app/store/provider';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('when the card is rendered', () => {
   const testCard = {
@@ -24,28 +26,58 @@ describe('when the card is rendered', () => {
   };
 
   it('should contain an expected image', () => {
-    render(<Card card={testCard} showPopUp={() => {}} />);
+    render(
+      <BrowserRouter>
+        <AppProvider>
+          <Card card={testCard} />
+        </AppProvider>
+      </BrowserRouter>
+    );
     expect(screen.getByTestId('card-image')).toBeInTheDocument();
   });
 
   it('should contain an expected title', () => {
-    render(<Card card={testCard} showPopUp={() => {}} />);
+    render(
+      <BrowserRouter>
+        <AppProvider>
+          <Card card={testCard} />
+        </AppProvider>
+      </BrowserRouter>
+    );
     expect(screen.getByTestId('card-title')).toBeInTheDocument();
   });
 
   it('should contain an expected subtitle', () => {
-    render(<Card card={testCard} showPopUp={() => {}} />);
+    render(
+      <BrowserRouter>
+        <AppProvider>
+          <Card card={testCard} />
+        </AppProvider>
+      </BrowserRouter>
+    );
     expect(screen.getByTestId('card-subtitle')).toBeInTheDocument();
   });
 
   it('if title is larger than 35 characters display should replace the rest with ...', () => {
-    render(<Card card={testCard} showPopUp={() => {}} />);
+    render(
+      <BrowserRouter>
+        <AppProvider>
+          <Card card={testCard} />
+        </AppProvider>
+      </BrowserRouter>
+    );
     expect(screen.getByTestId('card-title')).toBeInTheDocument();
     expect(screen.getByTestId('card-title')).toHaveTextContent(testCard.title.slice(0, 35));
   });
 
   it('if name is larger than 35 characters display should replace the rest with ...', () => {
-    render(<Card card={testCard} showPopUp={() => {}} />);
+    render(
+      <BrowserRouter>
+        <AppProvider>
+          <Card card={testCard} />
+        </AppProvider>
+      </BrowserRouter>
+    );
     expect(screen.getByTestId('card-subtitle')).toBeInTheDocument();
     expect(screen.getByTestId('card-subtitle')).toHaveTextContent(testCard.ownername.slice(0, 35));
   });

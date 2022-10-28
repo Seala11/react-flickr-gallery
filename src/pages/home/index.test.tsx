@@ -12,6 +12,7 @@ import userEvent from '@testing-library/user-event';
 import { server } from '../../mocks/server';
 import { rest } from 'msw';
 import AppProvider from 'app/store/provider';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('Wnen Home component renders', () => {
   beforeEach(() => {
@@ -24,16 +25,20 @@ describe('Wnen Home component renders', () => {
 
   it('should contain empty search input and default amount of cards if there are no stored value in storage', async () => {
     render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     const loader = await screen.getByTestId('loader');
 
     waitForElementToBeRemoved(loader);
 
-    expect(await screen.queryByText(/Oops! Something went wrong/i)).not.toBeInTheDocument();
+    waitFor(() =>
+      expect(screen.queryByText(/Oops! Something went wrong/i)).not.toBeInTheDocument()
+    );
     expect(await screen.findByTestId('cardlist')).toBeInTheDocument();
     expect(screen.getByTestId('search-input')).toBeEmptyDOMElement();
   });
@@ -43,9 +48,11 @@ describe('Wnen Home component renders', () => {
     setSearchValueToStorage(TEST_VAL);
 
     render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
@@ -55,9 +62,11 @@ describe('Wnen Home component renders', () => {
     const TEST_VAL = 'test1';
 
     const { unmount } = render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     const input = screen.getByRole('searchbox');
@@ -69,9 +78,11 @@ describe('Wnen Home component renders', () => {
     unmount();
 
     render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     expect(screen.getByTestId('search-input')).toHaveDisplayValue(TEST_VAL);
@@ -93,9 +104,11 @@ describe('When search input is updated', () => {
     const TEST_VAL = 'test';
 
     render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     const loader = await screen.getByTestId('loader');
@@ -122,9 +135,11 @@ describe('When search input is updated', () => {
     const TEST_VAL = 'test';
 
     render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     const loader = await screen.getByTestId('loader');
@@ -157,9 +172,11 @@ describe('When search input is updated', () => {
     );
 
     render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     const loader = await screen.getByTestId('loader');
@@ -173,9 +190,11 @@ describe('When search input is updated', () => {
     const TEST_VAL = 'test1';
 
     render(
-      <AppProvider>
-        <Home />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <Home />
+        </AppProvider>
+      </BrowserRouter>
     );
 
     const input = screen.getByRole('searchbox');

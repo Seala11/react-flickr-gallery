@@ -1,13 +1,19 @@
-import React from 'react';
+import AppContext from 'app/store/context';
+import React, { useContext } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import styles from './index.module.scss';
-import { FlickrCard } from 'pages/home/models';
 
-type PopUpProps = {
-  card: FlickrCard;
-  popUpClose: (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => void;
-};
+const SearchCardInfo = () => {
+  const { homePageState } = useContext(AppContext);
+  const { cards } = homePageState;
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const card = cards.find((card) => card.id === id);
 
-const PopUp = ({ card, popUpClose }: PopUpProps) => {
+  if (!card) {
+    return <p data-testid="error">No card has found.</p>;
+  }
+
   const avatarIcon = `https://farm${card.iconfarm}.staticflickr.com/${card.iconserver}//buddyicons/${card.owner}.jpg`;
   const img = `https://farm${card.farm}.staticflickr.com/${card.server}/${card.id}_${card.secret}.jpg`;
   const tags = card.tags
@@ -29,7 +35,19 @@ const PopUp = ({ card, popUpClose }: PopUpProps) => {
 
   return (
     <>
-      <div className={styles.overlay} onClick={popUpClose} data-testid="overlay" />
+      <button data-testid="back-btn" className={styles.button} onClick={() => navigate('/')}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="#424242"
+          viewBox="0 0 16 16"
+          className={styles.icon}
+        >
+          <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+        </svg>
+        Back to search
+      </button>
       <div className={styles.popup} data-testid="popup">
         <div className={styles.header}>
           <div className={styles.avatarWrapper}>
@@ -45,12 +63,6 @@ const PopUp = ({ card, popUpClose }: PopUpProps) => {
               {card.ownername}
             </span>
           </div>
-          <button
-            type="button"
-            onClick={popUpClose}
-            data-testid="popup-close-btn"
-            className={styles.closeBtn}
-          />
         </div>
 
         <img src={img} alt={card.title} className={styles.img} data-testid="popup-image" />
@@ -93,4 +105,4 @@ const PopUp = ({ card, popUpClose }: PopUpProps) => {
   );
 };
 
-export default PopUp;
+export default SearchCardInfo;

@@ -1,20 +1,15 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import styles from './index.module.scss';
 import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
 import { getSearchValueFromStorage } from 'shared/helpers/storage';
-import { DEFAULT_SEARCH, FlickrCard, requestData, SearchFetchType } from './models';
-import PopUp from 'features/popup';
+import { DEFAULT_SEARCH, requestData, SearchFetchType } from './models';
 import AppContext from 'app/store/context';
 import { SearchProviderActions } from 'app/store/searchPageReducer';
 import SearchControls from 'features/search-controls';
 import Pagination from 'features/pagination';
-// import { useNavigate } from 'react-router';
 
 const Home = () => {
-  // const navigate = useNavigate();
-  const [popUp, setPopUp] = useState<FlickrCard | null>(null);
-
   const { homePageState, homePageDispatch } = useContext(AppContext);
   const { loading, error, cards, cardsPerPage, sort, currPage } = homePageState;
 
@@ -68,22 +63,8 @@ const Home = () => {
     }
   }, [homePageDispatch, searchHandler]);
 
-  const popUpHandler = (card: FlickrCard, event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    event.preventDefault();
-    setPopUp(card);
-    document.body.style.overflowY = 'hidden';
-    // navigate('/search' + card.id);
-  };
-
-  const popUpClose = (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
-    event.preventDefault();
-    setPopUp(null);
-    document.body.style.overflowY = 'auto';
-  };
-
   return (
     <main className={styles.wrapper}>
-      {popUp && <PopUp card={popUp} popUpClose={popUpClose} />}
       <div className={styles.searchWrapper}>
         <SearchBar searchHandler={searchHandler} />
         <SearchControls searchHandler={searchHandler} />
@@ -93,7 +74,7 @@ const Home = () => {
       {loading ? (
         <div data-testid="loader" className={styles.loader} />
       ) : (
-        <CardList cards={cards} showPopUp={popUpHandler} />
+        <CardList cards={cards} />
       )}
     </main>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CardList from '.';
 import AppProvider from 'app/store/provider';
+import { BrowserRouter } from 'react-router-dom';
 
 const TEST_CARDS = [
   {
@@ -47,9 +48,11 @@ const TEST_CARDS = [
 describe('when the card list is rendered', () => {
   it('initially should contain all cards', () => {
     render(
-      <AppProvider>
-        <CardList cards={TEST_CARDS} showPopUp={() => {}} />
-      </AppProvider>
+      <BrowserRouter>
+        <AppProvider>
+          <CardList cards={TEST_CARDS} />
+        </AppProvider>
+      </BrowserRouter>
     );
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });

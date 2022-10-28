@@ -1,31 +1,5 @@
 @use './app/styles/mixins.scss' as *;
 
-.overlay {
-  background-color: rgb(41 41 41 / 66%);
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  -webkit-transition: background-color 500ms linear;
-  -ms-transition: background-color 500ms linear;
-  transition: background-color 500ms linear;
-  overflow-y: hidden;
-  cursor: zoom-out;
-  animation: overlay 0.5s forwards;
-}
-
-@keyframes overlay {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
 .popup {
   display: flex;
   flex-direction: column;
@@ -137,20 +111,22 @@
   font-size: 1.4rem;
 }
 
-.closeBtn {
-  border: 0;
-  background-size: contain;
-  background-position: center;
-  background-color: transparent;
-  width: 2rem;
+.icon {
+  width: 2.4rem;
   height: 2rem;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url('../../../public/assets/icons/close.svg');
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include poppins($color: var(--dark-xl));
+  margin: 1rem;
+  padding: 0.5rem;
   cursor: pointer;
 
   &:hover {
+    color: var(--dark-xl);
     background-color: var(--primary);
-    border-radius: 0.3rem;
   }
 }
