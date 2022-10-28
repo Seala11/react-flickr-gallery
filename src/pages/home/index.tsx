@@ -9,21 +9,17 @@ import AppContext from 'app/store/context';
 import { SearchProviderActions } from 'app/store/searchPageReducer';
 import SearchControls from 'features/search-controls';
 import Pagination from 'features/pagination';
+// import { useNavigate } from 'react-router';
 
 const Home = () => {
+  // const navigate = useNavigate();
   const [popUp, setPopUp] = useState<FlickrCard | null>(null);
 
   const { homePageState, homePageDispatch } = useContext(AppContext);
   const { loading, error, cards, cardsPerPage, sort, currPage } = homePageState;
 
   const searchHandler = useCallback(
-    async (
-      value: string,
-      sort: string,
-      cardsPerPage: string,
-      currPage: string,
-      reset?: boolean
-    ) => {
+    async (value: string, sort: string, cardsPerPage: string, currPage: string) => {
       homePageDispatch({ type: SearchProviderActions.SET_LOADING });
       try {
         requestData.sort = sort;
@@ -37,12 +33,9 @@ const Home = () => {
         const totalPages = data.photos.pages;
         // due to the bug in flickr api
         if (+currPage > totalPages) {
-          searchHandler(value, sort, cardsPerPage, `${totalPages}`, true);
-          return;
-        }
-
-        if (reset) {
           homePageDispatch({ type: SearchProviderActions.SET_CURR_PAGE, page: totalPages });
+          homePageDispatch({ type: SearchProviderActions.SET_TOTAL_PAGES, total: totalPages });
+          return;
         }
 
         homePageDispatch({ type: SearchProviderActions.ADD_CARDS, cards: data.photos.photo });
@@ -79,6 +72,7 @@ const Home = () => {
     event.preventDefault();
     setPopUp(card);
     document.body.style.overflowY = 'hidden';
+    // navigate('/search' + card.id);
   };
 
   const popUpClose = (event: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
