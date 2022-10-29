@@ -16,6 +16,7 @@
 
   @include media-laptop {
     width: 40%;
+    min-width: auto;
   }
 
   @include media-tablet {

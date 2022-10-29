@@ -76,12 +76,12 @@ const Home = () => {
         <SearchControls searchHandler={searchHandler} />
       </div>
       {error && <p data-testid="error">{error}</p>}
-      {!error && <Pagination searchHandler={searchHandler} />}
       {loading ? (
         <div data-testid="loader" className={styles.loader} />
       ) : (
         <CardList cards={cards} />
       )}
+      {!error && !loading && <Pagination searchHandler={searchHandler} />}
     </main>
   );
 };
