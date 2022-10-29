@@ -17,11 +17,38 @@ const SearchCardInfo = () => {
   });
 
   useEffect(() => {
+    if (!card) {
+      return navigate('/');
+    }
+  }, [card, navigate]);
+
+  useEffect(() => {
     window.scrollTo({ top: 0 });
   }, []);
 
+  const navigateHandler = () => {
+    navigate('/');
+  };
+
   if (!card) {
-    return <p data-testid="error">No card has found.</p>;
+    return (
+      <div className={styles.errWrapper}>
+        <button data-testid="back-btn" className={styles.buttonBlack} onClick={navigateHandler}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="#424242"
+            viewBox="0 0 16 16"
+            className={styles.icon}
+          >
+            <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+          </svg>
+          Back to search
+        </button>
+        <p data-testid="error">No Results Found</p>
+      </div>
+    );
   }
 
   const avatarIcon = `https://farm${card.iconfarm}.staticflickr.com/${card.iconserver}//buddyicons/${card.owner}.jpg`;
@@ -42,10 +69,6 @@ const SearchCardInfo = () => {
     card.description._content.length < 350
       ? card.description._content
       : card.description._content.slice(0, 350) + '...';
-
-  const navigateHandler = () => {
-    navigate('/');
-  };
 
   return (
     <>

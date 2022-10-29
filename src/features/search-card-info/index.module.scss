@@ -1,5 +1,15 @@
 @use './app/styles/mixins.scss' as *;
 
+.errWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4rem 5rem;
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
 .sectionImage {
   background-color: (var(--dark-xxl));
 }
@@ -8,6 +18,10 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+
+  @include media-mobile {
+    flex-direction: column;
+  }
 }
 
 .positionWrapper {
@@ -23,6 +37,10 @@
   padding: 0 4rem 5rem;
   max-width: 120rem;
   margin: 0 auto;
+
+  @include media-mobile {
+    padding: 0 2rem 5rem;
+  }
 }
 
 .img {
@@ -39,6 +57,11 @@
 
 .position {
   color: var(--light);
+
+  @include media-mobile-s {
+    font-size: 1.4rem;
+    font-weight: 300;
+  }
 }
 
 .section {
@@ -46,11 +69,19 @@
   padding: 1rem 4rem;
   margin: 0 auto;
   max-width: 120rem;
+
+  @include media-mobile {
+    padding: 1rem 2rem;
+  }
 }
 
 .sectionInfo {
   justify-content: space-between;
   align-items: center;
+
+  @include media-mobile {
+    flex-direction: column;
+  }
 }
 
 .sectionContent {
@@ -64,6 +95,10 @@
   justify-content: flex-end;
   align-items: flex-start;
   gap: 2rem;
+
+  @include media-mobile {
+    justify-content: flex-start;
+  }
 }
 
 .views {
@@ -84,6 +119,10 @@
   display: flex;
   align-items: center;
   width: 100%;
+
+  @include media-mobile {
+    justify-content: flex-start;
+  }
 }
 
 .avatar {
@@ -92,6 +131,7 @@
   height: 3.2rem;
   margin-right: 1rem;
   font-size: 1rem;
+  word-break: break-all;
 }
 
 .title {
@@ -131,5 +171,24 @@
 
   &:hover {
     color: var(--primary);
+  }
+}
+
+.buttonBlack {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  @include poppins($color: var(--dark-xl));
+  margin: 1rem 0;
+  padding: 0;
+  cursor: pointer;
+  width: 16rem;
+  border: 0;
+  background-color: transparent;
+  align-self: flex-start;
+  transition: all 0.3s ease-in;
+
+  &:hover {
+    color: var(--dark-xxl);
   }
 }

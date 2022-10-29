@@ -33,7 +33,7 @@ const Home = () => {
 
         const totalPages = data.photos.pages;
         // due to the bug in flickr api
-        if (+currPage > totalPages) {
+        if (+currPage > totalPages && totalPages > 0) {
           homePageDispatch({ type: SearchProviderActions.SET_CURR_PAGE, page: totalPages });
           homePageDispatch({ type: SearchProviderActions.SET_TOTAL_PAGES, total: totalPages });
           return;
