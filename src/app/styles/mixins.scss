@@ -1,12 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
 
-@mixin poppins(
-  $ff: '' Poppins ', sans-serif',
-  $fs: 1.6rem,
-  $fw: 400,
-  $lh: 1.2,
-  $color: var(--dark-xxl)
-) {
+@mixin poppins($ff: 'Poppins', $fs: 1.6rem, $fw: 400, $lh: 1.2, $color: var(--dark-xxl)) {
   font-family: $ff;
   font-size: $fs;
   font-weight: $fw;

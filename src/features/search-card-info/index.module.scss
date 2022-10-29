@@ -1,65 +1,28 @@
 @use './app/styles/mixins.scss' as *;
 
-.popup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background-color: var(--light);
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 0.9rem 0.2rem var(--dark-xl);
-  width: 70rem;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 999;
-  max-height: 90vh;
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-  overflow: auto;
-  animation: show 0.5s forwards;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-
-  @include media-tablet {
-    width: 90%;
-    max-height: 80vh;
-  }
+.sectionImage {
+  background-color: (var(--dark-xxl));
 }
 
-@keyframes show {
-  0% {
-    transform-origin: center center;
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-  }
-
-  100% {
-    transform-origin: center center;
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
-.header {
+.headerWrapper {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   width: 100%;
-  padding: 0.5rem 0 1rem;
 }
 
-.avatarWrapper {
+.positionWrapper {
   display: flex;
-  align-items: center;
+  gap: 2rem;
 }
 
-.avatar {
-  border-radius: 50%;
-  width: 3.2rem;
-  height: 3.2rem;
-  margin-right: 1rem;
+.imageWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4rem 5rem;
+  max-width: 120rem;
+  margin: 0 auto;
 }
 
 .img {
@@ -74,11 +37,33 @@
   }
 }
 
+.position {
+  color: var(--light);
+}
+
+.section {
+  display: flex;
+  padding: 1rem 4rem;
+  margin: 0 auto;
+  max-width: 120rem;
+}
+
+.sectionInfo {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionContent {
+  flex-direction: column;
+  padding-bottom: 3rem;
+}
+
 .infoWrapper {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: flex-start;
+  gap: 2rem;
 }
 
 .views {
@@ -93,6 +78,20 @@
 .viewsInfo {
   font-size: 2rem;
   color: var(--dark-xxl);
+}
+
+.avatarWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 3.2rem;
+  height: 3.2rem;
+  margin-right: 1rem;
+  font-size: 1rem;
 }
 
 .title {
@@ -118,15 +117,19 @@
 
 .button {
   display: flex;
-  justify-content: center;
   align-items: center;
-  @include poppins($color: var(--dark-xl));
-  margin: 1rem;
-  padding: 0.5rem;
+  height: 3rem;
+  @include poppins($color: var(--light));
+  margin: 1rem 0;
+  padding: 0;
   cursor: pointer;
+  width: 16rem;
+  border: 0;
+  background-color: transparent;
+  align-self: flex-start;
+  transition: all 0.3s ease-in;
 
   &:hover {
-    color: var(--dark-xl);
-    background-color: var(--primary);
+    color: var(--primary);
   }
 }

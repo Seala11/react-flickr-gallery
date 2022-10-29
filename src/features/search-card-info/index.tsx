@@ -1,14 +1,24 @@
 import AppContext from 'app/store/context';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import styles from './index.module.scss';
 
 const SearchCardInfo = () => {
   const { homePageState } = useContext(AppContext);
-  const { cards } = homePageState;
+  const { cards, currPage } = homePageState;
   const { id } = useParams();
   const navigate = useNavigate();
-  const card = cards.find((card) => card.id === id);
+  let indexPos;
+  const card = cards.find((card, index) => {
+    if (card.id === id) {
+      indexPos = index;
+      return card;
+    }
+  });
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, []);
 
   if (!card) {
     return <p data-testid="error">No card has found.</p>;
@@ -39,21 +49,41 @@ const SearchCardInfo = () => {
 
   return (
     <>
-      <button data-testid="back-btn" className={styles.button} onClick={navigateHandler}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="#424242"
-          viewBox="0 0 16 16"
-          className={styles.icon}
-        >
-          <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-        </svg>
-        Back to search
-      </button>
-      <div className={styles.popup} data-testid="popup">
-        <div className={styles.header}>
+      <section className={styles.sectionImage}>
+        <div className={styles.imageWrapper}>
+          <div className={styles.headerWrapper}>
+            <button data-testid="back-btn" className={styles.button} onClick={navigateHandler}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="#fff"
+                viewBox="0 0 16 16"
+                className={styles.icon}
+              >
+                <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+              </svg>
+              Back to search
+            </button>
+            <div className={styles.positionWrapper}>
+              <p className={styles.position}>
+                Page: <span>{currPage}</span>
+              </p>
+              <p className={styles.position}>
+                Position: <span>{indexPos ? indexPos + 1 : 1}</span>
+              </p>
+              <p className={styles.position}>
+                Id: <span>{id}</span>
+              </p>
+            </div>
+          </div>
+
+          <img src={img} alt={card.title} className={styles.img} data-testid="popup-image" />
+        </div>
+      </section>
+
+      <div>
+        <section className={`${styles.section} ${styles.sectionInfo}`}>
           <div className={styles.avatarWrapper}>
             <img
               src={avatarIcon}
@@ -67,27 +97,25 @@ const SearchCardInfo = () => {
               {card.ownername}
             </span>
           </div>
-        </div>
 
-        <img src={img} alt={card.title} className={styles.img} data-testid="popup-image" />
+          <div className={styles.infoWrapper}>
+            <p className={styles.views}>
+              <span className={styles.viewsInfo} data-testid="popup-views">
+                {card.views}
+              </span>
+              Views
+            </p>
 
-        <div className={styles.infoWrapper}>
-          <p className={styles.views}>
-            <span className={styles.viewsInfo} data-testid="popup-views">
-              {card.views}
-            </span>
-            Views
-          </p>
+            <p>
+              Taken on{' '}
+              <span className={styles.date} data-testid="popup-date">
+                {date}
+              </span>
+            </p>
+          </div>
+        </section>
 
-          <p>
-            Taken on{' '}
-            <span className={styles.date} data-testid="popup-date">
-              {date}
-            </span>
-          </p>
-        </div>
-
-        <section>
+        <section className={`${styles.section} ${styles.sectionContent}`}>
           <h2 className={styles.title} data-testid="popup-title">
             {card.title}
           </h2>
