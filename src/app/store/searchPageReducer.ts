@@ -10,6 +10,7 @@ export enum SearchProviderActions {
   REMOVE_LOADING = 'remove loading',
   CHANGE_SORT = 'change sort',
   CHANGE_CARDS_PER_PAGE = 'change cards per page',
+  SET_SCROLL_POS = 'set scroll position',
 }
 
 export type SearchState = {
@@ -21,6 +22,7 @@ export type SearchState = {
   cardsPerPage: string;
   loading: boolean;
   error: string | null;
+  scrollPos: number | null;
 };
 
 export const initialSearchState = {
@@ -32,6 +34,7 @@ export const initialSearchState = {
   cardsPerPage: '12',
   loading: false,
   error: null,
+  scrollPos: null,
 };
 
 export type SearchAction =
@@ -43,7 +46,8 @@ export type SearchAction =
   | { type: SearchProviderActions.CHANGE_SORT; sort: string }
   | { type: SearchProviderActions.SET_SEARCH_VALUE; searchValue: string | null }
   | { type: SearchProviderActions.SET_CURR_PAGE; page: number }
-  | { type: SearchProviderActions.SET_TOTAL_PAGES; total: number };
+  | { type: SearchProviderActions.SET_TOTAL_PAGES; total: number }
+  | { type: SearchProviderActions.SET_SCROLL_POS; pos: number | null };
 
 export const searchPageReducer = (state: SearchState, action: SearchAction): SearchState => {
   switch (action.type) {
@@ -88,6 +92,9 @@ export const searchPageReducer = (state: SearchState, action: SearchAction): Sea
 
     case SearchProviderActions.SET_TOTAL_PAGES:
       return { ...state, totalPages: action.total };
+
+    case SearchProviderActions.SET_SCROLL_POS:
+      return { ...state, scrollPos: action.pos };
 
     default:
       return state;

@@ -11,7 +11,13 @@ import Pagination from 'features/pagination';
 
 const Home = () => {
   const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { loading, error, cards, cardsPerPage, sort, currPage } = homePageState;
+  const { loading, error, cards, cardsPerPage, sort, currPage, scrollPos } = homePageState;
+
+  useEffect(() => {
+    if (scrollPos) {
+      window.scrollTo({ top: scrollPos, left: 0 });
+    }
+  }, [scrollPos]);
 
   const searchHandler = useCallback(
     async (value: string, sort: string, cardsPerPage: string, currPage: string) => {

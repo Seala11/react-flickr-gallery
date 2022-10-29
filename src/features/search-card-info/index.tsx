@@ -33,9 +33,13 @@ const SearchCardInfo = () => {
       ? card.description._content
       : card.description._content.slice(0, 350) + '...';
 
+  const navigateHandler = () => {
+    navigate('/');
+  };
+
   return (
     <>
-      <button data-testid="back-btn" className={styles.button} onClick={() => navigate('/')}>
+      <button data-testid="back-btn" className={styles.button} onClick={navigateHandler}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
