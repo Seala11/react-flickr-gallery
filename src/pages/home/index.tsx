@@ -15,7 +15,7 @@ const Home = () => {
 
   useEffect(() => {
     if (scrollPos) {
-      window.scrollTo({ top: scrollPos, left: 0 });
+      window.scrollTo({ top: scrollPos });
     }
   }, [scrollPos]);
 
