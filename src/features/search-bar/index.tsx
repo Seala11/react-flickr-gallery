@@ -55,7 +55,6 @@ const SearchBar = ({ searchHandler }: SearchBarProps) => {
         <input
           value={searchValue || ''}
           onChange={changeSearchValue}
-          autoFocus
           type="search"
           id="search-bar"
           name="search"

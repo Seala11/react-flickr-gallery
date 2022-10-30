@@ -15,14 +15,14 @@ describe('When the search bar is rendered', () => {
     expect(getByTestId('search-btn')).toBeInTheDocument();
   });
 
-  it('input should have a focus on it', async () => {
+  it('input should not have a focus on it', async () => {
     const { getByTestId } = render(
       <AppProvider>
         <SearchBar searchHandler={jest.fn()} />
       </AppProvider>
     );
 
-    expect(getByTestId('search-input')).toHaveFocus();
+    expect(getByTestId('search-input')).not.toHaveFocus();
   });
 });
 
