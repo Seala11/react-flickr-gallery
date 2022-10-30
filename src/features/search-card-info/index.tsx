@@ -32,7 +32,7 @@ const SearchCardInfo = () => {
 
   if (!card) {
     return (
-      <div className={styles.errWrapper}>
+      <div className={styles.errWrapper} data-testid="search-card">
         <button data-testid="back-btn" className={styles.buttonBlack} onClick={navigateHandler}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +101,7 @@ const SearchCardInfo = () => {
             </div>
           </div>
 
-          <img src={img} alt={card.title} className={styles.img} data-testid="popup-image" />
+          <img src={img} alt={card.title} className={styles.img} data-testid="image" />
         </div>
       </section>
 
@@ -112,18 +112,18 @@ const SearchCardInfo = () => {
               src={avatarIcon}
               alt={card.ownername}
               className={styles.avatar}
-              data-testid="popup-avatar-image"
+              data-testid="avatar-image"
               width="32"
               height="32"
             />
-            <span className={styles.subtitle} data-testid="popup-subtitle">
+            <span className={styles.subtitle} data-testid="subtitle">
               {card.ownername}
             </span>
           </div>
 
           <div className={styles.infoWrapper}>
             <p className={styles.views}>
-              <span className={styles.viewsInfo} data-testid="popup-views">
+              <span className={styles.viewsInfo} data-testid="views">
                 {card.views}
               </span>
               Views
@@ -131,7 +131,7 @@ const SearchCardInfo = () => {
 
             <p>
               Taken on{' '}
-              <span className={styles.date} data-testid="popup-date">
+              <span className={styles.date} data-testid="date">
                 {date}
               </span>
             </p>
@@ -139,18 +139,18 @@ const SearchCardInfo = () => {
         </section>
 
         <section className={`${styles.section} ${styles.sectionContent}`}>
-          <h2 className={styles.title} data-testid="popup-title">
+          <h2 className={styles.title} data-testid="title">
             {card.title}
           </h2>
 
           {card.description._content && (
-            <p className={styles.descr} data-testid="popup-descr">
+            <p className={styles.descr} data-testid="descr">
               {description}
             </p>
           )}
 
           {card.tags && (
-            <p className={styles.tags} data-testid="popup-tags">
+            <p className={styles.tags} data-testid="tags">
               {tags}
             </p>
           )}
