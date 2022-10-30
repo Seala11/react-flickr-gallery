@@ -17,20 +17,19 @@ const Pagination = ({ searchHandler }: Props) => {
   const { homePageState, homePageDispatch } = useContext(AppContext);
   const { currPage, totalPages, searchValue, sort, cardsPerPage, loading } = homePageState;
 
-  const UNITS_TOTAL = totalPages;
   let pagination: number[] = [];
-  const UNITS = Array(UNITS_TOTAL)
+  const PAGES = Array(totalPages)
     .fill(null)
     .map((_, i) => i + 1);
 
-  if (UNITS_TOTAL < 7) {
-    pagination = [...UNITS];
+  if (totalPages < 7) {
+    pagination = [...PAGES];
   } else if (currPage <= 4) {
-    pagination = [...UNITS.slice(0, 5), -1, UNITS_TOTAL];
-  } else if (currPage >= UNITS_TOTAL - 3) {
-    pagination = [1, -1, ...UNITS.slice(UNITS_TOTAL - 5)];
+    pagination = [...PAGES.slice(0, 5), -1, totalPages];
+  } else if (currPage >= totalPages - 3) {
+    pagination = [1, -1, ...PAGES.slice(totalPages - 5)];
   } else {
-    pagination = [1, -1, currPage - 1, currPage, currPage + 1, -2, UNITS_TOTAL];
+    pagination = [1, -1, currPage - 1, currPage, currPage + 1, -2, totalPages];
   }
 
   const pageHandler = (page: number) => {
@@ -47,6 +46,7 @@ const Pagination = ({ searchHandler }: Props) => {
           type="button"
           className={`${style.button} ${style.page}`}
           disabled={currPage === 1 || loading}
+          data-testid="prev"
         >
           <svg className={style.icon} focusable="false" aria-hidden="true" viewBox="0 0 24 24">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
@@ -86,6 +86,7 @@ const Pagination = ({ searchHandler }: Props) => {
           type="button"
           className={`${style.button} ${style.page}`}
           disabled={currPage === totalPages || loading}
+          data-testid="next"
         >
           <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" className={style.icon}>
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
