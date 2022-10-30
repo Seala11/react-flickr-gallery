@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import SearchCardInfo from '.';
 import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
 import AppProvider from 'app/store/provider';
@@ -186,9 +186,11 @@ describe('Wnen Card Info component renders', () => {
       </AppContext.Provider>
     );
 
-    expect(screen.getByText(new RegExp(CARD_VALID.title))).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(CARD_VALID.ownername))).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(CARD_VALID.description._content))).toBeInTheDocument();
+    waitFor(() => expect(screen.queryByText(new RegExp(CARD_VALID.title))).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText(new RegExp(CARD_VALID.ownername))).toBeInTheDocument());
+    waitFor(() =>
+      expect(screen.queryByText(new RegExp(CARD_VALID.description._content))).toBeInTheDocument()
+    );
   });
 
   it('should display card date', () => {
@@ -208,7 +210,7 @@ describe('Wnen Card Info component renders', () => {
       year: 'numeric',
     });
 
-    expect(screen.getByText(new RegExp(date))).toBeInTheDocument();
+    waitFor(() => expect(screen.queryByText(new RegExp(date))).toBeInTheDocument());
   });
 
   it('should display card image and avatar', () => {
@@ -222,8 +224,8 @@ describe('Wnen Card Info component renders', () => {
       </AppContext.Provider>
     );
 
-    expect(screen.getByAltText(CARD_VALID.ownername)).toBeInTheDocument();
-    expect(screen.getByAltText(CARD_VALID.title)).toBeInTheDocument();
+    waitFor(() => expect(screen.queryByAltText(CARD_VALID.ownername)).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByAltText(CARD_VALID.title)).toBeInTheDocument());
   });
 
   it('should cut card description if its too long', () => {
@@ -238,9 +240,8 @@ describe('Wnen Card Info component renders', () => {
       </AppContext.Provider>
     );
 
-    expect(screen.getByTestId('descr')).toBeInTheDocument();
-    const desc = screen.getByTestId('descr');
-    expect(desc).toHaveTextContent(descrValue);
+    waitFor(() => expect(screen.queryByTestId('descr')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByTestId('descr')).toHaveTextContent(descrValue));
   });
 
   it('should display description not provided if card has no description', () => {
