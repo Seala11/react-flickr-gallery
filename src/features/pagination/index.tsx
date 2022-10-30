@@ -40,7 +40,7 @@ const Pagination = ({ searchHandler }: Props) => {
   };
 
   return (
-    <ul className={style.list}>
+    <ul className={style.list} data-testid="list">
       <li className={style.item}>
         <button
           onClick={() => pageHandler(currPage - 1)}

@@ -40,7 +40,7 @@ const SearchControls = ({ searchHandler }: SearchControlsProps) => {
   };
 
   return (
-    <form className={styles.form}>
+    <form className={styles.form} data-testid="form">
       <div className={styles.wrapper}>
         <label htmlFor="numberOfCards" className={styles.label}>
           Cards per page
@@ -51,6 +51,7 @@ const SearchControls = ({ searchHandler }: SearchControlsProps) => {
           id="numberOfCards"
           onChange={(e) => selectHandler(e, SearchProviderActions.CHANGE_CARDS_PER_PAGE)}
           className={styles.input}
+          data-testid="cards-per-page"
         >
           <option value="6">6</option>
           <option value="12">12</option>
@@ -68,6 +69,7 @@ const SearchControls = ({ searchHandler }: SearchControlsProps) => {
           value={sort}
           onChange={(e) => selectHandler(e, SearchProviderActions.CHANGE_SORT)}
           className={styles.input}
+          data-testid="sort"
         >
           <option value="relevance">Relevance</option>
           <option value="interestingness-desc">Interestingness</option>
