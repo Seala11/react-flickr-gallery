@@ -1,11 +1,12 @@
-import AppContext from 'app/store/context';
-import React, { useContext } from 'react';
+import React from 'react';
 import FormCard from './card';
 import styles from './index.module.scss';
 
+import type { RootState } from 'app/store';
+import { useSelector } from 'react-redux';
+
 const FormCardList = () => {
-  const { formPageState } = useContext(AppContext);
-  const cards = formPageState.cards;
+  const { cards } = useSelector((state: RootState) => state.formPage);
 
   return (
     <section className={styles.section}>

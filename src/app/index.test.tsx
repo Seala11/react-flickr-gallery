@@ -7,6 +7,9 @@ import Routing from 'pages';
 import Header from 'widgets/header';
 import Footer from 'widgets/footer';
 
+import { setupStore } from './store';
+import { Provider } from 'react-redux';
+
 describe('when App component renders', () => {
   it('should initially display home page', () => {
     render(<App />);
@@ -39,11 +42,13 @@ describe('when App component renders', () => {
 
   it('should display form page by clicking on "form" link', () => {
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <Header />
-        <Routing />
-        <Footer />
-      </MemoryRouter>
+      <Provider store={setupStore()}>
+        <MemoryRouter initialEntries={['/']}>
+          <Header />
+          <Routing />
+          <Footer />
+        </MemoryRouter>
+      </Provider>
     );
     userEvent.click(screen.getByText(/form/i));
     expect(screen.getByTestId('react-form')).toBeInTheDocument();

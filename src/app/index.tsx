@@ -8,16 +8,21 @@ import Header from 'widgets/header';
 import Footer from 'widgets/footer';
 import AppProvider from './store/provider';
 
+import { setupStore } from './store';
+import { Provider } from 'react-redux';
+
 const App = () => (
-  <AppProvider>
-    <BrowserRouter>
-      <div className={styles.app}>
-        <Header />
-        <Routing />
-        <Footer />
-      </div>
-    </BrowserRouter>
-  </AppProvider>
+  <Provider store={setupStore()}>
+    <AppProvider>
+      <BrowserRouter>
+        <div className={styles.app}>
+          <Header />
+          <Routing />
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </AppProvider>
+  </Provider>
 );
 
 export default App;

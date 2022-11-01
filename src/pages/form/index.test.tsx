@@ -3,7 +3,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import FormPage from '.';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
-import AppProvider from 'app/store/provider';
+
+import { Provider } from 'react-redux';
+import { setupStore } from 'app/store';
 
 const TEST_DATA = {
   agreement: true,
@@ -30,9 +32,9 @@ describe('on submitting complete Form', () => {
 
     act(() => {
       render(
-        <AppProvider>
+        <Provider store={setupStore()}>
           <FormPage />
-        </AppProvider>
+        </Provider>
       );
     });
 

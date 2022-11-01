@@ -1,12 +1,13 @@
-import AppContext from 'app/store/context';
-import { FormCardType, FormProviderActions } from 'app/store/formPageReducer';
 import Form from 'features/form';
 import FormCardList from 'features/form-cards';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.module.scss';
 
+import { useDispatch } from 'react-redux';
+import { FormCardType, addForm } from 'app/store/formPageSlice';
+
 const FormPage = () => {
-  const { formPageDispatch } = useContext(AppContext);
+  const dispatch = useDispatch();
   const [messageDisplay, setMessageDisplay] = useState<boolean>(false);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const FormPage = () => {
   }, [messageDisplay]);
 
   const createCard = (card: FormCardType) => {
-    formPageDispatch({ type: FormProviderActions.ADD, formCard: card });
+    dispatch(addForm(card));
     setMessageDisplay(true);
   };
 

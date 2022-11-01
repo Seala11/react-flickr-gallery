@@ -1,18 +1,28 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import COUNTRIES from 'shared/data/countries';
 import styles from './index.module.scss';
 import { UserInput } from './models';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { defaultValues, FormCardType, FormProviderActions } from 'app/store/formPageReducer';
-import AppContext from 'app/store/context';
+
+import type { RootState } from 'app/store';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  changeInputValues,
+  resetInputValues,
+  disableBtn,
+  enableBtn,
+  FormCardType,
+  defaultValues,
+} from 'app/store/formPageSlice';
 
 type Props = {
   createCard: (card: FormCardType) => void;
 };
 
 const Form = ({ createCard }: Props) => {
-  const { formPageState, formPageDispatch } = useContext(AppContext);
-  const { inputValues, btnDisable } = formPageState;
+  const { inputValues, btnDisable } = useSelector((state: RootState) => state.formPage);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -31,10 +41,10 @@ const Form = ({ createCard }: Props) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset(defaultValues);
-      formPageDispatch({ type: FormProviderActions.RESET });
-      formPageDispatch({ type: FormProviderActions.DISABLE_BTN });
+      dispatch(resetInputValues());
+      dispatch(disableBtn());
     }
-  }, [isSubmitSuccessful, reset, formPageDispatch]);
+  }, [isSubmitSuccessful, reset, dispatch]);
 
   useEffect(() => {
     const avatar = inputValues.avatar;
@@ -45,9 +55,9 @@ const Form = ({ createCard }: Props) => {
 
   useEffect(() => {
     return () => {
-      formPageDispatch({ type: FormProviderActions.CHANGE_INPUT_VALUES, values: getValues() });
+      dispatch(changeInputValues(getValues()));
     };
-  }, [formPageDispatch, getValues]);
+  }, [getValues, dispatch]);
 
   const onSubmit: SubmitHandler<FormCardType> = (data) => {
     const dataIsValid: boolean = validateData(data);
@@ -147,7 +157,7 @@ const Form = ({ createCard }: Props) => {
 
   const changeHandler = (key: UserInput) => {
     clearErrors(key);
-    formPageDispatch({ type: FormProviderActions.ENABLE_BTN });
+    dispatch(enableBtn());
   };
 
   return (

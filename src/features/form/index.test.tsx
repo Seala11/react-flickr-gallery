@@ -2,7 +2,9 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import Form from '.';
 import userEvent from '@testing-library/user-event';
-import AppProvider from 'app/store/provider';
+
+import { Provider } from 'react-redux';
+import { setupStore } from 'app/store';
 
 const TEST_DATA = {
   firstName: 'Hanna',
@@ -13,21 +15,19 @@ const TEST_DATA = {
 };
 
 describe('when Form component renders', () => {
+  const FormWitchProvider = (
+    <Provider store={setupStore()}>
+      <Form createCard={jest.fn()} />
+    </Provider>
+  );
+
   it('should have a form', () => {
-    render(
-      <AppProvider>
-        <Form createCard={jest.fn()} />
-      </AppProvider>
-    );
+    render(FormWitchProvider);
     expect(screen.getByTestId('react-form')).toBeInTheDocument();
   });
 
   it('submit button should be disabled', () => {
-    render(
-      <AppProvider>
-        <Form createCard={jest.fn()} />
-      </AppProvider>
-    );
+    render(FormWitchProvider);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
   });
 });
@@ -35,9 +35,9 @@ describe('when Form component renders', () => {
 describe('when typing in Form inputs', () => {
   it('submit button should not be disabled', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
     const firstNameInput = screen.getByTestId('firstName');
     userEvent.type(firstNameInput, TEST_DATA.firstName);
@@ -48,13 +48,12 @@ describe('when typing in Form inputs', () => {
 
   it('should allow user to change first name', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
     const firstNameInput = screen.getByTestId('firstName');
     expect(firstNameInput).toBeEmptyDOMElement();
-    expect(screen.getByTestId('submit-button')).toBeDisabled();
 
     userEvent.type(firstNameInput, TEST_DATA.firstName);
     expect(firstNameInput).toHaveDisplayValue(TEST_DATA.firstName);
@@ -65,10 +64,11 @@ describe('when typing in Form inputs', () => {
 
   it('should allow user to change last name', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
+
     const lastNameInput = screen.getByTestId('lastName');
     expect(lastNameInput).toBeEmptyDOMElement();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -82,10 +82,11 @@ describe('when typing in Form inputs', () => {
 
   it('should allow user to change birthday date', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
+
     const birthdayInput = screen.getByTestId('birthday');
     expect(birthdayInput).toBeEmptyDOMElement();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -99,10 +100,11 @@ describe('when typing in Form inputs', () => {
 
   it('should allow user to select a country', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
+
     const countrySelect = screen.getByTestId('country');
     expect(countrySelect).toHaveDisplayValue(/---/);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -116,10 +118,11 @@ describe('when typing in Form inputs', () => {
 
   it('should allow user to upload an avatar', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
+
     const avatarInput: HTMLInputElement = screen.getByTestId('avatar');
     expect(avatarInput).toBeEmptyDOMElement();
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -136,10 +139,11 @@ describe('when typing in Form inputs', () => {
 
   it('should allow user to select receive notifications', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
+
     const notificationsInput: HTMLInputElement = screen.getByTestId('notifications');
     expect(notificationsInput.checked).toEqual(false);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -150,10 +154,11 @@ describe('when typing in Form inputs', () => {
 
   it('should allow user to agree on data processing', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
+
     const agreementCheckbox: HTMLInputElement = screen.getByTestId('agreement');
     expect(agreementCheckbox.checked).toEqual(false);
     expect(screen.getByTestId('submit-button')).toBeDisabled();
@@ -169,9 +174,9 @@ describe('when typing in Form inputs', () => {
 describe('on submitting uncomplete Form', () => {
   it('should display error if there are no first name and remove it if user type again', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
@@ -190,9 +195,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if first name is invalid and remove it if user type again', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('firstName'), 'k');
@@ -210,9 +215,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if there are no last name and remove it if user type again', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('firstName'), TEST_DATA.firstName);
@@ -231,9 +236,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if last name is invalid and remove it if user type again', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('lastName'), 'k');
@@ -252,9 +257,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if no date was picked and remove it if user pick a date', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
@@ -273,9 +278,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if birth date is invalid', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     const birthdayInput = screen.getByTestId('birthday');
@@ -292,9 +297,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if no country was picked and remove it if user pick a country', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
@@ -313,9 +318,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if no avatar was uploaded and remove it if user upload a file', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     const avatarInput: HTMLInputElement = screen.getByTestId('avatar');
@@ -339,9 +344,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should display error if user did not agree on data processing and remove it after agreement', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
@@ -360,9 +365,9 @@ describe('on submitting uncomplete Form', () => {
 
   it('should set submit button active again after filling all inputs with errors', async () => {
     render(
-      <AppProvider>
+      <Provider store={setupStore()}>
         <Form createCard={jest.fn()} />
-      </AppProvider>
+      </Provider>
     );
 
     userEvent.type(screen.getByTestId('lastName'), TEST_DATA.lastName);
