@@ -92,6 +92,7 @@ export const homePageSlice = createSlice({
       if (totalPages && +state.currPage > totalPages && totalPages > 0) {
         state.currPage = totalPages;
         state.totalPages = totalPages;
+        state.loading = false;
         return;
       }
 
