@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 
 import About from 'pages/about';
@@ -6,18 +6,18 @@ import Home from 'pages/home';
 import NotFound from 'pages/404';
 import FormPage from 'pages/form';
 import SearchCardInfo from 'features/search-card-info';
-import AppContext from 'app/store/context';
-import { SearchProviderActions } from 'app/store/searchPageReducer';
+import { setScrollPos } from 'app/store/homePageSlice';
+import { useAppDispatch } from 'app/store';
 
 const Routing = () => {
-  const { homePageDispatch } = useContext(AppContext);
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
   useEffect(() => {
     if (location.pathname !== '/' && location.pathname.indexOf('search') === -1) {
-      homePageDispatch({ type: SearchProviderActions.SET_SCROLL_POS, pos: 0 });
+      dispatch(setScrollPos(0));
     }
-  }, [location, homePageDispatch]);
+  }, [location, dispatch]);
 
   return (
     <Routes>

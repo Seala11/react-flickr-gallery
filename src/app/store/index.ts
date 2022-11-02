@@ -2,6 +2,9 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import type { PreloadedState } from '@reduxjs/toolkit';
 import formPageReducer from './formPageSlice';
 import homePageReducer from './homePageSlice';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import type { TypedUseSelectorHook } from 'react-redux';
 
 const rootReducer = combineReducers({
   formPage: formPageReducer,
@@ -22,3 +25,6 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = ReturnType<typeof setupStore>;
 export type AppDispatch = AppStore['dispatch'];
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

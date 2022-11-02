@@ -4,8 +4,7 @@ import styles from './index.module.scss';
 import { UserInput } from './models';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-import type { RootState } from 'app/store';
-import { useSelector, useDispatch } from 'react-redux';
+import { RootState, useAppDispatch, useAppSelector } from 'app/store';
 import {
   changeInputValues,
   resetInputValues,
@@ -20,8 +19,8 @@ type Props = {
 };
 
 const Form = ({ createCard }: Props) => {
-  const { inputValues, btnDisable } = useSelector((state: RootState) => state.formPage);
-  const dispatch = useDispatch();
+  const { inputValues, btnDisable } = useAppSelector((state: RootState) => state.formPage);
+  const dispatch = useAppDispatch();
 
   const {
     register,

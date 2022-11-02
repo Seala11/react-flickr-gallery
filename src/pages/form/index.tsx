@@ -3,11 +3,11 @@ import FormCardList from 'features/form-cards';
 import React, { useEffect, useState } from 'react';
 import styles from './index.module.scss';
 
-import { useDispatch } from 'react-redux';
 import { FormCardType, addForm } from 'app/store/formPageSlice';
+import { useAppDispatch } from 'app/store';
 
 const FormPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [messageDisplay, setMessageDisplay] = useState<boolean>(false);
 
   useEffect(() => {
