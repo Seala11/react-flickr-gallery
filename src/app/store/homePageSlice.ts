@@ -89,11 +89,9 @@ export const homePageSlice = createSlice({
     builder.addCase(fetchPhotos.fulfilled, (state, action) => {
       const totalPages = action.payload?.photos.pages;
       const cards = action.payload?.photos.photo;
-      console.log(action.payload);
 
       // due to the bug in flickr api, same search params receive different total pages response
       if (totalPages && +state.currPage > totalPages && totalPages > 0) {
-        console.log('err');
         state.currPage = totalPages;
         state.totalPages = totalPages;
         state.loading = false;
