@@ -1,41 +1,43 @@
-import AppContext from 'app/store/context';
+import { RootState, useAppDispatch, useAppSelector } from 'app/store';
+import { fetchPhotos, setCardsPerPage, setSort } from 'app/store/homePageSlice';
 import { SearchProviderActions } from 'app/store/searchPageReducer';
 import { DEFAULT_SEARCH } from 'pages/home/models';
-import React, { useContext } from 'react';
+import React from 'react';
 import styles from './index.module.scss';
 
-type SearchControlsProps = {
-  searchHandler: (
-    value: string,
-    sort: string,
-    cardsPerPage: string,
-    currPage: string
-  ) => Promise<void>;
-};
-
-const SearchControls = ({ searchHandler }: SearchControlsProps) => {
-  const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { cardsPerPage, sort, searchValue, currPage } = homePageState;
+const SearchControls = () => {
+  const { cardsPerPage, sort, searchValue, currPage } = useAppSelector(
+    (state: RootState) => state.homePage
+  );
+  const dispatch = useAppDispatch();
 
   const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>, key: SearchProviderActions) => {
     const search = searchValue ? searchValue : DEFAULT_SEARCH;
 
     switch (key) {
-      case SearchProviderActions.CHANGE_CARDS_PER_PAGE:
-        homePageDispatch({
-          type: SearchProviderActions.CHANGE_CARDS_PER_PAGE,
+      case SearchProviderActions.CHANGE_CARDS_PER_PAGE: {
+        dispatch(setCardsPerPage(e.target.value));
+        const params = {
+          value: search,
+          sort: sort,
           cardsPerPage: e.target.value,
-        });
-        searchHandler(search, sort, e.target.value, `${currPage}`);
+          currPage: `${currPage}`,
+        };
+        dispatch(fetchPhotos(params));
         break;
+      }
 
-      case SearchProviderActions.CHANGE_SORT:
-        homePageDispatch({
-          type: SearchProviderActions.CHANGE_SORT,
+      case SearchProviderActions.CHANGE_SORT: {
+        dispatch(setSort(e.target.value));
+        const params = {
+          value: search,
           sort: e.target.value,
-        });
-        searchHandler(search, e.target.value, cardsPerPage, `${currPage}`);
+          cardsPerPage: cardsPerPage,
+          currPage: `${currPage}`,
+        };
+        dispatch(fetchPhotos(params));
         break;
+      }
     }
   };
 

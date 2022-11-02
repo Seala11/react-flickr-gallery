@@ -1,12 +1,12 @@
-import AppContext from 'app/store/context';
-import React, { useContext, useEffect, useState } from 'react';
+import { RootState, useAppSelector } from 'app/store';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import styles from './index.module.scss';
 
 const SearchCardInfo = () => {
   const [loading, setLoading] = useState(true);
-  const { homePageState } = useContext(AppContext);
-  const { cards, currPage } = homePageState;
+  const { cards, currPage } = useAppSelector((state: RootState) => state.homePage);
+
   const { id } = useParams();
   const navigate = useNavigate();
   let indexPos;

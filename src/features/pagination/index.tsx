@@ -1,21 +1,14 @@
-import AppContext from 'app/store/context';
-import { SearchProviderActions } from 'app/store/searchPageReducer';
+import { RootState, useAppDispatch, useAppSelector } from 'app/store';
+import { fetchPhotos, setCurrPage } from 'app/store/homePageSlice';
 import { DEFAULT_SEARCH } from 'pages/home/models';
-import React, { useContext } from 'react';
+import React from 'react';
 import style from './index.module.scss';
 
-type Props = {
-  searchHandler: (
-    value: string,
-    sort: string,
-    cardsPerPage: string,
-    currPage: string
-  ) => Promise<void>;
-};
-
-const Pagination = ({ searchHandler }: Props) => {
-  const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { currPage, totalPages, searchValue, sort, cardsPerPage, loading } = homePageState;
+const Pagination = () => {
+  const { cardsPerPage, sort, searchValue, totalPages, currPage, loading } = useAppSelector(
+    (state: RootState) => state.homePage
+  );
+  const dispatch = useAppDispatch();
 
   let pagination: number[] = [];
   const PAGES = Array(totalPages)
@@ -34,8 +27,15 @@ const Pagination = ({ searchHandler }: Props) => {
 
   const pageHandler = (page: number) => {
     const search = searchValue ? searchValue : DEFAULT_SEARCH;
-    homePageDispatch({ type: SearchProviderActions.SET_CURR_PAGE, page: page });
-    searchHandler(search, sort, cardsPerPage, `${page}`);
+    dispatch(setCurrPage(page));
+
+    const params = {
+      value: search,
+      sort: sort,
+      cardsPerPage: cardsPerPage,
+      currPage: `${page}`,
+    };
+    dispatch(fetchPhotos(params));
   };
 
   return (

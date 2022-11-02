@@ -1,7 +1,7 @@
-import AppContext from 'app/store/context';
-import { SearchProviderActions } from 'app/store/searchPageReducer';
+import { useAppDispatch } from 'app/store';
+import { setScrollPos } from 'app/store/homePageSlice';
 import { FlickrCard } from 'pages/home/models';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './index.module.scss';
 
@@ -11,7 +11,7 @@ type CardProps = {
 
 const Card = ({ card }: CardProps) => {
   const navigate = useNavigate();
-  const { homePageDispatch } = useContext(AppContext);
+  const dispatch = useAppDispatch();
   const [openModal, setOpenModal] = useState(false);
 
   const img = `https://farm${card.farm}.staticflickr.com/${card.server}/${card.id}_${card.secret}.jpg`;
@@ -19,7 +19,7 @@ const Card = ({ card }: CardProps) => {
   const name = card.ownername.length < 35 ? card.ownername : card.ownername.slice(0, 35) + '...';
 
   const navigateHandler = () => {
-    homePageDispatch({ type: SearchProviderActions.SET_SCROLL_POS, pos: window.pageYOffset });
+    dispatch(setScrollPos(window.pageYOffset));
     setOpenModal((open) => !open);
   };
 

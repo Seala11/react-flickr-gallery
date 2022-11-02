@@ -1,24 +1,15 @@
-import AppContext from 'app/store/context';
-import { SearchProviderActions } from 'app/store/searchPageReducer';
-import React, { useContext, useEffect, useRef } from 'react';
+import { RootState, useAppDispatch, useAppSelector } from 'app/store';
+import { fetchPhotos, setCurrPage, setSearchValue } from 'app/store/homePageSlice';
+import React, { useEffect, useRef } from 'react';
 import styles from './index.module.scss';
 import { useBeforeUnload } from './useBeforeUnload';
 
-type SearchBarProps = {
-  searchHandler: (
-    value: string,
-    sort: string,
-    cardsPerPage: string,
-    currPage: string
-  ) => Promise<void>;
-};
-
-const SearchBar = ({ searchHandler }: SearchBarProps) => {
+const SearchBar = () => {
   const searchInput = useRef<HTMLInputElement>(null);
   const setUpdatedValue = useBeforeUnload();
 
-  const { homePageState, homePageDispatch } = useContext(AppContext);
-  const { searchValue, sort, cardsPerPage } = homePageState;
+  const { cardsPerPage, sort, searchValue } = useAppSelector((state: RootState) => state.homePage);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setUpdatedValue(searchValue);
@@ -26,23 +17,26 @@ const SearchBar = ({ searchHandler }: SearchBarProps) => {
 
   const resetSearchValue = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
-    homePageDispatch({ type: SearchProviderActions.SET_SEARCH_VALUE, searchValue: '' });
+    dispatch(setSearchValue(''));
     searchInput.current?.focus();
   };
 
   const changeSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    homePageDispatch({
-      type: SearchProviderActions.SET_SEARCH_VALUE,
-      searchValue: event.target.value,
-    });
+    dispatch(setSearchValue(event.target.value));
   };
 
   const submitSearchForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchValue) {
-      homePageDispatch({ type: SearchProviderActions.SET_CURR_PAGE, page: 1 });
-      searchHandler(searchValue, sort, cardsPerPage, '1');
+      dispatch(setCurrPage(1));
+      const params = {
+        value: searchValue,
+        sort: sort,
+        cardsPerPage: cardsPerPage,
+        currPage: '1',
+      };
+      dispatch(fetchPhotos(params));
     }
   };
 
