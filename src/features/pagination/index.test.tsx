@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import Pagination from '.';
 import { Provider } from 'react-redux';
 import { setupStore } from 'app/store';
 import { setCurrPage, setTotalPages } from 'app/store/homePageSlice';
+import userEvent from '@testing-library/user-event';
 
 describe('Wnen Pagination component renders', () => {
   const mock = setupStore();
@@ -60,141 +61,90 @@ describe('Wnen Pagination component renders', () => {
   });
 });
 
-// describe('Wnen page is clicked', () => {
-//   const initialSearchState = {
-//     cards: [TEST_CARD],
-//     currPage: 1,
-//     totalPages: 100,
-//     searchValue: null,
-//     sort: 'relevance',
-//     cardsPerPage: '12',
-//     loading: false,
-//     error: null,
-//     scrollPos: null,
-//   };
+describe('Wnen page is clicked', () => {
+  const mock = setupStore();
+  mock.dispatch(setCurrPage(1));
+  mock.dispatch(setTotalPages(100));
+  const paginationWithProvider = (
+    <Provider store={mock}>
+      <Pagination />
+    </Provider>
+  );
 
-//   it('should call search and display clicked page', async () => {
-//     const providerProps = {
-//       formPageState: initialFormState,
-//       formPageDispatch: jest.fn(),
-//       homePageState: initialSearchState,
-//       homePageDispatch: () => {},
-//     };
+  it('should display the clicked page', async () => {
+    render(paginationWithProvider);
 
-//     const search = jest.fn();
+    expect(screen.queryByText('1')).toBeInTheDocument();
+    expect(screen.queryByText('2')).toBeInTheDocument();
+    expect(screen.queryByText('3')).toBeInTheDocument();
+    expect(screen.queryByText('4')).toBeInTheDocument();
+    expect(screen.queryByText('5')).toBeInTheDocument();
+    expect(screen.queryByText('100')).toBeInTheDocument();
+    expect(screen.queryByTestId('prev')).toBeDisabled();
+    expect(screen.queryByTestId('next')).not.toBeDisabled();
 
-//     render(
-//       <Provider store={setupStore()}>
-//         <Pagination />
-//       </Provider>
-//     );
+    userEvent.click(screen.getByText('100'));
+    waitFor(() => expect(screen.queryByText('96')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText('97')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText('98')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText('99')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByTestId('prev')).not.toBeDisabled());
+    waitFor(() => expect(screen.queryByTestId('next')).toBeDisabled());
+  });
+});
 
-//     expect(screen.queryByText('1')).toBeInTheDocument();
-//     expect(screen.queryByText('2')).toBeInTheDocument();
-//     expect(screen.queryByText('3')).toBeInTheDocument();
-//     expect(screen.queryByText('4')).toBeInTheDocument();
-//     expect(screen.queryByText('5')).toBeInTheDocument();
-//     expect(screen.queryByText('100')).toBeInTheDocument();
-//     expect(screen.queryByTestId('prev')).toBeDisabled();
-//     expect(screen.queryByTestId('next')).not.toBeDisabled();
+describe('Wnen previous button is clicked', () => {
+  const mock = setupStore();
+  mock.dispatch(setCurrPage(20));
+  mock.dispatch(setTotalPages(100));
+  const paginationWithProvider = (
+    <Provider store={mock}>
+      <Pagination />
+    </Provider>
+  );
 
-//     userEvent.click(screen.getByText('100'));
-//     expect(search).toHaveBeenCalledTimes(1);
-//     waitFor(() => expect(screen.queryByText('96')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByText('97')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByText('98')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByText('99')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByTestId('prev')).not.toBeDisabled());
-//     waitFor(() => expect(screen.queryByTestId('next')).toBeDisabled());
-//   });
-// });
+  it('should display previous page', async () => {
+    render(paginationWithProvider);
 
-// describe('Wnen previous button is clicked', () => {
-//   const initialSearchState = {
-//     cards: [TEST_CARD],
-//     currPage: 20,
-//     totalPages: 100,
-//     searchValue: null,
-//     sort: 'relevance',
-//     cardsPerPage: '12',
-//     loading: false,
-//     error: null,
-//     scrollPos: null,
-//   };
+    expect(screen.queryByText('1')).toBeInTheDocument();
+    expect(screen.queryByText('19')).toBeInTheDocument();
+    expect(screen.queryByText('20')).toBeInTheDocument();
+    expect(screen.queryByText('21')).toBeInTheDocument();
+    expect(screen.queryByText('100')).toBeInTheDocument();
+    expect(screen.queryByTestId('prev')).not.toBeDisabled();
+    expect(screen.queryByTestId('next')).not.toBeDisabled();
 
-//   it('should call search and display clicked page', async () => {
-//     const providerProps = {
-//       formPageState: initialFormState,
-//       formPageDispatch: jest.fn(),
-//       homePageState: initialSearchState,
-//       homePageDispatch: () => {},
-//     };
+    userEvent.click(screen.getByTestId('prev'));
+    waitFor(() => expect(screen.queryByText('18')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText('19')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText('20')).toBeInTheDocument());
+  });
+});
 
-//     const search = jest.fn();
+describe('Wnen next button is clicked', () => {
+  const mock = setupStore();
+  mock.dispatch(setCurrPage(20));
+  mock.dispatch(setTotalPages(100));
+  const paginationWithProvider = (
+    <Provider store={mock}>
+      <Pagination />
+    </Provider>
+  );
 
-//     render(
-//       <Provider store={setupStore()}>
-//         <Pagination />
-//       </Provider>
-//     );
+  it('should display next page', async () => {
+    render(paginationWithProvider);
 
-//     expect(screen.queryByText('1')).toBeInTheDocument();
-//     expect(screen.queryByText('19')).toBeInTheDocument();
-//     expect(screen.queryByText('20')).toBeInTheDocument();
-//     expect(screen.queryByText('21')).toBeInTheDocument();
-//     expect(screen.queryByText('100')).toBeInTheDocument();
-//     expect(screen.queryByTestId('prev')).not.toBeDisabled();
-//     expect(screen.queryByTestId('next')).not.toBeDisabled();
+    expect(screen.queryByText('1')).toBeInTheDocument();
+    expect(screen.queryByText('19')).toBeInTheDocument();
+    expect(screen.queryByText('20')).toBeInTheDocument();
+    expect(screen.queryByText('21')).toBeInTheDocument();
+    expect(screen.queryByText('100')).toBeInTheDocument();
+    expect(screen.queryByTestId('prev')).not.toBeDisabled();
+    expect(screen.queryByTestId('next')).not.toBeDisabled();
 
-//     userEvent.click(screen.getByTestId('prev'));
-//     expect(search).toHaveBeenCalledTimes(1);
-//     waitFor(() => expect(screen.queryByText('18')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByText('19')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByText('20')).toBeInTheDocument());
-//   });
-// });
-
-// describe('Wnen next button is clicked', () => {
-//   const initialSearchState = {
-//     cards: [TEST_CARD],
-//     currPage: 20,
-//     totalPages: 100,
-//     searchValue: null,
-//     sort: 'relevance',
-//     cardsPerPage: '12',
-//     loading: false,
-//     error: null,
-//     scrollPos: null,
-//   };
-
-//   it('should call search and display clicked page', async () => {
-//     const providerProps = {
-//       formPageState: initialFormState,
-//       formPageDispatch: jest.fn(),
-//       homePageState: initialSearchState,
-//       homePageDispatch: () => {},
-//     };
-
-//     const search = jest.fn();
-
-//     render(
-//       <Provider store={setupStore()}>
-//         <Pagination />
-//       </Provider>
-//     );
-
-//     expect(screen.queryByText('1')).toBeInTheDocument();
-//     expect(screen.queryByText('19')).toBeInTheDocument();
-//     expect(screen.queryByText('20')).toBeInTheDocument();
-//     expect(screen.queryByText('21')).toBeInTheDocument();
-//     expect(screen.queryByText('100')).toBeInTheDocument();
-//     expect(screen.queryByTestId('prev')).not.toBeDisabled();
-//     expect(screen.queryByTestId('next')).not.toBeDisabled();
-
-//     userEvent.click(screen.getByTestId('next'));
-//     expect(search).toHaveBeenCalledTimes(1);
-//     waitFor(() => expect(screen.queryByText('20')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByText('21')).toBeInTheDocument());
-//     waitFor(() => expect(screen.queryByText('22')).toBeInTheDocument());
-//   });
-// });
+    userEvent.click(screen.getByTestId('next'));
+    waitFor(() => expect(screen.queryByText('20')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText('21')).toBeInTheDocument());
+    waitFor(() => expect(screen.queryByText('22')).toBeInTheDocument());
+  });
+});
