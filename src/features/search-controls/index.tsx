@@ -1,9 +1,12 @@
 import { RootState, useAppDispatch, useAppSelector } from 'app/store';
-import { fetchPhotos, setCardsPerPage, setSort } from 'app/store/homePageSlice';
-import { SearchProviderActions } from 'app/store/searchPageReducer';
-import { DEFAULT_SEARCH } from 'pages/home/models';
+import { DEFAULT_SEARCH, fetchPhotos, setCardsPerPage, setSort } from 'app/store/homePageSlice';
 import React from 'react';
 import styles from './index.module.scss';
+
+enum SelectKey {
+  CARDS_PER_PAGE = 'cards',
+  SORT = 'sort',
+}
 
 const SearchControls = () => {
   const { cardsPerPage, sort, searchValue, currPage } = useAppSelector(
@@ -11,31 +14,33 @@ const SearchControls = () => {
   );
   const dispatch = useAppDispatch();
 
-  const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>, key: SearchProviderActions) => {
+  const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>, key: SelectKey) => {
     const search = searchValue ? searchValue : DEFAULT_SEARCH;
 
     switch (key) {
-      case SearchProviderActions.CHANGE_CARDS_PER_PAGE: {
+      case SelectKey.CARDS_PER_PAGE: {
         dispatch(setCardsPerPage(e.target.value));
-        const params = {
-          value: search,
-          sort: sort,
-          cardsPerPage: e.target.value,
-          currPage: `${currPage}`,
-        };
-        dispatch(fetchPhotos(params));
+        dispatch(
+          fetchPhotos({
+            value: search,
+            sort: sort,
+            cardsPerPage: e.target.value,
+            currPage: `${currPage}`,
+          })
+        );
         break;
       }
 
-      case SearchProviderActions.CHANGE_SORT: {
+      case SelectKey.SORT: {
         dispatch(setSort(e.target.value));
-        const params = {
-          value: search,
-          sort: e.target.value,
-          cardsPerPage: cardsPerPage,
-          currPage: `${currPage}`,
-        };
-        dispatch(fetchPhotos(params));
+        dispatch(
+          fetchPhotos({
+            value: search,
+            sort: e.target.value,
+            cardsPerPage: cardsPerPage,
+            currPage: `${currPage}`,
+          })
+        );
         break;
       }
     }
@@ -51,7 +56,7 @@ const SearchControls = () => {
           value={cardsPerPage}
           name="numberOfCards"
           id="numberOfCards"
-          onChange={(e) => selectHandler(e, SearchProviderActions.CHANGE_CARDS_PER_PAGE)}
+          onChange={(e) => selectHandler(e, SelectKey.CARDS_PER_PAGE)}
           className={styles.input}
           data-testid="cards-per-page"
         >
@@ -69,7 +74,7 @@ const SearchControls = () => {
           name="sortCards"
           id="sortCards"
           value={sort}
-          onChange={(e) => selectHandler(e, SearchProviderActions.CHANGE_SORT)}
+          onChange={(e) => selectHandler(e, SelectKey.SORT)}
           className={styles.input}
           data-testid="sort"
         >

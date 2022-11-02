@@ -1,6 +1,5 @@
 import { useAppDispatch } from 'app/store';
-import { setScrollPos } from 'app/store/homePageSlice';
-import { FlickrCard } from 'pages/home/models';
+import { FlickrCard, setScrollPos } from 'app/store/homePageSlice';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './index.module.scss';
@@ -12,7 +11,7 @@ type CardProps = {
 const Card = ({ card }: CardProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [openModal, setOpenModal] = useState(false);
+  const [openCardPage, setOpenCardPage] = useState(false);
 
   const img = `https://farm${card.farm}.staticflickr.com/${card.server}/${card.id}_${card.secret}.jpg`;
   const title = card.title.length < 35 ? card.title : card.title.slice(0, 35) + '...';
@@ -20,14 +19,14 @@ const Card = ({ card }: CardProps) => {
 
   const navigateHandler = () => {
     dispatch(setScrollPos(window.pageYOffset));
-    setOpenModal((open) => !open);
+    setOpenCardPage((open) => !open);
   };
 
   useEffect(() => {
-    if (openModal) {
+    if (openCardPage) {
       navigate('/search/' + card.id);
     }
-  }, [openModal, card.id, navigate]);
+  }, [openCardPage, card.id, navigate]);
 
   return (
     <li className={styles.card} onClick={navigateHandler}>

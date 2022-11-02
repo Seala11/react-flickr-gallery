@@ -1,6 +1,5 @@
 import { RootState, useAppDispatch, useAppSelector } from 'app/store';
-import { fetchPhotos, setCurrPage } from 'app/store/homePageSlice';
-import { DEFAULT_SEARCH } from 'pages/home/models';
+import { DEFAULT_SEARCH, fetchPhotos, setCurrPage } from 'app/store/homePageSlice';
 import React from 'react';
 import style from './index.module.scss';
 
@@ -28,14 +27,14 @@ const Pagination = () => {
   const pageHandler = (page: number) => {
     const search = searchValue ? searchValue : DEFAULT_SEARCH;
     dispatch(setCurrPage(page));
-
-    const params = {
-      value: search,
-      sort: sort,
-      cardsPerPage: cardsPerPage,
-      currPage: `${page}`,
-    };
-    dispatch(fetchPhotos(params));
+    dispatch(
+      fetchPhotos({
+        value: search,
+        sort: sort,
+        cardsPerPage: cardsPerPage,
+        currPage: `${page}`,
+      })
+    );
   };
 
   return (

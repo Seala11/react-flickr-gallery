@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.module.scss';
 import Card from './card';
-import { FlickrCard } from 'pages/home/models';
+import { FlickrCard } from 'app/store/homePageSlice';
 
 type CardListProps = {
   cards: FlickrCard[];

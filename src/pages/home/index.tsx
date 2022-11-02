@@ -3,12 +3,11 @@ import styles from './index.module.scss';
 import CardList from 'features/card-list';
 import SearchBar from 'features/search-bar';
 import { getSearchValueFromStorage } from 'shared/helpers/storage';
-import { DEFAULT_SEARCH } from './models';
 import SearchControls from 'features/search-controls';
 import Pagination from 'features/pagination';
 
 import { useAppDispatch, RootState, useAppSelector } from 'app/store';
-import { fetchPhotos, setSearchValue } from 'app/store/homePageSlice';
+import { DEFAULT_SEARCH, fetchPhotos, setSearchValue } from 'app/store/homePageSlice';
 
 const Home = () => {
   const { loading, error, cards, cardsPerPage, sort, currPage, scrollPos } = useAppSelector(
@@ -34,21 +33,23 @@ const Home = () => {
 
     if (storedValue) {
       dispatch(setSearchValue(storedValue));
-      const params = {
-        value: storedValue,
-        sort: sort,
-        cardsPerPage: cardsPerPage,
-        currPage: `${currPage}`,
-      };
-      dispatch(fetchPhotos(params));
+      dispatch(
+        fetchPhotos({
+          value: storedValue,
+          sort: sort,
+          cardsPerPage: cardsPerPage,
+          currPage: `${currPage}`,
+        })
+      );
     } else {
-      const params = {
-        value: DEFAULT_SEARCH,
-        sort: sort,
-        cardsPerPage: cardsPerPage,
-        currPage: `${currPage}`,
-      };
-      dispatch(fetchPhotos(params));
+      dispatch(
+        fetchPhotos({
+          value: DEFAULT_SEARCH,
+          sort: sort,
+          cardsPerPage: cardsPerPage,
+          currPage: `${currPage}`,
+        })
+      );
     }
   }, [dispatch]);
 

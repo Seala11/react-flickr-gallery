@@ -30,13 +30,14 @@ const SearchBar = () => {
     event.preventDefault();
     if (searchValue) {
       dispatch(setCurrPage(1));
-      const params = {
-        value: searchValue,
-        sort: sort,
-        cardsPerPage: cardsPerPage,
-        currPage: '1',
-      };
-      dispatch(fetchPhotos(params));
+      dispatch(
+        fetchPhotos({
+          value: searchValue,
+          sort: sort,
+          cardsPerPage: cardsPerPage,
+          currPage: '1',
+        })
+      );
     }
   };
 
