@@ -7,7 +7,7 @@ import NotFound from 'pages/404';
 import FormPage from 'pages/form';
 import SearchCardInfo from 'features/search-card-info';
 import { setScrollPos } from 'app/store/homePageSlice';
-import { useAppDispatch } from 'app/store';
+import { useAppDispatch } from 'app/store/hooks';
 
 const Routing = () => {
   const dispatch = useAppDispatch();

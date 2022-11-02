@@ -12,13 +12,13 @@ import { Provider } from 'react-redux';
 
 describe('when App component renders', () => {
   const renderWithProvider = (
-    <MemoryRouter initialEntries={['/']}>
-      <Provider store={setupStore()}>
+    <Provider store={setupStore()}>
+      <MemoryRouter initialEntries={['/']}>
         <Header />
         <Routing />
         <Footer />
-      </Provider>
-    </MemoryRouter>
+      </MemoryRouter>
+    </Provider>
   );
 
   it('should initially display home page', () => {

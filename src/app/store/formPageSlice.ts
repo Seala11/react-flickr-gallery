@@ -1,31 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-
-export type FormCardType = {
-  firstName: string;
-  lastName: string;
-  birthday: string;
-  country: string;
-  avatar: FileList | File | null;
-  agreement: boolean;
-  notifications: boolean;
-};
-
-type InputValuesType = {
-  firstName: string;
-  lastName: string;
-  birthday: string;
-  country: string;
-  agreement: boolean;
-  notifications: boolean;
-  avatar: FileList | File | null;
-};
-
-export interface FormState {
-  cards: FormCardType[];
-  inputValues: InputValuesType;
-  btnDisable: boolean;
-}
+import { RootState } from 'app/store';
+import { FormCardType, FormState, InputValuesType } from './types';
 
 export const defaultValues = {
   firstName: '',
@@ -68,5 +44,7 @@ export const formPageSlice = createSlice({
 
 export const { addForm, changeInputValues, resetInputValues, disableBtn, enableBtn } =
   formPageSlice.actions;
+
+export const formPageSelector = (state: RootState) => state.formPage;
 
 export default formPageSlice.reducer;

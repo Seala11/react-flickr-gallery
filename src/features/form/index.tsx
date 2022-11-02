@@ -4,22 +4,23 @@ import styles from './index.module.scss';
 import { UserInput } from './models';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-import { RootState, useAppDispatch, useAppSelector } from 'app/store';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import {
   changeInputValues,
   resetInputValues,
   disableBtn,
   enableBtn,
-  FormCardType,
   defaultValues,
+  formPageSelector,
 } from 'app/store/formPageSlice';
+import { FormCardType } from 'app/store/types';
 
 type Props = {
   createCard: (card: FormCardType) => void;
 };
 
 const Form = ({ createCard }: Props) => {
-  const { inputValues, btnDisable } = useAppSelector((state: RootState) => state.formPage);
+  const { inputValues, btnDisable } = useAppSelector(formPageSelector);
   const dispatch = useAppDispatch();
 
   const {

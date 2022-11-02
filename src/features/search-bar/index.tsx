@@ -1,5 +1,10 @@
-import { RootState, useAppDispatch, useAppSelector } from 'app/store';
-import { fetchPhotos, setCurrPage, setSearchValue } from 'app/store/homePageSlice';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import {
+  fetchPhotos,
+  homePageSelector,
+  setCurrPage,
+  setSearchValue,
+} from 'app/store/homePageSlice';
 import React, { useEffect, useRef } from 'react';
 import styles from './index.module.scss';
 import { useBeforeUnload } from './useBeforeUnload';
@@ -8,7 +13,7 @@ const SearchBar = () => {
   const searchInput = useRef<HTMLInputElement>(null);
   const setUpdatedValue = useBeforeUnload();
 
-  const { cardsPerPage, sort, searchValue } = useAppSelector((state: RootState) => state.homePage);
+  const { cardsPerPage, sort, searchValue } = useAppSelector(homePageSelector);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

@@ -1,11 +1,12 @@
-import { RootState, useAppSelector } from 'app/store';
+import { useAppSelector } from 'app/store/hooks';
+import { homePageSelector } from 'app/store/homePageSlice';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import styles from './index.module.scss';
 
 const SearchCardInfo = () => {
   const [loading, setLoading] = useState(true);
-  const { cards, currPage } = useAppSelector((state: RootState) => state.homePage);
+  const { cards, currPage } = useAppSelector(homePageSelector);
 
   const { id } = useParams();
   const navigate = useNavigate();

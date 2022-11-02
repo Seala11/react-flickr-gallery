@@ -3,8 +3,9 @@ import FormCardList from 'features/form-cards';
 import React, { useEffect, useState } from 'react';
 import styles from './index.module.scss';
 
-import { FormCardType, addForm } from 'app/store/formPageSlice';
-import { useAppDispatch } from 'app/store';
+import { addForm } from 'app/store/formPageSlice';
+import { useAppDispatch } from 'app/store/hooks';
+import { FormCardType } from 'app/store/types';
 
 const FormPage = () => {
   const dispatch = useAppDispatch();

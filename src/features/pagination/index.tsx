@@ -1,12 +1,16 @@
-import { RootState, useAppDispatch, useAppSelector } from 'app/store';
-import { DEFAULT_SEARCH, fetchPhotos, setCurrPage } from 'app/store/homePageSlice';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import {
+  DEFAULT_SEARCH,
+  fetchPhotos,
+  homePageSelector,
+  setCurrPage,
+} from 'app/store/homePageSlice';
 import React from 'react';
 import style from './index.module.scss';
 
 const Pagination = () => {
-  const { cardsPerPage, sort, searchValue, totalPages, currPage, loading } = useAppSelector(
-    (state: RootState) => state.homePage
-  );
+  const { cardsPerPage, sort, searchValue, totalPages, currPage, loading } =
+    useAppSelector(homePageSelector);
   const dispatch = useAppDispatch();
 
   let pagination: number[] = [];

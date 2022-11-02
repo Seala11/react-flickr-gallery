@@ -6,13 +6,17 @@ import { getSearchValueFromStorage } from 'shared/helpers/storage';
 import SearchControls from 'features/search-controls';
 import Pagination from 'features/pagination';
 
-import { useAppDispatch, RootState, useAppSelector } from 'app/store';
-import { DEFAULT_SEARCH, fetchPhotos, setSearchValue } from 'app/store/homePageSlice';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import {
+  DEFAULT_SEARCH,
+  fetchPhotos,
+  homePageSelector,
+  setSearchValue,
+} from 'app/store/homePageSlice';
 
 const Home = () => {
-  const { loading, error, cards, cardsPerPage, sort, currPage, scrollPos } = useAppSelector(
-    (state: RootState) => state.homePage
-  );
+  const { loading, error, cards, cardsPerPage, sort, currPage, scrollPos } =
+    useAppSelector(homePageSelector);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

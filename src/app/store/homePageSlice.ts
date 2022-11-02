@@ -1,33 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-
-type FetchParamsType = {
-  value: string;
-  sort: string;
-  cardsPerPage: string;
-  currPage: string;
-};
-
-export interface FlickrCard {
-  farm: number;
-  id: string;
-  isfamily: number;
-  isfriend: number;
-  ispublic: number;
-  owner: string;
-  secret: string;
-  server: string;
-  title: string;
-  ownername: string;
-  iconfarm: number;
-  iconserver: string;
-  description: {
-    _content: string;
-  };
-  datetaken: string;
-  views: string;
-  tags: string;
-}
+import { RootState } from 'app/store';
+import { FetchParamsType, HomeState, SearchFetchType } from './types';
 
 const API_KEY = 'd1743560a339c2a8d5327c0466b8874b';
 export const DEFAULT_SEARCH = 'cats';
@@ -48,22 +22,9 @@ export const requestParams = {
   min_upload_date: '1603846694',
 };
 
-export type SearchFetchType = {
-  photos: PhotoType;
-  stat: string;
-};
-
-export type PhotoType = {
-  page: number;
-  pages: number;
-  perpage: number;
-  photo: FlickrCard[];
-  total: number;
-};
-
 export const fetchPhotos = createAsyncThunk(
   'fetch/photos',
-  async (searchParams: FetchParamsType) => {
+  async (searchParams: FetchParamsType, { rejectWithValue }) => {
     const { value, sort, cardsPerPage, currPage } = searchParams;
     try {
       requestParams.sort = sort;
@@ -79,22 +40,11 @@ export const fetchPhotos = createAsyncThunk(
       return data;
     } catch (error) {
       console.error(error);
+      return rejectWithValue(error);
     } finally {
     }
   }
 );
-
-export type HomeState = {
-  cards: FlickrCard[];
-  currPage: number;
-  totalPages: number;
-  searchValue: string | null;
-  sort: string;
-  cardsPerPage: string;
-  loading: boolean;
-  error: string | null;
-  scrollPos: number | null;
-};
 
 export const initialState: HomeState = {
   cards: [],
@@ -139,25 +89,26 @@ export const homePageSlice = createSlice({
     builder.addCase(fetchPhotos.fulfilled, (state, action) => {
       const totalPages = action.payload?.photos.pages;
       const cards = action.payload?.photos.photo;
+      console.log(action.payload);
 
-      // due to the bug in flickr api
+      // due to the bug in flickr api, same search params receive different total pages response
       if (totalPages && +state.currPage > totalPages && totalPages > 0) {
+        console.log('err');
         state.currPage = totalPages;
         state.totalPages = totalPages;
         state.loading = false;
         return;
       }
 
-      if (cards && totalPages) {
-        if (cards.length === 0) {
-          state.error = 'Sorry, no images matched your search.';
-          state.currPage = 1;
-          state.totalPages = 1;
-        }
-        state.cards = cards;
+      if (totalPages === 0) {
+        state.error = 'Sorry, no images matched your search.';
+        state.currPage = 1;
+        state.totalPages = 1;
+      } else {
         state.totalPages = totalPages;
       }
 
+      state.cards = cards;
       state.loading = false;
     });
     builder.addCase(fetchPhotos.rejected, (state) => {
@@ -178,5 +129,7 @@ export const {
   setCardsPerPage,
   setSort,
 } = homePageSlice.actions;
+
+export const homePageSelector = (state: RootState) => state.homePage;
 
 export default homePageSlice.reducer;

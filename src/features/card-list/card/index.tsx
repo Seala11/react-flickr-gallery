@@ -1,8 +1,9 @@
-import { useAppDispatch } from 'app/store';
-import { FlickrCard, setScrollPos } from 'app/store/homePageSlice';
+import { useAppDispatch } from 'app/store/hooks';
+import { setScrollPos } from 'app/store/homePageSlice';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './index.module.scss';
+import { FlickrCard } from 'app/store/types';
 
 type CardProps = {
   card: FlickrCard;

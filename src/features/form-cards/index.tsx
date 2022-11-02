@@ -2,10 +2,11 @@ import React from 'react';
 import FormCard from './card';
 import styles from './index.module.scss';
 
-import { RootState, useAppSelector } from 'app/store';
+import { useAppSelector } from 'app/store/hooks';
+import { formPageSelector } from 'app/store/formPageSlice';
 
 const FormCardList = () => {
-  const { cards } = useAppSelector((state: RootState) => state.formPage);
+  const { cards } = useAppSelector(formPageSelector);
 
   return (
     <section className={styles.section}>

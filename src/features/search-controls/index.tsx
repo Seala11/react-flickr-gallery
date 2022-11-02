@@ -1,5 +1,11 @@
-import { RootState, useAppDispatch, useAppSelector } from 'app/store';
-import { DEFAULT_SEARCH, fetchPhotos, setCardsPerPage, setSort } from 'app/store/homePageSlice';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import {
+  DEFAULT_SEARCH,
+  fetchPhotos,
+  homePageSelector,
+  setCardsPerPage,
+  setSort,
+} from 'app/store/homePageSlice';
 import React from 'react';
 import styles from './index.module.scss';
 
@@ -9,9 +15,7 @@ enum SelectKey {
 }
 
 const SearchControls = () => {
-  const { cardsPerPage, sort, searchValue, currPage } = useAppSelector(
-    (state: RootState) => state.homePage
-  );
+  const { cardsPerPage, sort, searchValue, currPage } = useAppSelector(homePageSelector);
   const dispatch = useAppDispatch();
 
   const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>, key: SelectKey) => {
