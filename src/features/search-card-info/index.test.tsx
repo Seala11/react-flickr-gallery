@@ -2,9 +2,8 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import SearchCardInfo from '.';
 import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
-import AppProvider from 'app/store/provider';
-import AppContext from 'app/store/context';
-import { initialFormState } from 'app/store/formPageReducer';
+import { setupStore } from 'app/store';
+import { Provider } from 'react-redux';
 
 const CARD_VALID = {
   id: '37967185714',
@@ -128,41 +127,21 @@ describe('Wnen Card Info component renders', () => {
     jest.clearAllMocks();
   });
 
-  it('should display error message if no id have found', () => {
-    render(
-      <BrowserRouter>
-        <AppProvider>
-          <SearchCardInfo />
-        </AppProvider>
-      </BrowserRouter>
-    );
+  const cardWithProvider = (
+    <BrowserRouter>
+      <Provider store={setupStore()}>
+        <SearchCardInfo />
+      </Provider>
+    </BrowserRouter>
+  );
 
+  it('should display error message if no id have found', () => {
+    render(cardWithProvider);
     expect(screen.getByTestId('error')).toBeInTheDocument();
   });
 });
 
 describe('Wnen Card Info component renders', () => {
-  const providerProps = {
-    formPageState: initialFormState,
-    formPageDispatch: jest.fn(),
-    homePageState: initialSearchState,
-    homePageDispatch: () => {},
-  };
-
-  const providerProps2 = {
-    formPageState: initialFormState,
-    formPageDispatch: jest.fn(),
-    homePageState: initialSearchState2,
-    homePageDispatch: () => {},
-  };
-
-  const providerProps3 = {
-    formPageState: initialFormState,
-    formPageDispatch: jest.fn(),
-    homePageState: initialSearchState3,
-    homePageDispatch: () => {},
-  };
-
   beforeEach(() => {
     window.scrollTo = jest.fn();
   });
@@ -175,16 +154,38 @@ describe('Wnen Card Info component renders', () => {
     jest.clearAllMocks();
   });
 
+  const cardWithProvider1 = (
+    <MemoryRouter initialEntries={['/search/37967185714']}>
+      <Provider store={setupStore({ homePage: initialSearchState })}>
+        <Routes>
+          <Route path="/search/:id" element={<SearchCardInfo />}></Route>
+        </Routes>
+      </Provider>
+    </MemoryRouter>
+  );
+
+  const cardWithProvider2 = (
+    <MemoryRouter initialEntries={['/search/37967185714']}>
+      <Provider store={setupStore({ homePage: initialSearchState2 })}>
+        <Routes>
+          <Route path="/search/:id" element={<SearchCardInfo />}></Route>
+        </Routes>
+      </Provider>
+    </MemoryRouter>
+  );
+
+  const cardWithProvider3 = (
+    <MemoryRouter initialEntries={['/search/37967185714']}>
+      <Provider store={setupStore({ homePage: initialSearchState3 })}>
+        <Routes>
+          <Route path="/search/:id" element={<SearchCardInfo />}></Route>
+        </Routes>
+      </Provider>
+    </MemoryRouter>
+  );
+
   it('should display card information', () => {
-    render(
-      <AppContext.Provider value={providerProps}>
-        <MemoryRouter initialEntries={['/search/37967185714']}>
-          <Routes>
-            <Route path="/search/:id" element={<SearchCardInfo />}></Route>
-          </Routes>
-        </MemoryRouter>
-      </AppContext.Provider>
-    );
+    render(cardWithProvider1);
 
     waitFor(() => expect(screen.queryByText(new RegExp(CARD_VALID.title))).toBeInTheDocument());
     waitFor(() => expect(screen.queryByText(new RegExp(CARD_VALID.ownername))).toBeInTheDocument());
@@ -194,16 +195,7 @@ describe('Wnen Card Info component renders', () => {
   });
 
   it('should display card date', () => {
-    render(
-      <AppContext.Provider value={providerProps}>
-        <MemoryRouter initialEntries={['/search/37967185714']}>
-          <Routes>
-            <Route path="/search/:id" element={<SearchCardInfo />}></Route>
-          </Routes>
-        </MemoryRouter>
-      </AppContext.Provider>
-    );
-
+    render(cardWithProvider1);
     const date = new Date(CARD_VALID.datetaken).toLocaleString('en-US', {
       month: 'long',
       day: 'numeric',
@@ -214,15 +206,7 @@ describe('Wnen Card Info component renders', () => {
   });
 
   it('should display card image and avatar', () => {
-    render(
-      <AppContext.Provider value={providerProps}>
-        <MemoryRouter initialEntries={['/search/37967185714']}>
-          <Routes>
-            <Route path="/search/:id" element={<SearchCardInfo />}></Route>
-          </Routes>
-        </MemoryRouter>
-      </AppContext.Provider>
-    );
+    render(cardWithProvider1);
 
     waitFor(() => expect(screen.queryByAltText(CARD_VALID.ownername)).toBeInTheDocument());
     waitFor(() => expect(screen.queryByAltText(CARD_VALID.title)).toBeInTheDocument());
@@ -230,45 +214,19 @@ describe('Wnen Card Info component renders', () => {
 
   it('should cut card description if its too long', () => {
     const descrValue = CARD_LONG_DESCR.description._content.slice(0, 350) + '...';
-    render(
-      <AppContext.Provider value={providerProps2}>
-        <MemoryRouter initialEntries={['/search/37967185714']}>
-          <Routes>
-            <Route path="/search/:id" element={<SearchCardInfo />}></Route>
-          </Routes>
-        </MemoryRouter>
-      </AppContext.Provider>
-    );
+    render(cardWithProvider2);
 
     waitFor(() => expect(screen.queryByTestId('descr')).toBeInTheDocument());
     waitFor(() => expect(screen.queryByTestId('descr')).toHaveTextContent(descrValue));
   });
 
   it('should display description not provided if card has no description', () => {
-    render(
-      <AppContext.Provider value={providerProps3}>
-        <MemoryRouter initialEntries={['/search/37967185714']}>
-          <Routes>
-            <Route path="/search/:id" element={<SearchCardInfo />}></Route>
-          </Routes>
-        </MemoryRouter>
-      </AppContext.Provider>
-    );
-
+    render(cardWithProvider3);
     expect(screen.queryByTestId('descr')).not.toBeInTheDocument();
   });
 
   it('should display tags not provided if card has no tags', () => {
-    render(
-      <AppContext.Provider value={providerProps3}>
-        <MemoryRouter initialEntries={['/search/37967185714']}>
-          <Routes>
-            <Route path="/search/:id" element={<SearchCardInfo />}></Route>
-          </Routes>
-        </MemoryRouter>
-      </AppContext.Provider>
-    );
-
+    render(cardWithProvider3);
     expect(screen.queryByTestId('tags')).not.toBeInTheDocument();
   });
 });

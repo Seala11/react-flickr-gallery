@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CardList from '.';
-import AppProvider from 'app/store/provider';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { setupStore } from 'app/store';
 
 const TEST_CARDS = [
   {
@@ -49,9 +50,9 @@ describe('when the card list is rendered', () => {
   it('initially should contain all cards', () => {
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <CardList cards={TEST_CARDS} />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
     expect(screen.getAllByRole('listitem')).toHaveLength(2);

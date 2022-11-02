@@ -11,45 +11,38 @@ import { setupStore } from './store';
 import { Provider } from 'react-redux';
 
 describe('when App component renders', () => {
+  const renderWithProvider = (
+    <MemoryRouter initialEntries={['/']}>
+      <Provider store={setupStore()}>
+        <Header />
+        <Routing />
+        <Footer />
+      </Provider>
+    </MemoryRouter>
+  );
+
   it('should initially display home page', () => {
     render(<App />);
     expect(screen.getByTestId('search-bar')).toBeInTheDocument();
   });
 
   it('should display about page by clicking on "about us" link', () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Header />
-        <Routing />
-        <Footer />
-      </MemoryRouter>
-    );
+    render(renderWithProvider);
     userEvent.click(screen.getByText(/about/i));
     expect(screen.getByText(/Our team/i)).toBeInTheDocument();
   });
 
   it('should display home page by clicking on "home" link', () => {
-    render(
-      <MemoryRouter initialEntries={['/about']}>
-        <Header />
-        <Routing />
-        <Footer />
-      </MemoryRouter>
-    );
+    render(renderWithProvider);
+    userEvent.click(screen.getByText(/about/i));
+    expect(screen.getByText(/Our team/i)).toBeInTheDocument();
+
     userEvent.click(screen.getByText(/home/i));
     expect(screen.getByTestId('search-bar')).toBeInTheDocument();
   });
 
   it('should display form page by clicking on "form" link', () => {
-    render(
-      <Provider store={setupStore()}>
-        <MemoryRouter initialEntries={['/']}>
-          <Header />
-          <Routing />
-          <Footer />
-        </MemoryRouter>
-      </Provider>
-    );
+    render(renderWithProvider);
     userEvent.click(screen.getByText(/form/i));
     expect(screen.getByTestId('react-form')).toBeInTheDocument();
   });
@@ -57,9 +50,11 @@ describe('when App component renders', () => {
   it('should redirect unknown route to 404 page', () => {
     render(
       <MemoryRouter initialEntries={['/such/route/doesnt-exist']}>
-        <Header />
-        <Routing />
-        <Footer />
+        <Provider store={setupStore()}>
+          <Header />
+          <Routing />
+          <Footer />
+        </Provider>
       </MemoryRouter>
     );
 
@@ -70,9 +65,11 @@ describe('when App component renders', () => {
   it('should redirect to home page from 404 page by clicking button "back home"', () => {
     render(
       <MemoryRouter initialEntries={['/404']}>
-        <Header />
-        <Routing />
-        <Footer />
+        <Provider store={setupStore()}>
+          <Header />
+          <Routing />
+          <Footer />
+        </Provider>
       </MemoryRouter>
     );
 

@@ -11,8 +11,9 @@ import { setSearchValueToStorage } from 'shared/helpers/storage';
 import userEvent from '@testing-library/user-event';
 import { server } from '../../mocks/server';
 import { rest } from 'msw';
-import AppProvider from 'app/store/provider';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { setupStore } from 'app/store';
 
 describe('Wnen Home component renders', () => {
   beforeEach(() => {
@@ -26,9 +27,9 @@ describe('Wnen Home component renders', () => {
   it('should contain empty search input and default amount of cards if there are no stored value in storage', async () => {
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -49,9 +50,9 @@ describe('Wnen Home component renders', () => {
 
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -63,9 +64,9 @@ describe('Wnen Home component renders', () => {
 
     const { unmount } = render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -79,9 +80,9 @@ describe('Wnen Home component renders', () => {
 
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -105,9 +106,9 @@ describe('When search input is updated', () => {
 
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -136,9 +137,9 @@ describe('When search input is updated', () => {
 
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -173,17 +174,15 @@ describe('When search input is updated', () => {
 
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
     const loader = await screen.getByTestId('loader');
     waitForElementToBeRemoved(loader);
-
-    await screen.findByTestId('error');
-    expect(await screen.queryByText(/Oops! Something went wrong/i)).toBeInTheDocument();
+    waitFor(() => expect(screen.queryByText(/Oops! Something went wrong/i)).toBeInTheDocument());
   });
 
   it('after clearing search input should be empty', async () => {
@@ -191,9 +190,9 @@ describe('When search input is updated', () => {
 
     render(
       <BrowserRouter>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </BrowserRouter>
     );
 
@@ -227,9 +226,9 @@ describe('When clicking on the card', () => {
   it('should redirect to new page', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
-        <AppProvider>
+        <Provider store={setupStore()}>
           <Home />
-        </AppProvider>
+        </Provider>
       </MemoryRouter>
     );
 
