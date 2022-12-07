@@ -1,0 +1,37 @@
+@use 'app/styles/mixins.scss' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20rem 0;
+}
+
+.title {
+  font-size: 12rem;
+  margin: 0;
+  color: var(--primary);
+  text-shadow: -0.2rem 0 var(--dark-l), 0 0.3rem var(--dark-xl), 0.3rem 0 var(--dark-xl),
+    0 -0.2rem var(--dark-l);
+}
+
+.message {
+  text-align: center;
+}
+
+.button {
+  @include poppins($color: var(--dark-xl));
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--light);
+  border: 0.2rem solid var(--dark-xl);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    color: var(--dark-xxl);
+    background-color: var(--primary);
+  }
+}

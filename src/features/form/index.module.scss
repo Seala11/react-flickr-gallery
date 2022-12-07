@@ -1,0 +1,244 @@
+@use './app/styles/mixins.scss' as *;
+
+.section {
+  padding: 1rem 0;
+
+  @include media-tablet {
+    width: min(90vw, 50rem);
+    margin: 0 auto;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 40rem;
+  margin: 0 auto;
+  background-color: var(--light);
+  padding: 3rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.9rem 0.2rem var(--dark-s);
+
+  @include media-tablet {
+    width: auto;
+    padding: 1.5rem;
+  }
+}
+
+.input {
+  @include poppins;
+  padding: 0.8rem;
+  font-size: 1.6rem;
+  border-radius: 0.6rem;
+  border: 0.2rem solid var(--dark-l);
+  margin: 1rem 0 2.08rem;
+  background-color: var(--light);
+
+  &:focus-visible {
+    outline: none;
+    border: 0.2rem solid var(--dark-xxl);
+  }
+}
+
+.inputError {
+  border: 0.2rem solid var(--error);
+  margin-bottom: 0.5rem;
+}
+
+.label {
+  margin-top: 1.2rem;
+}
+
+.error {
+  color: var(--error);
+}
+
+.button {
+  @include poppins($color: var(--dark-xl));
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--light);
+  border: 0.2rem solid var(--dark-xl);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    color: var(--dark-xxl);
+    background-color: var(--primary);
+  }
+
+  &:disabled {
+    cursor: auto;
+    background-color: var(--dark-s);
+    border: 0.2rem solid var(--dark-l);
+
+    &:hover {
+      $color: var(--dark-xl);
+      background-color: var(--dark-s);
+    }
+  }
+}
+
+.select {
+  padding: 0.6rem;
+}
+
+// avatar file
+
+.avatarLabel:hover,
+.avatarInput:hover {
+  cursor: pointer;
+}
+
+.avatarInput,
+.birthday {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.label:hover > .avatarInput::file-selector-button {
+  cursor: pointer;
+  color: var(--dark-xxl);
+  background-color: var(--primary);
+}
+
+.avatarInput::file-selector-button {
+  @include poppins;
+  border: 0.2rem solid var(--dark-l);
+  padding: 0.2em 0.4em;
+  border-radius: 0.6rem;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.avatarInput::file-selector-button:hover {
+  color: var(--dark-xxl);
+  background-color: var(--primary);
+}
+
+// agreement checkbox
+
+.agreement {
+  display: block;
+  position: relative;
+  padding-left: 4rem;
+  margin-bottom: 2.08rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.agreementError {
+  margin-bottom: 0.5rem;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0.4rem;
+  left: 0;
+  height: 2.5rem;
+  width: 2.5rem;
+  border: 0.2rem solid var(--dark-l);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.checkmarkError {
+  border: 0.2rem solid var(--error);
+}
+
+.agreement:hover input ~ .checkmark {
+  background-color: var(--primary);
+}
+
+.agreement input:checked ~ .checkmark {
+  background-color: var(--primary);
+}
+
+.checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+}
+
+.agreement input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.agreement .checkmark:after {
+  left: 0.9rem;
+  top: 0.5rem;
+  width: 0.5rem;
+  height: 1rem;
+  border: solid var(--dark-xl);
+  border-width: 0 0.3rem 0.3rem 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+// switcher
+
+.switcherWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 1rem 0 1.5rem;
+}
+
+.switcher {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  margin: 0;
+}
+
+.switcherLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  width: 5rem;
+  height: 2.6rem;
+  background: var(--light);
+  border-radius: 10rem;
+  border: 0.2rem solid var(--dark-l);
+  position: relative;
+  transition: background-color 0.2s;
+  margin-right: 1rem;
+}
+
+.switcherLabel .switcherBtn {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  left: 0.2rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  transition: 0.25s;
+  background: var(--dark-l);
+}
+
+.switcher:checked + .switcherLabel .switcherBtn {
+  left: calc(100% - 0.2rem);
+  transform: translateX(-100%);
+}
+
+.switcher:checked + .switcherLabel {
+  background: var(--primary);
+}
