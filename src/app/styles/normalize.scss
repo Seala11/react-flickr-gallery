@@ -1,0 +1,21 @@
+@use './mixins.scss' as *;
+
+html {
+  font-size: 10px;
+}
+
+body {
+  @include poppins;
+  font-family: 'Poppins', sans-serif;
+  background: var(--main-bg);
+  margin: 0;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+input,
+select {
+  font-family: 'Poppins', sans-serif;
+  color: var(--dark-xl);
+  line-height: 1.2;
+}

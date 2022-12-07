@@ -1,0 +1,81 @@
+@use './app/styles/mixins.scss' as *;
+
+.list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  gap: 1rem;
+  padding-top: 3rem;
+}
+
+.item {
+  align-items: flex-end;
+  display: flex;
+  height: 3.6rem;
+  justify-content: center;
+  width: 3.6rem;
+
+  @include media-mobile {
+    height: 2.6rem;
+    width: 2.6rem;
+  }
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include poppins($color: var(--dark-xl));
+  margin: 1rem;
+  padding: 0.5rem;
+
+  &:disabled {
+    cursor: auto;
+    color: var(--dark-xl);
+
+    &:hover {
+      color: var(--dark-xl);
+      background-color: transparent;
+    }
+  }
+}
+
+.dots {
+  border: none;
+  background-color: transparent;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.page {
+  border-radius: 100%;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  border: none;
+  height: 100%;
+  width: 100%;
+
+  &:hover {
+    color: var(--dark-xxl);
+    background-color: var(--primary);
+  }
+
+  &.active {
+    color: var(--dark-xxl);
+    background-color: var(--primary);
+  }
+}
+
+.number {
+  padding: 1.5rem;
+}
+
+.pagination {
+  display: flex;
+}
+
+.icon {
+  fill: var(--dark-xl);
+  width: 2.4rem;
+}

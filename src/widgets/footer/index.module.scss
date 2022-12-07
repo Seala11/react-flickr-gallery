@@ -1,0 +1,36 @@
+.footer {
+  background-color: var(--dark-l);
+  margin-top: auto;
+}
+
+.wrapper {
+  max-width: 120rem;
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  padding: 0 2rem;
+}
+
+.item {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--main-bg);
+}
+
+.link {
+  color: var(--main-bg);
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: 700;
+  transition: all 0.2s;
+
+  &:hover {
+    color: var(--primary);
+  }
+}

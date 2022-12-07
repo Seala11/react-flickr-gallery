@@ -1,0 +1,27 @@
+.list {
+  list-style: none;
+  display: flex;
+  padding: 0 2rem;
+  gap: 3rem;
+}
+
+.item {
+  margin: 0;
+}
+
+.link {
+  color: var(--dark-l);
+  text-decoration: none;
+  background-color: transparent;
+  padding: 0;
+  font-size: 1.8rem;
+  transition: all 0.2s;
+
+  &_active {
+    color: var(--dark-xxl);
+  }
+
+  &:hover {
+    color: var(--dark-xxl);
+  }
+}
