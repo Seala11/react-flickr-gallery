@@ -1,0 +1,32 @@
+.section {
+  padding: 8rem 0 1rem;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3rem;
+  max-width: 120rem;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.title {
+  text-align: center;
+  padding-bottom: 4rem;
+}
+
+.card {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: var(--light);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.9rem 0.2rem var(--dark-s);
+  width: 22rem;
+}

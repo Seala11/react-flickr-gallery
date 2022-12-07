@@ -1,0 +1,118 @@
+@use './app/styles/mixins.scss' as *;
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 3rem 0;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.search {
+  position: relative;
+
+  @include media-mobile {
+    width: 80%;
+  }
+}
+
+.label {
+  font-size: 1.8rem;
+}
+
+.input {
+  padding: 0.8rem;
+  padding-right: 2.5rem;
+  font-size: 1.6rem;
+  border-radius: 0.6rem;
+  border: 2px solid var(--dark-l);
+
+  @include media-mobile {
+    width: 100%;
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+.icon {
+  border: 0;
+  background-size: contain;
+  background-position: center;
+  position: absolute;
+  top: 1.1rem;
+  right: 1rem;
+  background-color: transparent;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &_search {
+    background-image: url('../../../public/assets/icons/search.svg');
+  }
+
+  &_clear {
+    background-image: url('../../../public/assets/icons/close.svg');
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--primary);
+      border-radius: 0.3rem;
+    }
+  }
+}
+
+.searchBtn {
+  position: relative;
+  @include poppins($color: var(--dark-xl));
+  padding: 0.8rem 1.5rem 0.8rem 3rem;
+  border-radius: 0.5rem;
+  background-color: var(--primary);
+  border: 0.2rem solid var(--dark-l);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  @include media-mobile {
+    width: 80%;
+  }
+
+  &:hover {
+    color: var(--dark-xxl);
+    border: 0.2rem solid var(--dark-xxl);
+  }
+
+  &:disabled {
+    cursor: auto;
+    background-color: var(--dark-s);
+    border: 0.2rem solid var(--dark-l);
+
+    &:hover {
+      $color: var(--dark-xl);
+      background-color: var(--dark-s);
+    }
+  }
+
+  &::before {
+    content: '';
+    background-image: url('../../../public/assets/icons/search.svg');
+    border: 0;
+    background-size: contain;
+    background-position: center;
+    position: absolute;
+    top: 1rem;
+    left: 0.8rem;
+    background-color: transparent;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}

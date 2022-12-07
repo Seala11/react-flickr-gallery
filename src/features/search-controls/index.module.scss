@@ -1,0 +1,38 @@
+@use './app/styles/mixins.scss' as *;
+
+.form {
+  display: flex;
+  gap: 5rem;
+
+  @include media-mobile-s {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  @include media-mobile {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
+.input {
+  padding: 0.8rem;
+  font-size: 1.6rem;
+  border-radius: 0.6rem;
+  border: 0.2rem solid var(--dark-l);
+  background-color: var(--light);
+
+  @include media-mobile {
+    width: 100%;
+  }
+
+  &:focus-visible {
+    border: 0.2rem solid var(--dark-xxl);
+  }
+}
