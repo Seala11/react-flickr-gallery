@@ -1,4 +1,24 @@
-# React Components
+# Flickr Photo Gallery App
+
+## About
+
+Image gallery using [Flick API](https://www.flickr.com/services/api/) with search, filters and pagination.
+Form made with [react-hook-form](https://react-hook-form.com/)
+
+Made as a task for [RS School React Course](https://rs.school/react/)
+
+## How to quickly try it?
+
+👉 The project is hosted on Netlify: https://seala11-react-redux.netlify.app/
+
+## Stack
+
+* React
+* React Router v6
+* Redux Toolkit
+* TypeScript
+* Jest
+* Sass
 
 ## Setup and Running
 
@@ -20,24 +40,9 @@ $ npm run start
 $ npm run build
 ```
 
-### Linter check
-
-```bash
-$ npm run lint
-```
-
 ### Run tests
 
 ```bash
 $ npm run test
 ```
 
-### Prittier
-
-```bash
-// check
-$ npm run format
-
-// fix
-$ npm run format-fix
-```
