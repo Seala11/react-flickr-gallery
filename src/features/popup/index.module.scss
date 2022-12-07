@@ -1,0 +1,156 @@
+@use './app/styles/mixins.scss' as *;
+
+.overlay {
+  background-color: rgb(41 41 41 / 66%);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  -webkit-transition: background-color 500ms linear;
+  -ms-transition: background-color 500ms linear;
+  transition: background-color 500ms linear;
+  overflow-y: hidden;
+  cursor: zoom-out;
+  animation: overlay 0.5s forwards;
+}
+
+@keyframes overlay {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.popup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: var(--light);
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.9rem 0.2rem var(--dark-xl);
+  width: 70rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+  max-height: 90vh;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  overflow: auto;
+  animation: show 0.5s forwards;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  @include media-tablet {
+    width: 90%;
+    max-height: 80vh;
+  }
+}
+
+@keyframes show {
+  0% {
+    transform-origin: center center;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+
+  100% {
+    transform-origin: center center;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 0 1rem;
+}
+
+.avatarWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 3.2rem;
+  height: 3.2rem;
+  margin-right: 1rem;
+}
+
+.img {
+  align-self: center;
+
+  @include media-tablet {
+    width: 60%;
+  }
+
+  @include media-mobile {
+    width: 95%;
+  }
+}
+
+.infoWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.views {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: 1.4rem;
+  color: var(--dark-l);
+}
+
+.viewsInfo {
+  font-size: 2rem;
+  color: var(--dark-xxl);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 400;
+  word-break: break-word;
+}
+
+.tags,
+.descr {
+  color: var(--dark-xxl);
+  word-break: break-word;
+}
+
+.tags {
+  font-size: 1.4rem;
+}
+
+.closeBtn {
+  border: 0;
+  background-size: contain;
+  background-position: center;
+  background-color: transparent;
+  width: 2rem;
+  height: 2rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('../../../public/assets/icons/close.svg');
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--primary);
+    border-radius: 0.3rem;
+  }
+}
