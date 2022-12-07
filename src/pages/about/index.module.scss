@@ -1,0 +1,61 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10rem 0;
+}
+
+.image {
+  width: 20rem;
+  height: 20rem;
+  border-radius: 20rem;
+  filter: hue-rotate(26deg) grayscale(15%);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  gap: 7rem;
+}
+
+.item {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--light);
+  padding: 2rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.9rem 0.2rem var(--dark-s);
+}
+
+.role {
+  color: var(--dark-xl);
+  padding: 2rem 0 0;
+  margin: 0;
+}
+
+.name {
+  color: var(--dark-xxl);
+  padding: 1rem 0;
+  margin: 0;
+  font-weight: 400;
+}
+
+.link {
+  color: var(--dark-xl);
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: 400;
+  transition: all 0.2s;
+
+  &:hover {
+    color: var(--dark-xxl);
+    text-shadow: 2px 0 var(--primary), 0 2px var(--primary);
+  }
+}
